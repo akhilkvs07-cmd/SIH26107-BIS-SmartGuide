@@ -1,21 +1,16 @@
-"""Lightweight local RAG engine for BIS SmartGuide.
+"""Advanced local RAG engine for BIS SmartGuide.
 
-This prototype intentionally uses only Python's standard library so it is easy
-for a student team to run locally. It builds a TF-IDF style vector index over
-BIS metadata, prototype requirements, and official BIS resource guidance, then
-retrieves the most relevant chunks for a user question.
+No external AI API is required. The engine creates explainable TF-IDF retrieval
+from local BIS prototype data, official BIS resource metadata, and any .txt,
+.md or .json knowledge files placed in backend/documents/.
 """
-
+import json
 import math
+import os
 import re
 from collections import Counter
 
-STOP_WORDS = {
-    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from",
-    "has", "have", "how", "i", "in", "is", "it", "of", "on", "or", "that",
-    "the", "this", "to", "what", "which", "with", "my", "our", "can", "do",
-    "does", "about", "tell", "me", "please", "product", "used", "use"
-}
+STOP_WORDS = {"a","an","and","are","as","at","be","by","for","from","has","have","how","i","in","is","it","of","on","or","that","the","this","to","what","which","with","my","our","can","do","does","about","tell","me","please","product","used","use","manufactured","manufacturing","made"}
 
 
 def tokenize(text):
@@ -23,85 +18,81 @@ def tokenize(text):
     return [w for w in words if len(w) > 2 and w not in STOP_WORDS]
 
 
-def make_chunks(standards, official_resources):
+def chunk_text(text, size=110, overlap=20):
+    words = str(text).split()
+    if not words:
+        return []
     chunks = []
-    for standard in standards:
-        number = standard.get("standard_number", "")
-        title = standard.get("title", "")
-        product = standard.get("product", "")
-        category = standard.get("category", "")
-        description = standard.get("description", "")
-        requirements = standard.get("requirements", [])
-        compliance = standard.get("compliance_text", "")
+    step = max(1, size - overlap)
+    for start in range(0, len(words), step):
+        piece = " ".join(words[start:start + size]).strip()
+        if piece:
+            chunks.append(piece)
+        if start + size >= len(words):
+            break
+    return chunks
 
-        text = (
-            f"BIS standard {number}. Product: {product}. Title: {title}. "
-            f"Category: {category}. Description: {description}. "
-            f"Requirements: {', '.join(requirements)}. {compliance}"
-        )
-        chunks.append({
-            "text": text,
-            "source_type": "standard_metadata",
-            "standard_number": number,
-            "title": title,
-            "source_url": "https://standards.bis.gov.in/"
-        })
 
-        if requirements:
-            for requirement in requirements:
-                chunks.append({
-                    "text": f"For {product} under {number} ({title}), a prototype checklist item is: {requirement}.",
-                    "source_type": "prototype_requirement",
-                    "standard_number": number,
-                    "title": title,
-                    "source_url": "https://standards.bis.gov.in/"
-                })
-
-    for resource in official_resources:
-        chunks.append({
-            "text": f"{resource['name']}: {resource['description']}",
-            "source_type": "official_resource",
-            "standard_number": None,
-            "title": resource["name"],
-            "source_url": resource["url"]
-        })
-
-    # General workflow guidance, deliberately kept high-level.
-    chunks.extend([
-        {
-            "text": "BIS SmartGuide should identify the likely applicable Indian Standard first, then ask the user to verify the latest official BIS standard, amendments, notifications and applicable certification scheme.",
-            "source_type": "workflow_guidance",
-            "standard_number": None,
-            "title": "Standard identification and verification",
-            "source_url": "https://www.bis.gov.in/know-your-standard/?lang=en"
-        },
-        {
-            "text": "BIS certification requirements can vary by product, applicable standard and government requirements. A prototype assistant must not present a checklist as an official BIS certification decision.",
-            "source_type": "workflow_guidance",
-            "standard_number": None,
-            "title": "Certification caution",
-            "source_url": "https://www.bis.gov.in/apply-for-a-license/?lang=en"
-        },
-        {
-            "text": "For current testing laboratory information, users should consult the official BIS recognized laboratory directory and BIS LIMS.",
-            "source_type": "workflow_guidance",
-            "standard_number": None,
-            "title": "Laboratory guidance",
-            "source_url": "https://www.bis.gov.in/laboratorys/list-of-bis-recognized-lab/?lang=en"
-        }
-    ])
+def standard_chunks(standards, resources):
+    chunks = []
+    for s in standards:
+        number = s.get("standard_number", "")
+        title = s.get("title", "")
+        product = s.get("product", "")
+        base = (f"BIS Indian Standard {number}. Product: {product}. Title: {title}. "
+                f"Category: {s.get('category','')}. Description: {s.get('description','')}. "
+                f"Requirements: {', '.join(s.get('requirements', []))}. "
+                f"Compliance information: {s.get('compliance_text','')}")
+        for i, piece in enumerate(chunk_text(base)):
+            chunks.append({"text": piece, "source_type": "standard_metadata", "standard_number": number, "title": title, "source_url": "https://standards.bis.gov.in/", "chunk_id": f"{number}-meta-{i}"})
+        for i, req in enumerate(s.get("requirements", [])):
+            chunks.append({"text": f"Prototype checklist requirement for {product} under {number}: {req}.", "source_type": "prototype_requirement", "standard_number": number, "title": title, "source_url": "https://standards.bis.gov.in/", "chunk_id": f"{number}-req-{i}"})
+    for r in resources:
+        chunks.append({"text": f"{r['name']}: {r['description']}", "source_type": "official_resource", "standard_number": None, "title": r["name"], "source_url": r["url"], "chunk_id": "resource-" + re.sub(r"[^a-z0-9]+", "-", r["name"].lower()).strip("-")})
     return chunks
 
 
 class LocalRAG:
-    def __init__(self, standards, official_resources):
-        self.chunks = make_chunks(standards, official_resources)
+    def __init__(self, standards, resources, documents_dir=None):
+        self.standards = standards
+        self.resources = resources
+        self.documents_dir = documents_dir
+        self.chunks = standard_chunks(standards, resources)
+        self._load_documents()
         self.documents = [tokenize(c["text"]) for c in self.chunks]
         self.doc_count = len(self.documents)
         self.df = Counter()
         for tokens in self.documents:
             for token in set(tokens):
                 self.df[token] += 1
+
+    @property
+    def chunk_count(self):
+        return len(self.chunks)
+
+    @property
+    def document_count(self):
+        return len({c.get("source_url") or c.get("title") for c in self.chunks})
+
+    def _load_documents(self):
+        if not self.documents_dir or not os.path.isdir(self.documents_dir):
+            return
+        for root, _, files in os.walk(self.documents_dir):
+            for filename in files:
+                path = os.path.join(root, filename)
+                ext = os.path.splitext(filename)[1].lower()
+                if ext not in {".txt", ".md", ".json"}:
+                    continue
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        raw = f.read()
+                    if ext == ".json":
+                        obj = json.loads(raw)
+                        raw = json.dumps(obj, ensure_ascii=False, indent=2)
+                    for i, piece in enumerate(chunk_text(raw)):
+                        self.chunks.append({"text": piece, "source_type": "local_document", "standard_number": None, "title": filename, "source_url": f"local://documents/{filename}", "chunk_id": f"{filename}-{i}"})
+                except (OSError, UnicodeError, json.JSONDecodeError):
+                    continue
 
     def _vector(self, tokens):
         counts = Counter(tokens)
@@ -111,68 +102,43 @@ class LocalRAG:
                 continue
             idf = math.log((1 + self.doc_count) / (1 + self.df[token])) + 1
             vector[token] = (1 + math.log(count)) * idf
-        norm = math.sqrt(sum(value * value for value in vector.values())) or 1.0
-        return {key: value / norm for key, value in vector.items()}
+        norm = math.sqrt(sum(v * v for v in vector.values())) or 1.0
+        return {k: v / norm for k, v in vector.items()}
 
     @staticmethod
     def _cosine(a, b):
-        if not a or not b:
-            return 0.0
-        return sum(value * b.get(key, 0.0) for key, value in a.items())
+        return sum(v * b.get(k, 0.0) for k, v in a.items()) if a and b else 0.0
 
-    def retrieve(self, query, top_k=4):
-        q_vector = self._vector(tokenize(query))
+    def retrieve(self, query, top_k=6):
+        q_tokens = tokenize(query)
+        q_vector = self._vector(q_tokens)
         scored = []
+        query_text = str(query or "").lower()
         for index, tokens in enumerate(self.documents):
             score = self._cosine(q_vector, self._vector(tokens))
-            if score > 0:
+            text_lower = self.chunks[index]["text"].lower()
+            phrase_bonus = 0.12 if query_text and query_text in text_lower else 0
+            final = min(1.0, score + phrase_bonus)
+            if final > 0:
                 item = dict(self.chunks[index])
-                item["relevance"] = round(score * 100, 1)
+                item["relevance"] = round(final * 100, 1)
                 scored.append(item)
-        scored.sort(key=lambda item: item["relevance"], reverse=True)
+        scored.sort(key=lambda x: x["relevance"], reverse=True)
         return scored[:top_k]
 
-    def answer(self, query, top_k=4):
+    def answer(self, query, top_k=5):
         retrieved = self.retrieve(query, top_k)
         if not retrieved:
-            return {
-                "answer": "I could not find relevant information in the local BIS knowledge base. Please verify the query using the official BIS Standards Portal.",
-                "sources": [],
-                "retrieved_count": 0,
-                "rag": True
-            }
-
-        standards = [x for x in retrieved if x.get("standard_number")]
-        unique_standards = []
+            return {"answer": "I could not find relevant information in the local BIS knowledge base. Please verify the query using the official BIS Standards Portal.", "sources": [], "retrieved": [], "retrieved_count": 0, "rag": True}
+        standards = []
         seen = set()
-        for item in standards:
-            number = item["standard_number"]
-            if number not in seen:
-                seen.add(number)
-                unique_standards.append(number)
-
-        source_lines = []
         for item in retrieved:
-            label = item.get("standard_number") or item.get("title")
-            source_lines.append(f"{label} — {item['source_url']}")
-
-        if unique_standards:
-            answer = (
-                "Based on the retrieved BIS SmartGuide knowledge, the most relevant "
-                f"standard reference(s) are {', '.join(unique_standards[:3])}. "
-                "These are recommendations for the prototype, not an official BIS certification decision. "
-                "Please verify the latest applicable standard, amendments and scheme on BIS before relying on the result."
-            )
+            number = item.get("standard_number")
+            if number and number not in seen:
+                seen.add(number); standards.append(number)
+        if standards:
+            answer = "Relevant standard references found in the prototype knowledge base: " + ", ".join(standards[:4]) + ". Verify the latest official BIS standard, amendments and applicable scheme before relying on the result."
         else:
-            answer = (
-                "I found relevant BIS guidance in the local knowledge base. "
-                "For a final decision, verify the current requirement directly on the official BIS source."
-            )
-
-        return {
-            "answer": answer,
-            "sources": source_lines,
-            "retrieved": retrieved,
-            "retrieved_count": len(retrieved),
-            "rag": True
-        }
+            answer = "Relevant BIS guidance was retrieved from the local knowledge base. Verify the current official BIS source before making a regulatory or certification decision."
+        sources = [f"{x.get('title') or x.get('standard_number')} — {x.get('source_url')}" for x in retrieved]
+        return {"answer": answer, "sources": sources, "retrieved": retrieved, "retrieved_count": len(retrieved), "rag": True}
