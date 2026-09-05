@@ -19,7 +19,7 @@
 <section id="history" class="page"><div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><div><h2>🕘 Check History</h2><p class="muted">Saved locally in this browser.</p></div><button class="secondary" onclick="clearHistory()">Clear History</button></div><div class="table-wrap"><table class="history"><thead><tr><th>Product</th><th>Standard</th><th>Score</th><th>Status</th><th>Date</th></tr></thead><tbody id="historyBody"></tbody></table></div></div></section>
 </main><footer>BIS SmartGuide • SIH 2026 PS 26107 • Prototype demonstration only</footer>
 <script>
-const API_URL = "https://independent-robbie-region-milton.trycloudflare.com";
+const API_URL = "https://prerequisite-connectors-experiences-benchmark.trycloudflare.com";
 let currentStandard=null;
 function page(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');if(id==='history')renderHistory();if(id==='labs')loadResources()}
 function quick(v){document.getElementById('finderInput').value=v;page('finder',document.querySelectorAll('.nav button')[1]);findStandards()}
