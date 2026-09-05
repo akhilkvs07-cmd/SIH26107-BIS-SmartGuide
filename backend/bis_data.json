@@ -1,5 +1,5 @@
 {
-  "count": 25,
+  "count": 26,
   "standards": [
     {
       "category": "Electrical Appliances",
@@ -72,16 +72,27 @@
       "title": "Metallic Materials"
     },
     {
+      "category": "Electronics and IT",
+      "compliance_text": "Official BIS reference identified from the BIS Compulsory Registration Scheme listing. This record is a prototype knowledge-base reference, not a complete certification checklist. Verify the latest BIS notification, applicable scheme and product scope before relying on it.",
+      "description": "BIS reference for laptop, notebook and tablet products under the Compulsory Registration Scheme. BIS currently lists IS/IEC 62368: Part 1: 2023 for Laptop/Notebook/Tablets.",
+      "product": "laptop notebook tablet",
+      "requirements": [
+        "Electrical and safety requirements",
+        "Protection against fire hazards",
+        "Requirements for external circuits",
+        "Battery charging safety"
+      ],
+      "standard_number": "IS/IEC 62368: Part 1: 2023",
+      "title": "Audio/Video, Information and Communication Technology Equipment – Part 1 Safety Requirements",
+      "official_source": "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en",
+      "scheme": "Compulsory Registration Scheme (Scheme II)"
+    },
+    {
       "category": "Electrical Appliances",
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for electric fan checks.",
       "product": "electric fan",
-      "requirements": [
-        "Electrical safety",
-        "Insulation safety",
-        "Mechanical safety",
-        "Temperature safety"
-      ],
+      "requirements": ["Electrical safety", "Insulation safety", "Mechanical safety", "Temperature safety"],
       "standard_number": "DEMO-001",
       "title": "Electric Fan Safety"
     },
@@ -90,12 +101,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for LED lamp checks.",
       "product": "led lamp",
-      "requirements": [
-        "Electrical safety",
-        "Insulation",
-        "Temperature control",
-        "Construction quality"
-      ],
+      "requirements": ["Electrical safety", "Insulation", "Temperature control", "Construction quality"],
       "standard_number": "DEMO-002",
       "title": "LED Lamp Safety"
     },
@@ -104,12 +110,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for electric iron checks.",
       "product": "electric iron",
-      "requirements": [
-        "Electrical protection",
-        "Heating performance",
-        "Insulation",
-        "Mechanical construction"
-      ],
+      "requirements": ["Electrical protection", "Heating performance", "Insulation", "Mechanical construction"],
       "standard_number": "DEMO-003",
       "title": "Electric Iron Safety"
     },
@@ -118,12 +119,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for electric kettle checks.",
       "product": "electric kettle",
-      "requirements": [
-        "Electrical safety",
-        "Heating performance",
-        "Insulation",
-        "Overheating protection"
-      ],
+      "requirements": ["Electrical safety", "Heating performance", "Insulation", "Overheating protection"],
       "standard_number": "DEMO-004",
       "title": "Electric Kettle Safety"
     },
@@ -132,12 +128,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for mixer grinder checks.",
       "product": "mixer grinder",
-      "requirements": [
-        "Motor safety",
-        "Electrical insulation",
-        "Mechanical safety",
-        "Overload protection"
-      ],
+      "requirements": ["Motor safety", "Electrical insulation", "Mechanical safety", "Overload protection"],
       "standard_number": "DEMO-005",
       "title": "Mixer Grinder Safety"
     },
@@ -146,12 +137,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for microwave oven checks.",
       "product": "microwave oven",
-      "requirements": [
-        "Electrical safety",
-        "Door safety",
-        "Thermal protection",
-        "Construction safety"
-      ],
+      "requirements": ["Electrical safety", "Door safety", "Thermal protection", "Construction safety"],
       "standard_number": "DEMO-006",
       "title": "Microwave Oven Safety"
     },
@@ -160,12 +146,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for electric heater checks.",
       "product": "electric heater",
-      "requirements": [
-        "Electrical safety",
-        "Thermal protection",
-        "Insulation",
-        "Mechanical construction"
-      ],
+      "requirements": ["Electrical safety", "Thermal protection", "Insulation", "Mechanical construction"],
       "standard_number": "DEMO-007",
       "title": "Electric Heater Safety"
     },
@@ -174,12 +155,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for extension board checks.",
       "product": "extension board",
-      "requirements": [
-        "Electrical insulation",
-        "Socket safety",
-        "Cable safety",
-        "Overload protection"
-      ],
+      "requirements": ["Electrical insulation", "Socket safety", "Cable safety", "Overload protection"],
       "standard_number": "DEMO-008",
       "title": "Extension Board Safety"
     },
@@ -188,12 +164,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for electrical switch checks.",
       "product": "electrical switch",
-      "requirements": [
-        "Electrical contact safety",
-        "Insulation",
-        "Mechanical operation",
-        "Construction quality"
-      ],
+      "requirements": ["Electrical contact safety", "Insulation", "Mechanical operation", "Construction quality"],
       "standard_number": "DEMO-009",
       "title": "Electrical Switch Safety"
     },
@@ -202,12 +173,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for socket checks.",
       "product": "electrical socket",
-      "requirements": [
-        "Electrical safety",
-        "Insulation",
-        "Contact safety",
-        "Mechanical strength"
-      ],
+      "requirements": ["Electrical safety", "Insulation", "Contact safety", "Mechanical strength"],
       "standard_number": "DEMO-010",
       "title": "Electrical Socket Safety"
     },
@@ -216,12 +182,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for refrigerator checks.",
       "product": "refrigerator",
-      "requirements": [
-        "Electrical safety",
-        "Insulation",
-        "Temperature performance",
-        "Mechanical safety"
-      ],
+      "requirements": ["Electrical safety", "Insulation", "Temperature performance", "Mechanical safety"],
       "standard_number": "DEMO-011",
       "title": "Refrigerator Safety"
     },
@@ -230,12 +191,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for washing machine checks.",
       "product": "washing machine",
-      "requirements": [
-        "Electrical safety",
-        "Water protection",
-        "Mechanical safety",
-        "Insulation"
-      ],
+      "requirements": ["Electrical safety", "Water protection", "Mechanical safety", "Insulation"],
       "standard_number": "DEMO-012",
       "title": "Washing Machine Safety"
     },
@@ -244,12 +200,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for water heater checks.",
       "product": "water heater",
-      "requirements": [
-        "Electrical safety",
-        "Temperature control",
-        "Insulation",
-        "Pressure protection"
-      ],
+      "requirements": ["Electrical safety", "Temperature control", "Insulation", "Pressure protection"],
       "standard_number": "DEMO-013",
       "title": "Water Heater Safety"
     },
@@ -258,12 +209,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for air conditioner checks.",
       "product": "air conditioner",
-      "requirements": [
-        "Electrical safety",
-        "Insulation",
-        "Temperature control",
-        "Mechanical safety"
-      ],
+      "requirements": ["Electrical safety", "Insulation", "Temperature control", "Mechanical safety"],
       "standard_number": "DEMO-014",
       "title": "Air Conditioner Safety"
     },
@@ -272,12 +218,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for ceiling fan checks.",
       "product": "ceiling fan",
-      "requirements": [
-        "Electrical safety",
-        "Motor performance",
-        "Mechanical strength",
-        "Insulation"
-      ],
+      "requirements": ["Electrical safety", "Motor performance", "Mechanical strength", "Insulation"],
       "standard_number": "DEMO-015",
       "title": "Ceiling Fan Safety"
     },
@@ -286,12 +227,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for table fan checks.",
       "product": "table fan",
-      "requirements": [
-        "Electrical safety",
-        "Motor performance",
-        "Mechanical protection",
-        "Insulation"
-      ],
+      "requirements": ["Electrical safety", "Motor performance", "Mechanical protection", "Insulation"],
       "standard_number": "DEMO-016",
       "title": "Table Fan Safety"
     },
@@ -300,12 +236,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for toaster checks.",
       "product": "toaster",
-      "requirements": [
-        "Electrical safety",
-        "Heating safety",
-        "Insulation",
-        "Overheating protection"
-      ],
+      "requirements": ["Electrical safety", "Heating safety", "Insulation", "Overheating protection"],
       "standard_number": "DEMO-017",
       "title": "Electric Toaster Safety"
     },
@@ -314,12 +245,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for rice cooker checks.",
       "product": "rice cooker",
-      "requirements": [
-        "Electrical safety",
-        "Heating performance",
-        "Insulation",
-        "Temperature protection"
-      ],
+      "requirements": ["Electrical safety", "Heating performance", "Insulation", "Temperature protection"],
       "standard_number": "DEMO-018",
       "title": "Rice Cooker Safety"
     },
@@ -328,12 +254,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for immersion heater checks.",
       "product": "immersion heater",
-      "requirements": [
-        "Electrical insulation",
-        "Heating safety",
-        "Water protection",
-        "Overheating protection"
-      ],
+      "requirements": ["Electrical insulation", "Heating safety", "Water protection", "Overheating protection"],
       "standard_number": "DEMO-019",
       "title": "Immersion Heater Safety"
     },
@@ -342,12 +263,7 @@
       "compliance_text": "Demo data only. Not an official BIS certification checklist.",
       "description": "Prototype demonstration record for charger checks.",
       "product": "electric charger",
-      "requirements": [
-        "Electrical insulation",
-        "Voltage protection",
-        "Temperature safety",
-        "Construction quality"
-      ],
+      "requirements": ["Electrical insulation", "Voltage protection", "Temperature safety", "Construction quality"],
       "standard_number": "DEMO-020",
       "title": "Electric Charger Safety"
     }
