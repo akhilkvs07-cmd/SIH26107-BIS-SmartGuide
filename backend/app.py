@@ -6,6 +6,7 @@ import re
 from datetime import datetime, timezone
 
 from rag_engine import LocalRAG
+from bis_agent import BISExpertAgent
 
 app = Flask(__name__)
 CORS(app)
@@ -154,16 +155,17 @@ def build_rag():
     return LocalRAG(bis_data, OFFICIAL_RESOURCES, DOCS_DIR)
 
 rag = build_rag()
+agent = BISExpertAgent(find_matches, rag, OFFICIAL_RESOURCES, certification_steps)
 
 
 @app.route("/")
 def home():
-    return jsonify({"message": "BIS SmartGuide Advanced Backend", "status": "success", "version": "3.0-rag"})
+    return jsonify({"message": "BIS SmartGuide Advanced Backend", "status": "success", "version": "4.0-agent"})
 
 
 @app.route("/health")
 def health():
-    return jsonify({"status": "healthy", "standards_loaded": len(bis_data), "rag_chunks": rag.chunk_count, "documents_indexed": rag.document_count, "timestamp": datetime.now(timezone.utc).isoformat()})
+    return jsonify({"status": "healthy", "standards_loaded": len(bis_data), "rag_chunks": rag.chunk_count, "documents_indexed": rag.document_count, "agent": agent.name, "agentic_chat": True, "timestamp": datetime.now(timezone.utc).isoformat()})
 
 
 @app.route("/standards")
@@ -265,9 +267,18 @@ def rag_search():
 
 @app.route("/rag-rebuild", methods=["POST"])
 def rag_rebuild():
-    global rag
+    global rag, agent
     rag = build_rag()
-    return jsonify({"success": True, "message": "RAG index rebuilt", "rag_chunks": rag.chunk_count, "documents_indexed": rag.document_count})
+    agent = BISExpertAgent(find_matches, rag, OFFICIAL_RESOURCES, certification_steps)
+    return jsonify({"success": True, "message": "RAG index rebuilt", "rag_chunks": rag.chunk_count, "documents_indexed": rag.document_count, "agent_reloaded": True})
+
+
+@app.route("/agent-chat", methods=["POST"])
+def agent_chat():
+    body = request.get_json(silent=True) or {}
+    message = str(body.get("message", "")).strip()
+    if not message: return jsonify({"error": "Message is required"}), 400
+    return jsonify(agent.run(message))
 
 
 @app.route("/chat", methods=["POST"])
@@ -275,28 +286,13 @@ def chat():
     body = request.get_json(silent=True) or {}
     message = str(body.get("message", "")).strip()
     if not message: return jsonify({"error": "Message is required"}), 400
-    matches = find_matches(message, 3)
-    result = rag.answer(message, 5)
-    lower = normalize(message)
-    if any(x in lower for x in ["certification", "license", "licence", "apply"]):
-        intent = "certification"
-        reply = "For BIS certification, first identify the applicable standard, review current BIS requirements and scheme details, arrange applicable testing or assessment, prepare documentation, and follow the official BIS application process."
-    elif any(x in lower for x in ["lab", "laboratory", "testing"]):
-        intent = "laboratory"
-        reply = "For current testing-laboratory information, use the official BIS recognized laboratory directory or BIS LIMS."
-    elif matches:
-        top = matches[0]
-        intent = "standard_search"
-        reply = f"The strongest prototype match is {top.get('standard_number')} — {top.get('title')}. {top.get('description', '')}"
-    else:
-        intent = "rag_knowledge"
-        reply = result["answer"]
-    return jsonify({"reply": reply, "intent": intent, "recommendations": matches, "rag": True, "retrieved_count": result["retrieved_count"], "sources": result["sources"], "retrieved": result.get("retrieved", []), "disclaimer": "Prototype knowledge assistant. Verify current official BIS information before regulatory or certification decisions."})
+    result = agent.run(message)
+    return jsonify(result)
 
 
 @app.route("/api-info")
 def api_info():
-    return jsonify({"version": "3.0", "features": ["semantic-style local retrieval", "source-aware RAG", "hybrid standard matching", "product analysis", "compliance assessment", "certification guidance", "laboratory resources", "chat assistant", "RAG rebuild endpoint"], "endpoints": ["/health", "/search", "/recommend", "/analyze", "/recommendations", "/check-compliance", "/check-product", "/certification-guide", "/labs", "/resources", "/rag-search", "/rag-rebuild", "/chat"]})
+    return jsonify({"version": "4.0", "features": ["BIS Standards Intelligence Agent", "agentic chat routing", "semantic-style local retrieval", "source-aware RAG", "hybrid standard matching", "product analysis", "compliance assessment", "certification guidance", "laboratory resources", "chat assistant", "RAG rebuild endpoint"], "endpoints": ["/health", "/search", "/recommend", "/analyze", "/recommendations", "/check-compliance", "/check-product", "/certification-guide", "/labs", "/resources", "/rag-search", "/rag-rebuild", "/agent-chat", "/chat"]})
 
 
 if __name__ == "__main__":
