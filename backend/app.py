@@ -45,7 +45,8 @@ SYNONYMS = {
     "washing": ["washing machine", "washer"],
     "air conditioner": ["air conditioner", "ac", "air conditioning"],
     "toaster": ["toaster", "electric toaster"],
-    "rice cooker": ["rice cooker", "cooker"]
+    "rice cooker": ["rice cooker", "cooker"],
+    "laptop": ["laptop", "laptops", "notebook", "notebooks", "tablet", "tablets", "computer", "computers", "automatic data processing machine"]
 }
 
 
@@ -99,8 +100,13 @@ def score_standard(query, standard):
     if matched:
         reasons.append("Keyword match: " + ", ".join(sorted(set(matched))))
     for key, alternatives in SYNONYMS.items():
-        if any(word == key or word in alternatives for word in words) and any(alt in text for alt in alternatives):
-            score += 10; reasons.append("Related product terminology detected"); break
+        query_has_alias = any(word == key or word in alternatives for word in words)
+        text_has_alias = any(normalize(alt) in text for alt in alternatives)
+        if query_has_alias and text_has_alias:
+            bonus = 35 if key == "laptop" else 10
+            score += bonus
+            reasons.append("Related product terminology detected")
+            break
     return score, reasons
 
 
