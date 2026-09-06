@@ -1,0 +1,16 @@
+[Unit]
+Description=BIS SmartGuide Flask API
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/SIH26107-BIS-SmartGuide/backend
+Environment="PYTHONUNBUFFERED=1"
+ExecStart=/opt/SIH26107-BIS-SmartGuide/backend/venv/bin/gunicorn --workers 2 --threads 4 --timeout 120 --bind 127.0.0.1:5000 app:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
