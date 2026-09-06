@@ -1,9 +1,9 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>BIS SmartGuide â€” AI Standards Intelligence</title>
+<title>BIS SmartGuide — AI Standards Intelligence</title>
 <style>
 :root{
   --navy:#071a36;--navy2:#0b2b58;--blue:#1769e0;--blue2:#2389ed;--cyan:#43b5ff;
@@ -48,7 +48,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 .result-top{display:flex;justify-content:space-between;gap:12px}.stdno{color:var(--blue);font-weight:950;font-size:13px}.score{font-size:22px;font-weight:950;color:var(--blue)}
 .meter{height:7px;background:#edf1f6;border-radius:99px;overflow:hidden;margin:9px 0}.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#45b0ff);border-radius:99px}
 .tags{display:flex;gap:6px;flex-wrap:wrap}.tag{background:#eef5ff;color:#175ba9;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:900}.tag.green{background:#eaf9f2;color:#117451}.tag.amber{background:#fff5df;color:#96600a}.tag.red{background:#fff0f1;color:#9d2d38}
-.reqs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.req{border:1px solid var(--line);padding:11px;border-radius:11px;font-size:12px}.req:before{content:"âœ“";color:var(--success);font-weight:900;margin-right:7px}
+.reqs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.req{border:1px solid var(--line);padding:11px;border-radius:11px;font-size:12px}.req:before{content:"✓";color:var(--success);font-weight:900;margin-right:7px}
 .notice,.info{padding:13px 15px;border-radius:12px;font-size:12px;line-height:1.55}.notice{background:#fff8e9;border:1px solid #f1dfb6;color:#72500d}.info{background:#eef7ff;border:1px solid #cde5fb;color:#24527f}.successbox{background:#eefaf5;border:1px solid #ccebdd;color:#176b4d}.dangerbox{background:#fff0f1;border:1px solid #f3c9cd;color:#8e2730}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap}.status-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900}.status-badge.success{background:#eaf9f2;color:#117451}.status-badge.warn{background:#fff5df;color:#96600a}.status-badge.danger{background:#fff0f1;color:#9d2d38}
 .steps{position:relative;margin:20px 0}.step{display:grid;grid-template-columns:42px 1fr;gap:12px;position:relative;padding-bottom:22px}.step:not(:last-child):after{content:"";position:absolute;left:20px;top:40px;bottom:0;width:1px;background:#cdd9e8}.stepno{width:40px;height:40px;border-radius:13px;background:#eaf3ff;color:var(--blue);display:grid;place-items:center;font-weight:950;z-index:1}.step h3{margin:2px 0 4px;font-size:14px}.step p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
@@ -72,58 +72,58 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <body>
 <div class="app">
 <aside class="sidebar" id="sidebar">
-  <div class="brand"><div class="mark">âœ¦</div><div><b>BIS SmartGuide</b><small>Standards Intelligence Platform</small></div></div>
+  <div class="brand"><div class="mark">✦</div><div><b>BIS SmartGuide</b><small>Standards Intelligence Platform</small></div></div>
   <div class="side-label">Intelligence Workspace</div>
   <nav class="nav">
-    <button class="active" onclick="page('dash',this,'Overview')">âŒ‚ <span>Overview</span></button>
-    <button onclick="page('intel',this,'Product Intelligence')">â—ˆ <span>Product Intelligence</span></button>
-    <button onclick="page('finder',this,'Standard Finder')">âŒ• <span>Standard Finder</span></button>
-    <button onclick="page('compliance',this,'Compliance Center')">âœ“ <span>Compliance</span></button>
+    <button class="active" onclick="page('dash',this,'Overview')">⌂ <span>Overview</span></button>
+    <button onclick="page('intel',this,'Product Intelligence')">◈ <span>Product Intelligence</span></button>
+    <button onclick="page('finder',this,'Standard Finder')">⌕ <span>Standard Finder</span></button>
+    <button onclick="page('compliance',this,'Compliance Center')">✓ <span>Compliance</span></button>
     <button onclick="page('mandatory',this,'Mandatory / QCO')">! <span>Mandatory / QCO</span></button>
-    <button onclick="page('cert',this,'Certification Roadmap')">â—† <span>Certification</span></button>
-    <button onclick="page('labs',this,'Smart Laboratories')">âŒ¬ <span>Laboratories</span></button>
-    <button onclick="page('docs',this,'Document Intelligence')">â–£ <span>Document AI</span></button>
-    <button onclick="page('compare',this,'Compare Standards')">â‡„ <span>Compare</span></button>
-    <button onclick="page('graph',this,'Knowledge Graph')">âŒ˜ <span>Knowledge Graph</span></button>
-    <button onclick="page('consumer',this,'Consumer Services')">â—‡ <span>Consumer Services</span></button>
-    <button onclick="page('assistant',this,'AI Assistant')">âœ¦ <span>AI Assistant</span></button>
-    <button onclick="page('reports',this,'Report Studio')">â–¤ <span>Report Studio</span></button>
-    <button onclick="page('history',this,'Activity & Analytics')">â—· <span>Analytics</span></button>
+    <button onclick="page('cert',this,'Certification Roadmap')">◆ <span>Certification</span></button>
+    <button onclick="page('labs',this,'Smart Laboratories')">⌬ <span>Laboratories</span></button>
+    <button onclick="page('docs',this,'Document Intelligence')">▣ <span>Document AI</span></button>
+    <button onclick="page('compare',this,'Compare Standards')">⇄ <span>Compare</span></button>
+    <button onclick="page('graph',this,'Knowledge Graph')">⌘ <span>Knowledge Graph</span></button>
+    <button onclick="page('consumer',this,'Consumer Services')">◇ <span>Consumer Services</span></button>
+    <button onclick="page('assistant',this,'AI Assistant')">✦ <span>AI Assistant</span></button>
+    <button onclick="page('reports',this,'Report Studio')">▤ <span>Report Studio</span></button>
+    <button onclick="page('history',this,'Activity & Analytics')">◷ <span>Analytics</span></button>
   </nav>
   <div class="side-bottom">
-    <div class="system"><span class="dot"></span><b>Knowledge Engine</b><br><small id="engineSub">Agentic RAG â€¢ Connectingâ€¦</small></div>
+    <div class="system"><span class="dot"></span><b>Knowledge Engine</b><br><small id="engineSub">Agentic RAG • Connecting…</small></div>
   </div>
 </aside>
 
 <main class="main">
 <header class="topbar">
-  <div style="display:flex;align-items:center;gap:12px"><button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">â˜°</button><span class="crumb" id="crumb">Overview</span></div>
-  <div class="top-actions"><span class="pill live" id="onlinePill">â— System Online</span><span class="pill">SIH 2026 â€¢ PS 26107</span></div>
+  <div style="display:flex;align-items:center;gap:12px"><button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button><span class="crumb" id="crumb">Overview</span></div>
+  <div class="top-actions"><span class="pill live" id="onlinePill">● System Online</span><span class="pill">SIH 2026 • PS 26107</span></div>
 </header>
 
 <div class="content">
 <section id="dash" class="page active">
   <div class="hero">
-    <div class="eyebrow">Bureau of Indian Standards â€¢ Intelligent Guidance</div>
+    <div class="eyebrow">Bureau of Indian Standards • Intelligent Guidance</div>
     <h1>From product idea to verified BIS compliance intelligence.</h1>
     <p>Describe a product in natural language. SmartGuide identifies likely standards, explains its reasoning, surfaces evidence, checks compliance signals and connects you to official BIS resources.</p>
-    <div class="hero-search"><input id="home" placeholder="Example: I manufacture a 1000W electric iron for household use"><button class="btn primary" onclick="runHero()">Analyze product â†’</button></div>
+    <div class="hero-search"><input id="home" placeholder="Example: I manufacture a 1000W electric iron for household use"><button class="btn primary" onclick="runHero()">Analyze product →</button></div>
     <div class="chips"><button class="chip" onclick="quick('laptop')">Laptop</button><button class="chip" onclick="quick('gas stove')">Gas Stove</button><button class="chip" onclick="quick('electric kettle')">Electric Kettle</button><button class="chip" onclick="quick('electric iron')">Electric Iron</button><button class="chip" onclick="quick('PVC cable')">PVC Cable</button></div>
   </div>
 
-  <div class="section-head"><div><h2>Platform pulse</h2><p>Live telemetry from the intelligence backend.</p></div><span class="status-badge success" id="healthBadge">â— Checking</span></div>
+  <div class="section-head"><div><h2>Platform pulse</h2><p>Live telemetry from the intelligence backend.</p></div><span class="status-badge success" id="healthBadge">● Checking</span></div>
   <div class="grid4">
-    <div class="card stat"><div class="icon">â–£</div><div class="mini">INDEXED</div><strong id="stdCount">â€”</strong><span>Knowledge records</span></div>
-    <div class="card stat"><div class="icon">âœ¦</div><div class="mini">RAG</div><strong id="rag">â€”</strong><span>Retrieval chunks</span></div>
-    <div class="card stat"><div class="icon">âŒ</div><div class="mini">DOCS</div><strong id="docsCount">â€”</strong><span>Knowledge documents</span></div>
-    <div class="card stat"><div class="icon">âœ“</div><div class="mini">AGENT</div><strong id="agent">â€”</strong><span>Agentic chat</span></div>
+    <div class="card stat"><div class="icon">▣</div><div class="mini">INDEXED</div><strong id="stdCount">—</strong><span>Knowledge records</span></div>
+    <div class="card stat"><div class="icon">✦</div><div class="mini">RAG</div><strong id="rag">—</strong><span>Retrieval chunks</span></div>
+    <div class="card stat"><div class="icon">▤</div><div class="mini">DOCS</div><strong id="docsCount">—</strong><span>Knowledge documents</span></div>
+    <div class="card stat"><div class="icon">✓</div><div class="mini">AGENT</div><strong id="agent">—</strong><span>Agentic chat</span></div>
   </div>
 
   <div class="section-head"><div><h2>Command center</h2><p>Every major SIH workflow is one click away.</p></div></div>
   <div class="grid3">
-    <div class="card module"><div class="module-icon">â—ˆ</div><div><h3>Product Intelligence</h3><p>Extract product type, attributes and likely standards from natural language.</p></div><span class="arrow">â†’</span></div>
-    <div class="card module"><div class="module-icon">âœ“</div><div><h3>Evidence-backed compliance</h3><p>Build an interactive checklist and distinguish prototype signals from official verification.</p></div><span class="arrow">â†’</span></div>
-    <div class="card module"><div class="module-icon">âœ¦</div><div><h3>Agentic BIS Assistant</h3><p>Ask standards, certification and laboratory questions with multilingual responses and evidence.</p></div><span class="arrow">â†’</span></div>
+    <div class="card module"><div class="module-icon">◈</div><div><h3>Product Intelligence</h3><p>Extract product type, attributes and likely standards from natural language.</p></div><span class="arrow">→</span></div>
+    <div class="card module"><div class="module-icon">✓</div><div><h3>Evidence-backed compliance</h3><p>Build an interactive checklist and distinguish prototype signals from official verification.</p></div><span class="arrow">→</span></div>
+    <div class="card module"><div class="module-icon">✦</div><div><h3>Agentic BIS Assistant</h3><p>Ask standards, certification and laboratory questions with multilingual responses and evidence.</p></div><span class="arrow">→</span></div>
   </div>
   <div class="notice" style="margin-top:16px"><b>Trust boundary:</b> SmartGuide is a prototype intelligence layer. It does not issue BIS certification or replace the latest BIS notification, QCO, standard or licence decision.</div>
 </section>
@@ -138,7 +138,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 </section>
 
 <section id="finder" class="page">
-  <div class="section-head"><div><h2>Standard Finder</h2><p>Search by product, keyword or IS number.</p></div><a href="https://standards.bis.gov.in/" target="_blank">BIS Standards Portal â†—</a></div>
+  <div class="section-head"><div><h2>Standard Finder</h2><p>Search by product, keyword or IS number.</p></div><a href="https://standards.bis.gov.in/" target="_blank">BIS Standards Portal ↗</a></div>
   <div class="card"><div class="searchbar"><input id="stdQ" class="field" placeholder="Laptop, gas stove, IS 302"><button class="btn primary" onclick="standards()">Find standard</button></div></div>
   <div id="stdOut" class="result"></div>
 </section>
@@ -150,13 +150,13 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 </section>
 
 <section id="mandatory" class="page">
-  <div class="section-head"><div><h2>Mandatory / QCO Screening</h2><p>Screen a product, then verify the current official notification.</p></div><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank">Official QCO directory â†—</a></div>
+  <div class="section-head"><div><h2>Mandatory / QCO Screening</h2><p>Screen a product, then verify the current official notification.</p></div><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank">Official QCO directory ↗</a></div>
   <div class="card"><div class="searchbar"><input id="mandQ" class="field" placeholder="Product name"><button class="btn primary" onclick="mandatory()">Run screening</button></div></div>
   <div id="mandOut" class="result"></div>
 </section>
 
 <section id="cert" class="page">
-  <div class="section-head"><div><h2>Certification Roadmap</h2><p>Translate a likely standard into practical next steps.</p></div><a href="https://www.bis.gov.in/apply-for-a-license/?lang=en" target="_blank">BIS application guidance â†—</a></div>
+  <div class="section-head"><div><h2>Certification Roadmap</h2><p>Translate a likely standard into practical next steps.</p></div><a href="https://www.bis.gov.in/apply-for-a-license/?lang=en" target="_blank">BIS application guidance ↗</a></div>
   <div class="card"><div class="searchbar"><input id="certQ" class="field" placeholder="Product name"><button class="btn primary" onclick="cert()">Build roadmap</button></div></div>
   <div id="certOut" class="result"></div>
 </section>
@@ -169,7 +169,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <section id="docs" class="page">
   <div class="section-head"><div><h2>Document Intelligence</h2><p>Extract product signals from TXT, Markdown or JSON files and map them to the local knowledge base.</p></div></div>
   <div class="card drop">
-    <div style="font-size:28px">â–£</div><strong>Drop a product or technical document here</strong><p class="muted tiny">Prototype accepts .txt, .md and .json. It does not certify documents or inspect PDFs yet.</p>
+    <div style="font-size:28px">▣</div><strong>Drop a product or technical document here</strong><p class="muted tiny">Prototype accepts .txt, .md and .json. It does not certify documents or inspect PDFs yet.</p>
     <input id="file" type="file" accept=".txt,.md,.json" class="field" style="max-width:500px;margin:10px auto">
     <div><button class="btn primary" onclick="doc()">Analyze document</button></div>
   </div>
@@ -179,7 +179,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <section id="compare" class="page">
   <div class="section-head"><div><h2>Compare Standards</h2><p>Compare two product/standard candidates side by side.</p></div></div>
   <div class="card">
-    <div class="grid2"><input id="cmpA" class="field" placeholder="Candidate A â€” e.g. laptop"><input id="cmpB" class="field" placeholder="Candidate B â€” e.g. electric iron"></div>
+    <div class="grid2"><input id="cmpA" class="field" placeholder="Candidate A — e.g. laptop"><input id="cmpB" class="field" placeholder="Candidate B — e.g. electric iron"></div>
     <button class="btn primary" style="margin-top:10px" onclick="compare()">Compare intelligence</button>
   </div>
   <div id="compareOut" class="result"></div>
@@ -196,17 +196,17 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <section id="consumer" class="page">
   <div class="section-head"><div><h2>Consumer Services</h2><p>Official BIS entry points for verification and standards discovery.</p></div></div>
   <div class="grid3">
-    <div class="card module"><div class="module-icon">â—‡</div><div><h3>Verify HUID</h3><p>Use BIS CARE for hallmark jewellery verification and consumer services.</p><a href="https://www.bis.gov.in/bis-apps/?lang=en" target="_blank">Open BIS CARE â†—</a></div></div>
-    <div class="card module"><div class="module-icon">âŒ•</div><div><h3>Know Your Standard</h3><p>Search Indian Standards by number or keyword and explore related information.</p><a href="https://www.bis.gov.in/know-your-standard/?lang=en" target="_blank">Open KYS â†—</a></div></div>
-    <div class="card module"><div class="module-icon">âœ“</div><div><h3>Certification information</h3><p>Access official certification and compulsory-certification resources.</p><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank">Open BIS â†—</a></div></div>
+    <div class="card module"><div class="module-icon">◇</div><div><h3>Verify HUID</h3><p>Use BIS CARE for hallmark jewellery verification and consumer services.</p><a href="https://www.bis.gov.in/bis-apps/?lang=en" target="_blank">Open BIS CARE ↗</a></div></div>
+    <div class="card module"><div class="module-icon">⌕</div><div><h3>Know Your Standard</h3><p>Search Indian Standards by number or keyword and explore related information.</p><a href="https://www.bis.gov.in/know-your-standard/?lang=en" target="_blank">Open KYS ↗</a></div></div>
+    <div class="card module"><div class="module-icon">✓</div><div><h3>Certification information</h3><p>Access official certification and compulsory-certification resources.</p><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank">Open BIS ↗</a></div></div>
   </div>
 </section>
 
 <section id="assistant" class="page">
-  <div class="section-head"><div><h2>AI Assistant</h2><p>Source-grounded conversational interface with confidence and evidence.</p></div><span class="status-badge success">âœ¦ Agentic RAG</span></div>
+  <div class="section-head"><div><h2>AI Assistant</h2><p>Source-grounded conversational interface with confidence and evidence.</p></div><span class="status-badge success">✦ Agentic RAG</span></div>
   <div class="card">
-    <div class="toolbar"><select id="lang" class="field" style="max-width:180px"><option value="English">English</option><option value="Hindi">Hindi</option><option value="Kannada">Kannada</option><option value="Telugu">Telugu</option><option value="Tamil">Tamil</option></select><button class="btn ghost" onclick="startVoice()" id="voiceInputBtn">ðŸŽ™ Voice input</button><button class="btn ghost" onclick="toggleAutoSpeak()" id="autoSpeakBtn">ðŸ”Š Auto Speak: OFF</button><button class="btn ghost" onclick="stopSpeaking()" id="stopSpeakBtn">â¹ Stop</button><button class="btn ghost" onclick="clearChat()">Clear</button></div>
-    <div id="chat" class="messages" style="margin-top:10px"><div class="msg bot"><div class="msg-head">BIS SMARTGUIDE AI â€¢ READY</div>Ask a standards, certification, laboratory or BIS service question. I will expose evidence when available and avoid presenting unsupported prototype data as official certification advice.</div></div>
+    <div class="toolbar"><select id="lang" class="field" style="max-width:180px"><option value="English">English</option><option value="Hindi">Hindi</option><option value="Kannada">Kannada</option><option value="Telugu">Telugu</option><option value="Tamil">Tamil</option></select><button class="btn ghost" onclick="startVoice()" id="voiceInputBtn">🎙 Voice input</button><button class="btn ghost" onclick="toggleAutoSpeak()" id="autoSpeakBtn">🔊 Auto Speak: OFF</button><button class="btn ghost" onclick="stopSpeaking()" id="stopSpeakBtn">⏹ Stop</button><button class="btn ghost" onclick="clearChat()">Clear</button></div>
+    <div id="chat" class="messages" style="margin-top:10px"><div class="msg bot"><div class="msg-head">BIS SMARTGUIDE AI • READY</div>Ask a standards, certification, laboratory or BIS service question. I will expose evidence when available and avoid presenting unsupported prototype data as official certification advice.</div></div>
     <div class="chatbar"><input id="q" class="field" placeholder="Ask: Which standard may apply to a laptop?"><button class="btn primary" onclick="chat()">Send</button></div>
     <p class="tiny muted">Voice recognition depends on your browser. Voice output uses the browser's speech synthesis.</p>
   </div>
@@ -221,15 +221,15 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <section id="history" class="page">
   <div class="section-head"><div><h2>Activity & Analytics</h2><p>Local browser analytics for demo sessions.</p></div><button class="btn ghost no-print" onclick="clearHistory()">Clear local history</button></div>
   <div class="grid4">
-    <div class="card stat"><div class="icon">âŒ•</div><strong id="searches">0</strong><span>Standard searches</span></div>
-    <div class="card stat"><div class="icon">âœ¦</div><strong id="chats">0</strong><span>AI questions</span></div>
-    <div class="card stat"><div class="icon">âš™</div><strong id="actions">0</strong><span>Total actions</span></div>
-    <div class="card stat"><div class="icon">âœ“</div><strong id="verified">0</strong><span>Source opens</span></div>
+    <div class="card stat"><div class="icon">⌕</div><strong id="searches">0</strong><span>Standard searches</span></div>
+    <div class="card stat"><div class="icon">✦</div><strong id="chats">0</strong><span>AI questions</span></div>
+    <div class="card stat"><div class="icon">⚙</div><strong id="actions">0</strong><span>Total actions</span></div>
+    <div class="card stat"><div class="icon">✓</div><strong id="verified">0</strong><span>Source opens</span></div>
   </div>
   <div id="activityOut" style="margin-top:16px"></div>
 </section>
 
-<div class="footer">BIS SmartGuide â€¢ SIH 2026 â€¢ Problem Statement 26107 â€¢ Prototype intelligence layer â€” verify final requirements with official BIS sources.</div>
+<div class="footer">BIS SmartGuide • SIH 2026 • Problem Statement 26107 • Prototype intelligence layer — verify final requirements with official BIS sources.</div>
 </div>
 </main>
 </div>
@@ -246,7 +246,7 @@ function page(id,btn,title){document.querySelectorAll('.page').forEach(x=>x.clas
 function fill(id,v){$(id).value=v}
 function quick(v){$('home').value=v;runHero()}
 function log(type,q){const a=JSON.parse(localStorage.getItem('sgA')||'[]');a.push({type,q,time:new Date().toISOString()});localStorage.setItem('sgA',JSON.stringify(a.slice(-150)))}
-function loading(id,text='Connecting to intelligence engineâ€¦'){ $(id).innerHTML=`<div class="card loading">âœ¦ ${esc(text)}</div>`}
+function loading(id,text='Connecting to intelligence engine…'){ $(id).innerHTML=`<div class="card loading">✦ ${esc(text)}</div>`}
 function safeUrl(url,fallback){return /^https?:\/\//i.test(String(url||''))?url:fallback}
 function supportTag(s){
   const p=String(s?.support_level||'').toLowerCase();
@@ -258,8 +258,8 @@ function supportTag(s){
 function evidence(s){
   if(!s)return '';
   const url=s.source_url||s.official_source;
-  return `<div class="evidence"><div class="evidence-head"><div><b>Evidence</b> ${supportTag(s)}</div>${url?`<a href="${esc(safeUrl(url,'https://www.bis.gov.in/'))}" target="_blank" rel="noopener" onclick="log('source','${esc(url)}')">Verify â†—</a>`:''}</div>
-  <div class="tiny muted" style="margin-top:7px">${esc(s.authority||'BIS SmartGuide retrieval layer')} ${s.chunk_id?`â€¢ ${esc(s.chunk_id)}`:''}</div></div>`;
+  return `<div class="evidence"><div class="evidence-head"><div><b>Evidence</b> ${supportTag(s)}</div>${url?`<a href="${esc(safeUrl(url,'https://www.bis.gov.in/'))}" target="_blank" rel="noopener" onclick="log('source','${esc(url)}')">Verify ↗</a>`:''}</div>
+  <div class="tiny muted" style="margin-top:7px">${esc(s.authority||'BIS SmartGuide retrieval layer')} ${s.chunk_id?`• ${esc(s.chunk_id)}`:''}</div></div>`;
 }
 function standardCard(s,opts={}){
   if(!s)return '<div class="empty">No sufficiently supported match.</div>';
@@ -271,19 +271,19 @@ function standardCard(s,opts={}){
     <div class="result-top"><div><div class="stdno">${esc(s.standard_number||'Standard reference')}</div><h2 style="margin:5px 0">${esc(s.title||'Untitled standard')}</h2><div class="tags"><span class="tag">${esc(s.category||'Category')}</span>${supportTag(s)}${s.scheme?`<span class="tag">${esc(s.scheme)}</span>`:''}</div></div><div style="text-align:right"><div class="score">${score}%</div><div class="tiny muted">match</div></div></div>
     <div class="meter"><i style="width:${score}%"></i></div>
     <p class="muted" style="font-size:12px;line-height:1.55">${esc(s.description||'')}</p>
-    ${reasons.length?`<div style="margin-top:10px"><b class="tiny">WHY THIS MATCHED</b>${reasons.map(r=>`<div class="reason"><span>âœ“</span><span>${esc(r)}</span></div>`).join('')}</div>`:''}
+    ${reasons.length?`<div style="margin-top:10px"><b class="tiny">WHY THIS MATCHED</b>${reasons.map(r=>`<div class="reason"><span>✓</span><span>${esc(r)}</span></div>`).join('')}</div>`:''}
     ${reqs.length?`<div style="margin-top:12px"><b class="tiny">REQUIREMENT SIGNALS</b><div class="reqs">${reqs.map(r=>`<div class="req">${esc(r)}</div>`).join('')}</div></div>`:''}
-    <div class="toolbar" style="margin-top:14px"><button class="btn ghost" onclick="openOfficial('${esc(url)}')">Verify official source â†—</button>${opts.use?`<button class="btn primary" onclick="${opts.use}">Use in workflow</button>`:''}</div>
+    <div class="toolbar" style="margin-top:14px"><button class="btn ghost" onclick="openOfficial('${esc(url)}')">Verify official source ↗</button>${opts.use?`<button class="btn primary" onclick="${opts.use}">Use in workflow</button>`:''}</div>
     ${evidence(s)}
   </div>`;
 }
 async function health(){
   try{
     const d=await api('/health');
-    $('stdCount').textContent=d.standards_loaded??'â€”';$('rag').textContent=d.rag_chunks??'â€”';$('docsCount').textContent=d.documents_indexed??'â€”';$('agent').textContent=d.agentic_chat?'Online':'Ready';
-    $('engineSub').textContent=`Agentic RAG â€¢ ${d.rag_chunks??0} chunks`;
-    $('healthBadge').textContent='â— Backend healthy';$('healthBadge').className='status-badge success';$('onlinePill').textContent='â— System Online';
-  }catch(e){$('agent').textContent='Offline';$('healthBadge').textContent='â— Backend offline';$('healthBadge').className='status-badge danger';$('onlinePill').textContent='â— Reconnect required';}
+    $('stdCount').textContent=d.standards_loaded??'—';$('rag').textContent=d.rag_chunks??'—';$('docsCount').textContent=d.documents_indexed??'—';$('agent').textContent=d.agentic_chat?'Online':'Ready';
+    $('engineSub').textContent=`Agentic RAG • ${d.rag_chunks??0} chunks`;
+    $('healthBadge').textContent='● Backend healthy';$('healthBadge').className='status-badge success';$('onlinePill').textContent='● System Online';
+  }catch(e){$('agent').textContent='Offline';$('healthBadge').textContent='● Backend offline';$('healthBadge').className='status-badge danger';$('onlinePill').textContent='● Reconnect required';}
 }
 function runHero(){const q=$('home').value.trim();if(!q)return toast('Describe a product first');$('intelQ').value=q;const b=document.querySelectorAll('.nav button')[1];page('intel',b,'Product Intelligence');intel()}
 async function intel(){
@@ -310,55 +310,55 @@ async function loadCompliance(){
 }
 function updateLocalScore(){const c=[...document.querySelectorAll('#checklist input')];const n=c.filter(x=>x.checked).length;const pct=c.length?Math.round(n/c.length*100):0;$('compScore').textContent=pct+'%';$('scoreRing').style.setProperty('--score',pct+'%');$('scoreRing').querySelector('span').textContent=pct+'%'}
 async function submitCompliance(product){
- const checks={};document.querySelectorAll('#checklist input').forEach(x=>checks[x.dataset.req]=x.checked);try{const d=await api('/check-product',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product,checks})});toast('Assessment saved');$('compOut').insertAdjacentHTML('afterbegin',`<div class="card successbox"><b>${esc(d.status||'Assessment complete')}</b><p>${esc(d.summary?.passed??0)} passed â€¢ ${esc(d.summary?.failed??0)} failed â€¢ ${esc(d.summary?.not_checked??0)} not checked</p>${(d.recommended_actions||[]).map(x=>`<div class="tiny">â€¢ ${esc(x)}</div>`).join('')}</div>`);log('compliance',product)}catch(e){toast(e.message)}
+ const checks={};document.querySelectorAll('#checklist input').forEach(x=>checks[x.dataset.req]=x.checked);try{const d=await api('/check-product',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product,checks})});toast('Assessment saved');$('compOut').insertAdjacentHTML('afterbegin',`<div class="card successbox"><b>${esc(d.status||'Assessment complete')}</b><p>${esc(d.summary?.passed??0)} passed • ${esc(d.summary?.failed??0)} failed • ${esc(d.summary?.not_checked??0)} not checked</p>${(d.recommended_actions||[]).map(x=>`<div class="tiny">• ${esc(x)}</div>`).join('')}</div>`);log('compliance',product)}catch(e){toast(e.message)}
 }
 async function mandatory(){
  const q=$('mandQ').value.trim();if(!q)return toast('Enter a product');loading('mandOut');
  try{const d=await api('/mandatory-check?product='+encodeURIComponent(q));const cls=String(d.status||'').includes('LIKELY')?'warn':String(d.status||'').includes('UNKNOWN')?'danger':'success';
-   $('mandOut').innerHTML=`<div class="card"><span class="status-badge ${cls}">${esc(d.status||'UNKNOWN')}</span><h2 style="margin-top:12px">${esc(d.standard?.standard_number||'No verified standard')}</h2><p class="muted">${esc(d.explanation||d.message||'')}</p>${d.standard?standardCard(d.standard):''}<div class="notice" style="margin-top:12px"><b>Verification required:</b> Mandatory certification depends on the current Central Government notification/QCO and exact product scope.</div><button class="btn primary" style="margin-top:12px" onclick="openOfficial('${esc(d.official_source||'https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en')}')">Verify official QCO â†—</button></div>`;log('mandatory',q)
+   $('mandOut').innerHTML=`<div class="card"><span class="status-badge ${cls}">${esc(d.status||'UNKNOWN')}</span><h2 style="margin-top:12px">${esc(d.standard?.standard_number||'No verified standard')}</h2><p class="muted">${esc(d.explanation||d.message||'')}</p>${d.standard?standardCard(d.standard):''}<div class="notice" style="margin-top:12px"><b>Verification required:</b> Mandatory certification depends on the current Central Government notification/QCO and exact product scope.</div><button class="btn primary" style="margin-top:12px" onclick="openOfficial('${esc(d.official_source||'https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en')}')">Verify official QCO ↗</button></div>`;log('mandatory',q)
  }catch(e){$('mandOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
 async function cert(){
  const q=$('certQ').value.trim();if(!q)return toast('Enter a product');loading('certOut');
  try{const d=await api('/certification-guide?product='+encodeURIComponent(q));let h=d.standard?standardCard(d.standard):`<div class="info">No local standard match. The roadmap is generic until the applicable standard is identified.</div>`;
  h+=`<div class="card" style="margin-top:14px"><span class="tag">ROADMAP</span><div class="steps">${(d.steps||[]).map((x,i)=>`<div class="step"><div class="stepno">${i+1}</div><div><h3>${esc(x)}</h3><p>Verify the current BIS scheme, scope, amendments and applicable notification before acting.</p></div></div>`).join('')}</div><div class="notice">BIS describes certification as involving applicable standards, manufacturing/process controls, quality/testing capability and assessment; exact requirements vary by product and scheme.</div></div>`;
- if(d.official_resources?.length)h+=`<div class="grid2">${d.official_resources.map(r=>`<div class="card module"><div class="module-icon">â†—</div><div><h3>${esc(r.name)}</h3><p>${esc(r.description||'')}</p><a href="${esc(r.url)}" target="_blank" rel="noopener">Open official resource â†—</a></div></div>`).join('')}</div>`;
+ if(d.official_resources?.length)h+=`<div class="grid2">${d.official_resources.map(r=>`<div class="card module"><div class="module-icon">↗</div><div><h3>${esc(r.name)}</h3><p>${esc(r.description||'')}</p><a href="${esc(r.url)}" target="_blank" rel="noopener">Open official resource ↗</a></div></div>`).join('')}</div>`;
  $('certOut').innerHTML=h;log('certification',q)
  }catch(e){$('certOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
 async function labs(){
  loading('labsOut');
- try{const [d,r]=await Promise.all([api('/labs'),api('/resources')]);let h=`<div class="grid3"><div class="card"><span class="tag">WORKFLOW</span><h2>Testing path</h2><div class="steps">${['Identify the applicable Indian Standard.','Map required tests and product scope.','Locate a relevant BIS-recognized laboratory.','Verify current laboratory scope and availability.'].map((x,i)=>`<div class="step"><div class="stepno">${i+1}</div><div><h3>${esc(x)}</h3><p>Use official BIS resources for the current decision.</p></div></div>`).join('')}</div></div><div class="card"><span class="tag green">OFFICIAL DIRECTORY</span><h2>Recognized Laboratories</h2><p class="muted">Use BIS's current recognized-lab directory rather than relying on a cached local list.</p><button class="btn primary" onclick="openOfficial('${esc(d.official_url)}')">Open BIS Labs â†—</button></div><div class="card"><span class="tag green">LIMS</span><h2>BIS Laboratory System</h2><p class="muted">Current laboratory information and testing workflow.</p><button class="btn primary" onclick="openOfficial('${esc(d.lims_url)}')">Open LIMS â†—</button></div></div>`;
- h+=`<div class="section-head"><div><h2>Official resource layer</h2><p>Live links supplied by the backend.</p></div></div><div class="grid3">${(r.resources||[]).map(x=>`<div class="card module"><div class="module-icon">â†—</div><div><h3>${esc(x.name)}</h3><p>${esc(x.description)}</p><a href="${esc(x.url)}" target="_blank" rel="noopener">Open â†—</a></div></div>`).join('')}</div>`;$('labsOut').innerHTML=h
+ try{const [d,r]=await Promise.all([api('/labs'),api('/resources')]);let h=`<div class="grid3"><div class="card"><span class="tag">WORKFLOW</span><h2>Testing path</h2><div class="steps">${['Identify the applicable Indian Standard.','Map required tests and product scope.','Locate a relevant BIS-recognized laboratory.','Verify current laboratory scope and availability.'].map((x,i)=>`<div class="step"><div class="stepno">${i+1}</div><div><h3>${esc(x)}</h3><p>Use official BIS resources for the current decision.</p></div></div>`).join('')}</div></div><div class="card"><span class="tag green">OFFICIAL DIRECTORY</span><h2>Recognized Laboratories</h2><p class="muted">Use BIS's current recognized-lab directory rather than relying on a cached local list.</p><button class="btn primary" onclick="openOfficial('${esc(d.official_url)}')">Open BIS Labs ↗</button></div><div class="card"><span class="tag green">LIMS</span><h2>BIS Laboratory System</h2><p class="muted">Current laboratory information and testing workflow.</p><button class="btn primary" onclick="openOfficial('${esc(d.lims_url)}')">Open LIMS ↗</button></div></div>`;
+ h+=`<div class="section-head"><div><h2>Official resource layer</h2><p>Live links supplied by the backend.</p></div></div><div class="grid3">${(r.resources||[]).map(x=>`<div class="card module"><div class="module-icon">↗</div><div><h3>${esc(x.name)}</h3><p>${esc(x.description)}</p><a href="${esc(x.url)}" target="_blank" rel="noopener">Open ↗</a></div></div>`).join('')}</div>`;$('labsOut').innerHTML=h
  }catch(e){$('labsOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
 async function doc(){
- const f=$('file').files[0];if(!f)return toast('Choose a TXT, MD or JSON file');loading('docOut','Reading document with the intelligence backendâ€¦');
+ const f=$('file').files[0];if(!f)return toast('Choose a TXT, MD or JSON file');loading('docOut','Reading document with the intelligence backend…');
  const fd=new FormData();fd.append('file',f);
- try{const d=await api('/document-analyze',{method:'POST',body:fd});log('document',f.name);$('docOut').innerHTML=`<div class="card"><div class="tags"><span class="tag">${esc(d.filename)}</span><span class="tag">${esc(d.characters)} characters</span></div><h2>Detected: ${esc(d.detected_product||'Unresolved')}</h2><div class="notice">This analysis maps text to prototype knowledge records. It is not document certification.</div></div><div class="section-head"><div><h2>Recommended standards</h2></div></div>${(d.recommendations||[]).map(standardCard).join('')||'<div class="card empty">No supported match.</div>'}<div class="card"><b>Missing-data hints</b>${(d.missing_data_hints||[]).map(x=>`<div class="reason"><span>â€¢</span><span>${esc(x)}</span></div>`).join('')}</div>`}catch(e){$('docOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
+ try{const d=await api('/document-analyze',{method:'POST',body:fd});log('document',f.name);$('docOut').innerHTML=`<div class="card"><div class="tags"><span class="tag">${esc(d.filename)}</span><span class="tag">${esc(d.characters)} characters</span></div><h2>Detected: ${esc(d.detected_product||'Unresolved')}</h2><div class="notice">This analysis maps text to prototype knowledge records. It is not document certification.</div></div><div class="section-head"><div><h2>Recommended standards</h2></div></div>${(d.recommendations||[]).map(standardCard).join('')||'<div class="card empty">No supported match.</div>'}<div class="card"><b>Missing-data hints</b>${(d.missing_data_hints||[]).map(x=>`<div class="reason"><span>•</span><span>${esc(x)}</span></div>`).join('')}</div>`}catch(e){$('docOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
 async function compare(){
- const a=$('cmpA').value.trim(),b=$('cmpB').value.trim();if(!a||!b)return toast('Enter both candidates');loading('compareOut','Comparing candidate evidenceâ€¦');
+ const a=$('cmpA').value.trim(),b=$('cmpB').value.trim();if(!a||!b)return toast('Enter both candidates');loading('compareOut','Comparing candidate evidence…');
  try{const [x,y]=await Promise.all([api('/recommend?product='+encodeURIComponent(a)),api('/recommend?product='+encodeURIComponent(b))]);log('compare',a+' vs '+b);
   const sa=x.standard,sb=y.standard;let overlap=[];if(sa&&sb)overlap=(sa.requirements||[]).filter(r=>(sb.requirements||[]).some(z=>z.toLowerCase()===r.toLowerCase()));
   $('compareOut').innerHTML=`<div class="grid2"><div><div class="section-head"><div><h2>Candidate A</h2><p>${esc(a)}</p></div></div>${sa?standardCard(sa):'<div class="card empty">No supported match.</div>'}</div><div><div class="section-head"><div><h2>Candidate B</h2><p>${esc(b)}</p></div></div>${sb?standardCard(sb):'<div class="card empty">No supported match.</div>'}</div></div>${sa&&sb?`<div class="card" style="margin-top:14px"><span class="tag">RELATIONSHIP SIGNAL</span><h2>${overlap.length} shared requirement signal${overlap.length===1?'':'s'}</h2><div class="reqs">${overlap.map(x=>`<div class="req">${esc(x)}</div>`).join('')||'<div class="muted tiny">No exact shared requirement labels in the prototype records.</div>'}</div></div>`:''}`
  }catch(e){$('compareOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
 async function graph(){
- const q=$('graphQ').value.trim();if(!q)return toast('Enter a product');loading('graphOut','Resolving product relationshipsâ€¦');
+ const q=$('graphQ').value.trim();if(!q)return toast('Enter a product');loading('graphOut','Resolving product relationships…');
  try{const d=await api('/recommend?product='+encodeURIComponent(q));if(!d.found)throw Error(d.message||'No standard match');
   const s=d.standard;const product=s.product||q, scheme=s.scheme||'Applicable scheme', req=(s.requirements||[])[0]||'Test requirements';
   $('graphOut').innerHTML=`<div class="card"><div class="graphbox">
   <svg viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="50" y1="50" x2="18" y2="20" stroke="#9fc9ef" stroke-width="0.45"/><line x1="50" y1="50" x2="82" y2="20" stroke="#9fc9ef" stroke-width="0.45"/><line x1="50" y1="50" x2="18" y2="80" stroke="#9fc9ef" stroke-width="0.45"/><line x1="50" y1="50" x2="82" y2="80" stroke="#9fc9ef" stroke-width="0.45"/><line x1="50" y1="50" x2="50" y2="87" stroke="#9fc9ef" stroke-width="0.45"/></svg>
   <div class="gnode" style="left:50%;top:50%;background:#eaf3ff;color:#0c56b6">${esc(product)}</div>
-  <div class="gnode" style="left:18%;top:20%">STANDARD<br><span class="muted">${esc(s.standard_number||'â€”')}</span></div>
+  <div class="gnode" style="left:18%;top:20%">STANDARD<br><span class="muted">${esc(s.standard_number||'—')}</span></div>
   <div class="gnode" style="left:82%;top:20%">SCHEME<br><span class="muted">${esc(scheme)}</span></div>
   <div class="gnode" style="left:18%;top:80%">REQUIREMENT<br><span class="muted">${esc(req)}</span></div>
   <div class="gnode" style="left:82%;top:80%">EVIDENCE<br><span class="muted">${esc(s.support_level||'local')}</span></div>
   <div class="gnode" style="left:50%;top:87%">CERTIFICATION<br><span class="muted">Verify current BIS path</span></div></div><div class="notice" style="margin-top:12px"><b>Explainability boundary:</b> The graph shows relationships inferred from the retrieved record; it is not a legal or certification determination.</div>${standardCard(s)}</div>`;
  }catch(e){$('graphOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
-function clearChat(){$('chat').innerHTML='<div class="msg bot"><div class="msg-head">BIS SMARTGUIDE AI â€¢ READY</div>Chat cleared. Ask a new question.</div>'}
+function clearChat(){$('chat').innerHTML='<div class="msg bot"><div class="msg-head">BIS SMARTGUIDE AI • READY</div>Chat cleared. Ask a new question.</div>'}
 
 /* -------------------- Voice output / TTS -------------------- */
 const SPEECH_LANGS={English:'en-IN',Hindi:'hi-IN',Kannada:'kn-IN',Telugu:'te-IN',Tamil:'ta-IN'};
@@ -393,7 +393,7 @@ function pickSpeechVoice(lang){
 
 function updateAutoSpeakButton(){
  const b=$('autoSpeakBtn');if(!b)return;
- b.textContent=autoSpeak?'ðŸ”Š Auto Speak: ON':'ðŸ”Š Auto Speak: OFF';
+ b.textContent=autoSpeak?'🔊 Auto Speak: ON':'🔊 Auto Speak: OFF';
  b.classList.toggle('primary',autoSpeak);b.classList.toggle('ghost',!autoSpeak);
 }
 
@@ -416,9 +416,9 @@ function speak(text,responseLang){
  const u=new SpeechSynthesisUtterance(clean);u.lang=lang;u.rate=.96;u.pitch=1;u.volume=1;
  const voice=pickSpeechVoice(lang);if(voice)u.voice=voice;
  const button=window.event?.currentTarget;
- if(button){button.dataset.originalText=button.textContent;button.textContent='ðŸ”Š Speakingâ€¦'}
- u.onend=()=>{if(button)button.textContent=button.dataset.originalText||'ðŸ”Š Listen'};
- u.onerror=()=>{if(button)button.textContent=button.dataset.originalText||'ðŸ”Š Listen';toast('Speech output failed. Try Listen again.')};
+ if(button){button.dataset.originalText=button.textContent;button.textContent='🔊 Speaking…'}
+ u.onend=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen'};
+ u.onerror=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen';toast('Speech output failed. Try Listen again.')};
  window.speechSynthesis.speak(u);
 }
 
@@ -426,27 +426,27 @@ function startVoice(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Voice input is not supported by this browser');
  if(activeRecognition){activeRecognition.stop();activeRecognition=null;return;}
  const r=new SR();activeRecognition=r;r.lang=SPEECH_LANGS[$('lang')?.value]||'en-IN';r.interimResults=false;r.maxAlternatives=1;
- const btn=$('voiceInputBtn');if(btn)btn.textContent='ðŸŽ™ Listeningâ€¦';
+ const btn=$('voiceInputBtn');if(btn)btn.textContent='🎙 Listening…';
  r.onresult=e=>{$('q').value=e.results[0][0].transcript;toast('Voice captured')};
  r.onerror=e=>toast(e.error==='not-allowed'?'Microphone permission was denied.':'Voice input failed.');
- r.onend=()=>{activeRecognition=null;if(btn)btn.textContent='ðŸŽ™ Voice input'};
- try{r.start()}catch(e){activeRecognition=null;if(btn)btn.textContent='ðŸŽ™ Voice input';toast('Could not start voice input')}
+ r.onend=()=>{activeRecognition=null;if(btn)btn.textContent='🎙 Voice input'};
+ try{r.start()}catch(e){activeRecognition=null;if(btn)btn.textContent='🎙 Voice input';toast('Could not start voice input')}
 }
 async function chat(){
- const q=$('q').value.trim();if(!q)return toast('Ask a question first');const box=$('chat');box.insertAdjacentHTML('beforeend',`<div class="msg user">${esc(q)}</div>`);$('q').value='';box.insertAdjacentHTML('beforeend','<div class="msg bot" id="typing"><div class="msg-head">BIS SMARTGUIDE AI â€¢ THINKING</div>Retrieving relevant evidenceâ€¦</div>');box.scrollTop=box.scrollHeight;
+ const q=$('q').value.trim();if(!q)return toast('Ask a question first');const box=$('chat');box.insertAdjacentHTML('beforeend',`<div class="msg user">${esc(q)}</div>`);$('q').value='';box.insertAdjacentHTML('beforeend','<div class="msg bot" id="typing"><div class="msg-head">BIS SMARTGUIDE AI • THINKING</div>Retrieving relevant evidence…</div>');box.scrollTop=box.scrollHeight;
  try{const d=await api('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,language:$('lang').value})});$('typing')?.remove();
-  const text=d.response||d.answer||d.reply||'No response returned';let h=`<div class="msg bot"><div class="msg-head">BIS SMARTGUIDE AI â€¢ ${esc(d.support_level||'SOURCE-GROUNDED')}</div>${esc(text)}`;
+  const text=d.response||d.answer||d.reply||'No response returned';let h=`<div class="msg bot"><div class="msg-head">BIS SMARTGUIDE AI • ${esc(d.support_level||'SOURCE-GROUNDED')}</div>${esc(text)}`;
   if(d.confidence!==undefined)h+=`<div class="evidence"><b>Confidence: ${Math.round(Number(d.confidence)*100)}%</b><br><small>Support level: ${esc(d.support_level||'retrieved evidence')}</small></div>`;
   const src=d.sources||d.retrieved||[];if(src.length)h+=`<div style="margin-top:8px"><b class="tiny">EVIDENCE TRAIL</b>${src.slice(0,5).map(s=>evidence(s)).join('')}</div>`;
   const speechLang=d.language||d.lang||$('lang').value;
-  h+=`<div class="voice-actions"><button class="voice-btn" onclick="speak(${JSON.stringify(text).replace(/</g,'\\u003c')},${JSON.stringify(speechLang)})">ðŸ”Š Listen</button></div></div>`;box.insertAdjacentHTML('beforeend',h);box.scrollTop=box.scrollHeight;log('chat',q);
+  h+=`<div class="voice-actions"><button class="voice-btn" onclick="speak(${JSON.stringify(text).replace(/</g,'\\u003c')},${JSON.stringify(speechLang)})">🔊 Listen</button></div></div>`;box.insertAdjacentHTML('beforeend',h);box.scrollTop=box.scrollHeight;log('chat',q);
   if(autoSpeak)speak(text,speechLang)
  }catch(e){$('typing')?.remove();box.insertAdjacentHTML('beforeend',`<div class="msg bot">${esc(e.message)}</div>`)}
 }
 async function report(){
- const q=$('reportQ').value.trim();if(!q)return toast('Enter a product');loading('reportOut','Generating assessmentâ€¦');
+ const q=$('reportQ').value.trim();if(!q)return toast('Enter a product');loading('reportOut','Generating assessment…');
  try{const d=await api('/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:q})});const a=d.report?.assessment||{};const score=Number(a.score||0);
- $('reportOut').innerHTML=`<div class="card"><div class="tags"><span class="tag">BIS SMARTGUIDE REPORT</span><span class="tag amber">PROTOTYPE ASSESSMENT</span></div><h1 style="margin-bottom:5px">${esc(q)}</h1><p class="muted">Generated ${new Date(d.report?.generated_at||Date.now()).toLocaleString()}</p><div class="report-grid"><div class="report-stat"><b>${score}%</b><span class="tiny muted">Readiness</span></div><div class="report-stat"><b>${esc(a.summary?.passed??0)}</b><span class="tiny muted">Passed</span></div><div class="report-stat"><b>${esc(a.summary?.failed??0)}</b><span class="tiny muted">Failed</span></div><div class="report-stat"><b>${esc(a.summary?.not_checked??0)}</b><span class="tiny muted">Not checked</span></div></div><div class="info"><b>Status:</b> ${esc(a.status||'Needs Review')}<br>${esc(a.prototype_notice||'Verify current official BIS requirements.')}</div>${a.standard?standardCard(a.standard):''}<h3>Recommended actions</h3>${(a.recommended_actions||[]).map(x=>`<div class="reason"><span>â€¢</span><span>${esc(x)}</span></div>`).join('')}<div class="toolbar no-print" style="margin-top:15px"><button class="btn primary" onclick="window.print()">Print / Save PDF</button></div></div>`;
+ $('reportOut').innerHTML=`<div class="card"><div class="tags"><span class="tag">BIS SMARTGUIDE REPORT</span><span class="tag amber">PROTOTYPE ASSESSMENT</span></div><h1 style="margin-bottom:5px">${esc(q)}</h1><p class="muted">Generated ${new Date(d.report?.generated_at||Date.now()).toLocaleString()}</p><div class="report-grid"><div class="report-stat"><b>${score}%</b><span class="tiny muted">Readiness</span></div><div class="report-stat"><b>${esc(a.summary?.passed??0)}</b><span class="tiny muted">Passed</span></div><div class="report-stat"><b>${esc(a.summary?.failed??0)}</b><span class="tiny muted">Failed</span></div><div class="report-stat"><b>${esc(a.summary?.not_checked??0)}</b><span class="tiny muted">Not checked</span></div></div><div class="info"><b>Status:</b> ${esc(a.status||'Needs Review')}<br>${esc(a.prototype_notice||'Verify current official BIS requirements.')}</div>${a.standard?standardCard(a.standard):''}<h3>Recommended actions</h3>${(a.recommended_actions||[]).map(x=>`<div class="reason"><span>•</span><span>${esc(x)}</span></div>`).join('')}<div class="toolbar no-print" style="margin-top:15px"><button class="btn primary" onclick="window.print()">Print / Save PDF</button></div></div>`;
  log('report',q)
  }catch(e){$('reportOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
