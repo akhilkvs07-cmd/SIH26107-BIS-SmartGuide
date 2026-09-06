@@ -410,16 +410,22 @@ function stopSpeaking(){
 
 function speak(text,responseLang){
  if(!('speechSynthesis' in window))return toast('Speech output is not supported in this browser');
- const clean=String(text||'').trim();if(!clean)return;
+ const clean=String(text||'').trim();
+ if(!clean)return;
  const lang=selectedSpeechLang(responseLang);
- window.speechSynthesis.cancel();
- const u=new SpeechSynthesisUtterance(clean);u.lang=lang;u.rate=.96;u.pitch=1;u.volume=1;
- const voice=pickSpeechVoice(lang);if(voice)u.voice=voice;
- const button=window.event?.currentTarget;
- if(button){button.dataset.originalText=button.textContent;button.textContent='🔊 Speaking…'}
- u.onend=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen'};
- u.onerror=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen';toast('Speech output failed. Try Listen again.')};
- window.speechSynthesis.speak(u);
+ const synth=window.speechSynthesis;
+ synth.cancel();
+ const speakNow=()=>{
+  const u=new SpeechSynthesisUtterance(clean);
+  u.lang=lang;u.rate=.96;u.pitch=1;u.volume=1;
+  const voice=pickSpeechVoice(lang);if(voice)u.voice=voice;
+  const button=window.event?.currentTarget;
+  if(button){button.dataset.originalText=button.textContent;button.textContent='🔊 Speaking…';}
+  u.onend=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen';};
+  u.onerror=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen';toast('Speech output failed. Try Listen again.');};
+  synth.speak(u);
+ };
+ setTimeout(speakNow,80);
 }
 
 function startVoice(){
