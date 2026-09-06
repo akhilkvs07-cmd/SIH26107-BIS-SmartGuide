@@ -58,7 +58,7 @@
 <div class="footer">BIS SmartGuide • SIH 2026 • Problem Statement 26107 • Prototype intelligence layer — verify final requirements with official BIS sources.</div>
 </div></main></div><div id="toast" class="toast"></div>
 <script>
-const API='https://nine-spy-fairy-buyers.trycloudflare.com';
+const API='https://sih26107-bis-smartguide-api.onrender.com';
 const $=id=>document.getElementById(id);const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const openOfficial=url=>{if(url){log('source',url);window.open(url,'_blank','noopener')}};
 async function api(path,opt={}){const r=await fetch(API+path,opt);let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||d.message||'Backend request failed');return d}
