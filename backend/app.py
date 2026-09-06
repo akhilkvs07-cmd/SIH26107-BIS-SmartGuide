@@ -91,9 +91,9 @@ def agent_compliance(message):
 agent=BISExpertAgent(find_matches,rag,OFFICIAL_RESOURCES,certification_steps,agent_compliance)
 
 @app.route('/')
-def home(): return jsonify({'message':'BIS SmartGuide Advanced Backend','status':'success','version':'5.0-agent'})
+def home(): return jsonify({'message':'BIS SmartGuide V3 Backend','status':'success','version':'3.0-agent'})
 @app.route('/health')
-def health(): return jsonify({'status':'healthy','standards_loaded':len(bis_data),'rag_chunks':rag.chunk_count,'documents_indexed':rag.document_count,'agent':agent.name,'agentic_chat':True,'version':'5.0','timestamp':datetime.now(timezone.utc).isoformat()})
+def health(): return jsonify({'status':'healthy','standards_loaded':len(bis_data),'rag_chunks':rag.chunk_count,'documents_indexed':rag.document_count,'agent':agent.name,'agentic_chat':True,'agent_version':agent.version,'version':'3.0','timestamp':datetime.now(timezone.utc).isoformat()})
 @app.route('/standards')
 def standards(): return jsonify({'count':len(bis_data),'standards':bis_data})
 @app.route('/search')
@@ -146,7 +146,7 @@ def rag_search():
 def rag_rebuild():
  global rag,agent
  rag=build_rag(); agent=BISExpertAgent(find_matches,rag,OFFICIAL_RESOURCES,certification_steps,agent_compliance)
- return jsonify({'success':True,'message':'RAG index rebuilt','rag_chunks':rag.chunk_count,'documents_indexed':rag.document_count,'agent_reloaded':True})
+ return jsonify({'success':True,'message':'RAG index rebuilt','rag_chunks':rag.chunk_count,'documents_indexed':rag.document_count,'agent_reloaded':True,'agent_version':agent.version})
 @app.route('/agent-chat',methods=['POST'])
 def agent_chat():
  b=request.get_json(silent=True) or {}; m=str(b.get('message','')).strip()
@@ -175,5 +175,5 @@ def report():
  if not p:return jsonify({'error':'Product is required'}),400
  return jsonify({'report':{'title':'BIS SmartGuide Compliance Assessment','product':p,'generated_at':datetime.now(timezone.utc).isoformat(),'assessment':result,'sources':OFFICIAL_RESOURCES},'printable':True})
 @app.route('/api-info')
-def api_info(): return jsonify({'version':'5.0','features':['BIS Standards Intelligence Agent','intent routing','local RAG','smart product identification','compliance dashboard','mandatory/QCO verification workflow','certification guide','laboratory resources','document text analysis','printable compliance report','voice input via browser','official source links'],'endpoints':['/health','/search','/recommend','/analyze','/check-product','/mandatory-check','/certification-guide','/labs','/resources','/rag-search','/rag-rebuild','/agent-chat','/chat','/document-analyze','/report']})
+def api_info(): return jsonify({'version':'3.0','agent_version':agent.version,'features':['BIS Standards Intelligence Agent V3','intent routing','conversation memory','confidence-aware follow-ups','local RAG','smart product identification','compliance dashboard','mandatory/QCO verification workflow','certification guide','laboratory resources','document text analysis','printable compliance report','voice input via browser','official source links'],'endpoints':['/health','/search','/recommend','/analyze','/check-product','/mandatory-check','/certification-guide','/labs','/resources','/rag-search','/rag-rebuild','/agent-chat','/chat','/document-analyze','/report']})
 if __name__=='__main__': app.run(host='0.0.0.0',port=5000,debug=True)
