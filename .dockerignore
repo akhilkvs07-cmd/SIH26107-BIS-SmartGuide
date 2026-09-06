@@ -1,0 +1,11 @@
+.git
+.gitignore
+backend/venv
+backend/__pycache__
+__pycache__
+*.pyc
+*.pyo
+*.log
+.env
+.venv
+venv
