@@ -408,7 +408,7 @@ function stopSpeaking(){
  toast('Speech stopped');
 }
 
-function speak(text,responseLang){
+function speak(text,responseLang,button){
  if(!('speechSynthesis' in window))return toast('Speech output is not supported in this browser');
  const clean=String(text||'').trim();
  if(!clean)return;
@@ -419,10 +419,10 @@ function speak(text,responseLang){
   const u=new SpeechSynthesisUtterance(clean);
   u.lang=lang;u.rate=.96;u.pitch=1;u.volume=1;
   const voice=pickSpeechVoice(lang);if(voice)u.voice=voice;
-  const button=window.event?.currentTarget;
+  button=button||null;
   if(button){button.dataset.originalText=button.textContent;button.textContent='🔊 Speaking…';}
-  u.onend=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen';};
-  u.onerror=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen';toast('Speech output failed. Try Listen again.');};
+  u.onend=()=>{if(button)button.textContent='🔊 Listen Again';};
+  u.onerror=()=>{if(button)button.textContent='🔊 Listen Again';toast('Speech output failed. Try Listen again.');};
   synth.speak(u);
  };
  setTimeout(speakNow,80);
@@ -445,7 +445,7 @@ async function chat(){
   if(d.confidence!==undefined)h+=`<div class="evidence"><b>Confidence: ${Math.round(Number(d.confidence)*100)}%</b><br><small>Support level: ${esc(d.support_level||'retrieved evidence')}</small></div>`;
   const src=d.sources||d.retrieved||[];if(src.length)h+=`<div style="margin-top:8px"><b class="tiny">EVIDENCE TRAIL</b>${src.slice(0,5).map(s=>evidence(s)).join('')}</div>`;
   const speechLang=d.language||d.lang||$('lang').value;
-  h+=`<div class="voice-actions"><button class="voice-btn" onclick="speak(${JSON.stringify(text).replace(/</g,'\\u003c')},${JSON.stringify(speechLang)})">🔊 Listen</button></div></div>`;box.insertAdjacentHTML('beforeend',h);box.scrollTop=box.scrollHeight;log('chat',q);
+  h+=`<div class="voice-actions"><button class="voice-btn" onclick="speak(${JSON.stringify(text).replace(/</g,'\\u003c')},${JSON.stringify(speechLang)},this)">🔊 Listen</button></div></div>`;box.insertAdjacentHTML('beforeend',h);box.scrollTop=box.scrollHeight;log('chat',q);
   if(autoSpeak)speak(text,speechLang)
  }catch(e){$('typing')?.remove();box.insertAdjacentHTML('beforeend',`<div class="msg bot">${esc(e.message)}</div>`)}
 }
