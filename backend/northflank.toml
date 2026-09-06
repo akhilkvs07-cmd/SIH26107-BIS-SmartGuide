@@ -1,0 +1,10 @@
+[build]
+
+[deploy]
+  healthCheckPath = "/health"
+  healthCheckPort = 8000
+  restartPolicy = "always"
+  restartPolicyMaxRetries = 10
+
+[service]
+  port = 8000
