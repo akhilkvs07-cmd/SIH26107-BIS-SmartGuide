@@ -538,5 +538,6 @@ $('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
 (function initUpgrade(){const l=localStorage.getItem('sgLang')||'English';if($('globalLang'))$('globalLang').value=l;applyUILanguage(l);if($('scanSupport')){if('BarcodeDetector' in window)$('scanSupport').textContent='● Supported';else $('scanSupport').textContent='● Browser fallback needed';}window.addEventListener('beforeunload',stopScanner)})();
 
 </script>
+<script src="smartguide-enhance.js"></script>
 </body>
 </html>
