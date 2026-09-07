@@ -1,9 +1,4 @@
-"""Reliable Render/Gunicorn startup for BIS SmartGuide.
-
-Explicitly loads the conversation-routing startup patch before Gunicorn
-imports the Flask application. This avoids relying on implicit startup
-customization behavior.
-"""
+"""Reliable Render/Gunicorn startup for BIS SmartGuide."""
 
 import sys
 
@@ -18,7 +13,7 @@ def main():
         "--threads", "4",
         "--timeout", "120",
         "--bind", "0.0.0.0:5000",
-        "app:app",
+        "app_upgrade:app",
     ]
     from gunicorn.app.wsgiapp import run
     run()
