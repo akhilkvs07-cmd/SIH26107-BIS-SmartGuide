@@ -1,15 +1,68 @@
 """Upgraded Render entrypoint for BIS SmartGuide.
 
 Loads the existing app unchanged, registers the modular V4 compliance layer,
-and transparently upgrades the legacy document endpoint used by the existing
-frontend so PDF/image uploads receive the deeper extraction pipeline.
+and transparently upgrades the legacy document/compliance endpoints used by
+the existing frontend.
 """
+import json
+import uuid
+
 from flask import jsonify, request
 
 from app import app
-from compliance_upgrade import _extract_values, _get_dependencies, _read_document, register
+from compliance_upgrade import (
+    _build_assessment,
+    _db,
+    _extract_values,
+    _get_dependencies,
+    _hash_evidence,
+    _now,
+    _read_document,
+    register,
+)
 
 register(app)
+
+
+def _save_assessment(result, product):
+    assessment_id = "BIS-" + uuid.uuid4().hex[:10].upper()
+    created_at = _now()
+    evidence_hash = _hash_evidence(result.get("evidence", {}))
+    result["assessment_id"] = assessment_id
+    result["created_at"] = created_at
+    result["evidence_hash"] = evidence_hash
+    with _db() as con:
+        con.execute(
+            "INSERT INTO assessments VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (
+                assessment_id,
+                created_at,
+                product,
+                result.get("evidence", {}).get("model"),
+                result.get("evidence", {}).get("manufacturer"),
+                result.get("standard", {}).get("standard_number"),
+                int(result.get("score", 0)),
+                result.get("risk", "MEDIUM"),
+                result.get("status", "REVIEW"),
+                result.get("evidence_quality", "LOW"),
+                json.dumps(result, ensure_ascii=False),
+                evidence_hash,
+            ),
+        )
+        for action in result.get("corrective_actions", []):
+            con.execute(
+                "INSERT INTO actions VALUES (?,?,?,?,?,?,?)",
+                (
+                    uuid.uuid4().hex[:12],
+                    assessment_id,
+                    action["requirement"],
+                    action["priority"],
+                    action["action"],
+                    "OPEN",
+                    created_at,
+                ),
+            )
+    return result
 
 
 def upgraded_document_analyze():
@@ -47,6 +100,28 @@ def upgraded_document_analyze():
     })
 
 
-# Preserve the frontend's existing /document-analyze URL while upgrading its
-# implementation. This is done before Gunicorn starts serving requests.
+def upgraded_check_product():
+    body = request.get_json(silent=True) or {}
+    product = str(body.get("product", "")).strip()
+    checks = body.get("checks") or {}
+    evidence = body.get("evidence") or {}
+    if not product:
+        return jsonify({"error": "Product name is required"}), 400
+    result = _build_assessment(product, checks, evidence, str(body.get("document_text", "")))
+    if not result.get("standard"):
+        return jsonify(result), 404
+    return jsonify(_save_assessment(result, product))
+
+
+def upgraded_check_compliance():
+    product = request.args.get("product", "").strip()
+    if not product:
+        return jsonify({"error": "Please provide a product name"}), 400
+    result = _build_assessment(product, {}, {}, "")
+    return jsonify(result)
+
+
+# Preserve the existing frontend URLs while upgrading their implementations.
 app.view_functions["document_analyze"] = upgraded_document_analyze
+app.view_functions["check_product"] = upgraded_check_product
+app.view_functions["check_compliance"] = upgraded_check_compliance
