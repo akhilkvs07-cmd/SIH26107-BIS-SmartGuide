@@ -1,27 +1,63 @@
 # BIS SmartGuide — SIH 2026 PS 26107
 
-AI-powered intelligent assistant prototype for discovering Indian Standards, analysing product descriptions, checking prototype compliance items, explaining certification workflow, locating BIS laboratory resources, and answering BIS-related questions with source-aware local RAG.
+BIS SmartGuide is an evidence-aware AI assistant for Indian Standards and BIS services. It is designed around SIH26107: natural-language standards discovery, applicable-standard recommendation, certification guidance, consumer assistance, hallmarking/laboratory guidance and multilingual interaction.
+
+## V5 upgrade — Compliance Intelligence Cockpit
+
+The project now includes a dedicated `smartguide-v5.html` demo cockpit that exposes the strongest upgrade path in one judge-friendly workflow:
+
+1. **Applicable Standard Finder** — ranked product/standard matching with match reasons.
+2. **Evidence Trail** — retrieved standard/source information and explicit prototype-vs-authoritative evidence separation.
+3. **Smart Compliance Assessment** — Pass / Fail / Not checked, score, risk, evidence quality and corrective actions.
+4. **Compliance Passport** — persistent assessment ID, evidence hash and assessment history.
+5. **Document / Photo Intelligence** — PDF/TXT/MD/JSON extraction plus optional image OCR when deployment dependencies are available.
+6. **CM/L workflow** — conservative format validation and official BIS verification hand-off; no fabricated licence status.
+7. **Certification guidance** — high-level workflow with official BIS resource links.
+8. **BIS laboratory guidance** — official laboratory directory/LIMS hand-off rather than invented availability.
+9. **Multilingual AI agent** — existing dependency-light language-aware agent for English, Hindi, Telugu, Kannada and Tamil, with browser voice support in the main UI.
+10. **Assessment history** — SQLite-backed saved assessments and corrective-action tracking.
+11. **Trust / refusal layer** — insufficient evidence is surfaced instead of inventing a compliance requirement.
+12. **Local RAG** — explainable retrieval over the prototype catalogue plus permitted documents in `backend/documents/`.
 
 ## Architecture
 
-- Frontend: static HTML/CSS/JavaScript (`index.html`)
+- Main frontend: static HTML/CSS/JavaScript (`index.html`)
+- V5 demo cockpit: `smartguide-v5.html`
 - Backend: Flask REST API (`backend/app.py`)
-- Knowledge layer: local RAG engine (`backend/rag_engine.py`)
+- Production upgrade entrypoint: `backend/app_upgrade.py`
+- Compliance intelligence: `backend/compliance_upgrade.py`
+- Knowledge layer: `backend/rag_engine.py`
+- Agent: `backend/bis_agent.py`
 - Prototype dataset: `backend/bis_data.json`
-- Optional knowledge documents: `backend/documents/`
+- Local knowledge documents: `backend/documents/`
+- Persistent assessment database: `backend/smartguide.db` at runtime
 
-## Features
+## Important API groups
 
-1. Product/standard search with ranked matching
-2. Natural-language product analysis and attribute extraction
-3. Multiple standard recommendations
-4. Prototype compliance checklist and scoring
-5. Certification workflow guidance
-6. BIS laboratory and official-resource links
-7. RAG-powered `/chat` assistant with retrieved sources
-8. `/rag-search` retrieval inspection endpoint
-9. `/rag-rebuild` endpoint to reload local documents
-10. Health and API information endpoints
+### Core
+- `/health`
+- `/search`
+- `/recommend`
+- `/analyze`
+- `/check-product`
+- `/mandatory-check`
+- `/certification-guide`
+- `/labs`
+- `/resources`
+- `/rag-search`
+- `/rag-rebuild`
+- `/chat`
+
+### V4/V5 Compliance Intelligence
+- `GET /v4/health`
+- `POST /v4/assess`
+- `POST /v4/document`
+- `GET /v4/assessments`
+- `GET /v4/assessments/<assessment_id>`
+- `PATCH /v4/actions/<action_id>`
+- `GET /v4/passport/<assessment_id>`
+- `GET /v4/analytics`
+- `GET /v4/compare/<assessment_id_a>/<assessment_id_b>`
 
 ## Run locally
 
@@ -33,14 +69,12 @@ python -m pip install -r requirements.txt
 
 Backend: `http://127.0.0.1:5000`
 
-Open the root `index.html` using VS Code Live Server for the frontend.
+Open `index.html` with VS Code Live Server for the main application. For the full upgrade demonstration, open `smartguide-v5.html` with Live Server while the backend is running.
 
 ## RAG knowledge base
 
-Put permitted `.txt`, `.md`, or `.json` reference documents into `backend/documents/`. Restart the backend or POST to `/rag-rebuild` after adding files.
+Put permitted `.txt`, `.md`, or `.json` reference documents into `backend/documents/`. Restart the backend or POST to `/rag-rebuild` after adding files. PDF/image extraction is available through the V4 document-intelligence route when the deployment dependencies are installed.
 
-The prototype intentionally separates recommendation from official certification decisions. Always verify current BIS information, amendments, schemes and laboratory scope through BIS sources.
+## Trust and compliance boundary
 
-## Important
-
-The bundled demonstration records are prototype data and are not an official BIS certification checklist. The system should be presented as a decision-support prototype, not as a replacement for BIS.
+The bundled demonstration records are prototype data and are **not** an official BIS certification checklist. SmartGuide does not issue BIS certificates, guarantee licence status, or invent laboratory availability. Current standards, amendments, QCOs, schemes, licence status and laboratory scope must be verified through official BIS sources before a regulatory decision.
