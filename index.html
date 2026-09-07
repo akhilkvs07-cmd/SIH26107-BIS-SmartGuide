@@ -67,6 +67,17 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 @media(max-width:1120px){.grid4{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:1fr 1fr}.report-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:800px){.sidebar{transform:translateX(-100%);transition:.25s}.sidebar.open{transform:none}.main{margin-left:0}.mobile-toggle{display:block}.topbar{padding:0 15px}.top-actions .pill:last-child{display:none}.content{padding:17px}.grid2,.grid3,.grid4{grid-template-columns:1fr}.hero{padding:28px}.hero-search,.chatbar{flex-direction:column}.reqs{grid-template-columns:1fr}.report-grid{grid-template-columns:1fr 1fr}.hero h1{letter-spacing:-1.5px}}
 @media print{.sidebar,.topbar,.no-print{display:none!important}.main{margin:0}.content{padding:0}.page{display:none!important}#reports{display:block!important}.card{box-shadow:none;break-inside:avoid}.footer{display:none}}
+
+/* ===== SIH 26107 UPGRADE LAYER ===== */
+.upgrade-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px}
+.upgrade-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);min-height:145px}
+.upgrade-card h3{margin:8px 0 5px;font-size:15px}.upgrade-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}.upgrade-icon{font-size:22px}
+.risk-pill{display:inline-flex;align-items:center;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:950}.risk-low{background:#eaf9f2;color:#117451}.risk-medium{background:#fff5df;color:#96600a}.risk-high{background:#fff0f1;color:#9d2d38}
+.score-bar{height:10px;border-radius:99px;background:#e9eef5;overflow:hidden;margin:10px 0}.score-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#43b5ff);border-radius:99px;transition:width .35s}
+.scan-box{display:grid;grid-template-columns:1fr 1fr;gap:14px}.camera-preview{width:100%;min-height:240px;object-fit:cover;border-radius:14px;background:#071a36}
+.lang-global{width:auto!important;min-width:130px;padding:8px 10px!important}.hidden{display:none!important}
+@media(max-width:1120px){.upgrade-grid{grid-template-columns:1fr 1fr}.scan-box{grid-template-columns:1fr}}
+@media(max-width:800px){.upgrade-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -86,7 +97,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
     <button onclick="page('compare',this,'Compare Standards')">⇄ <span>Compare</span></button>
     <button onclick="page('graph',this,'Knowledge Graph')">⌘ <span>Knowledge Graph</span></button>
     <button onclick="page('consumer',this,'Consumer Services')">◇ <span>Consumer Services</span></button>
-    <button onclick="page('assistant',this,'AI Assistant')">✦ <span>AI Assistant</span></button>
+    <button onclick="page('scanner',this,'QR / Barcode Scanner')">▣ <span>QR / Barcode</span></button><button onclick="page('assistant',this,'AI Assistant')">✦ <span>AI Assistant</span></button>
     <button onclick="page('reports',this,'Report Studio')">▤ <span>Report Studio</span></button>
     <button onclick="page('history',this,'Activity & Analytics')">◷ <span>Analytics</span></button>
   </nav>
@@ -98,7 +109,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <main class="main">
 <header class="topbar">
   <div style="display:flex;align-items:center;gap:12px"><button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button><span class="crumb" id="crumb">Overview</span></div>
-  <div class="top-actions"><span class="pill live" id="onlinePill">● System Online</span><span class="pill">SIH 2026 • PS 26107</span></div>
+  <div class="top-actions"><select id="globalLang" class="field lang-global" aria-label="Language"><option>English</option><option>Hindi</option><option>Kannada</option><option>Telugu</option><option>Tamil</option></select><span class="pill live" id="onlinePill">● System Online</span><span class="pill">SIH 2026 • PS 26107</span></div>
 </header>
 
 <div class="content">
@@ -115,7 +126,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
   <div class="grid4">
     <div class="card stat"><div class="icon">▣</div><div class="mini">INDEXED</div><strong id="stdCount">—</strong><span>Knowledge records</span></div>
     <div class="card stat"><div class="icon">✦</div><div class="mini">RAG</div><strong id="rag">—</strong><span>Retrieval chunks</span></div>
-    <div class="card stat"><div class="icon">▤</div><div class="mini">DOCS</div><strong id="docsCount">—</strong><span>Knowledge documents</span></div>
+    <div class="card stat"><div class="icon">⌁</div><div class="mini">DOCS</div><strong id="docsCount">—</strong><span>Knowledge documents</span></div>
     <div class="card stat"><div class="icon">✓</div><div class="mini">AGENT</div><strong id="agent">—</strong><span>Agentic chat</span></div>
   </div>
 
@@ -126,6 +137,13 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
     <div class="card module"><div class="module-icon">✦</div><div><h3>Agentic BIS Assistant</h3><p>Ask standards, certification and laboratory questions with multilingual responses and evidence.</p></div><span class="arrow">→</span></div>
   </div>
   <div class="notice" style="margin-top:16px"><b>Trust boundary:</b> SmartGuide is a prototype intelligence layer. It does not issue BIS certification or replace the latest BIS notification, QCO, standard or licence decision.</div>
+  <div class="section-head"><div><h2>SIH Upgrade Hub</h2><p>Demo-ready intelligence, automation and accessibility features.</p></div><span class="status-badge success">● Enhanced</span></div>
+  <div class="upgrade-grid">
+    <div class="upgrade-card"><div class="upgrade-icon">📊</div><h3>Risk & Compliance</h3><p>Convert checklist results into a readiness score and Low / Medium / High risk signal.</p><button class="btn ghost" style="margin-top:12px" onclick="page('compliance',document.querySelectorAll('.nav button')[3],'Compliance Center')">Open</button></div>
+    <div class="upgrade-card"><div class="upgrade-icon">📄</div><h3>Document AI</h3><p>Upload product documents and send them through the intelligence layer for extraction and matching.</p><button class="btn ghost" style="margin-top:12px" onclick="page('docs',document.querySelectorAll('.nav button')[7],'Document Intelligence')">Upload</button></div>
+    <div class="upgrade-card"><div class="upgrade-icon">▣</div><h3>QR / Barcode</h3><p>Scan a product code in supported browsers and use the decoded value as a product lookup.</p><button class="btn ghost" style="margin-top:12px" onclick="openScanner()">Scan</button></div>
+    <div class="upgrade-card"><div class="upgrade-icon">📈</div><h3>Demo Analytics</h3><p>Local session history tracks searches, AI questions, reports, documents and source verification.</p><button class="btn ghost" style="margin-top:12px" onclick="page('history',document.querySelectorAll('.nav button')[12],'Activity & Analytics')">View</button></div>
+  </div>
 </section>
 
 <section id="intel" class="page">
@@ -169,8 +187,8 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <section id="docs" class="page">
   <div class="section-head"><div><h2>Document Intelligence</h2><p>Extract product signals from TXT, Markdown or JSON files and map them to the local knowledge base.</p></div></div>
   <div class="card drop">
-    <div style="font-size:28px">▣</div><strong>Drop a product or technical document here</strong><p class="muted tiny">Prototype accepts .txt, .md and .json. It does not certify documents or inspect PDFs yet.</p>
-    <input id="file" type="file" accept=".txt,.md,.json" class="field" style="max-width:500px;margin:10px auto">
+    <div style="font-size:28px">▣</div><strong>Drop a product or technical document here</strong><p class="muted tiny">Prototype accepts TXT, MD, JSON, PDF and common image files. Backend support determines extraction depth; this system never certifies a document.</p>
+    <input id="file" type="file" accept=".txt,.md,.json,.pdf,.png,.jpg,.jpeg" class="field" style="max-width:500px;margin:10px auto">
     <div><button class="btn primary" onclick="doc()">Analyze document</button></div>
   </div>
   <div id="docOut" class="result"></div>
@@ -199,6 +217,14 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
     <div class="card module"><div class="module-icon">◇</div><div><h3>Verify HUID</h3><p>Use BIS CARE for hallmark jewellery verification and consumer services.</p><a href="https://www.bis.gov.in/bis-apps/?lang=en" target="_blank">Open BIS CARE ↗</a></div></div>
     <div class="card module"><div class="module-icon">⌕</div><div><h3>Know Your Standard</h3><p>Search Indian Standards by number or keyword and explore related information.</p><a href="https://www.bis.gov.in/know-your-standard/?lang=en" target="_blank">Open KYS ↗</a></div></div>
     <div class="card module"><div class="module-icon">✓</div><div><h3>Certification information</h3><p>Access official certification and compulsory-certification resources.</p><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank">Open BIS ↗</a></div></div>
+  </div>
+</section>
+
+<section id="scanner" class="page">
+  <div class="section-head"><div><h2>Product QR / Barcode Scanner</h2><p>Use the device camera when the browser supports BarcodeDetector.</p></div><span class="status-badge success" id="scanSupport">Checking support…</span></div>
+  <div class="card scan-box">
+    <div><video id="scanVideo" class="camera-preview" autoplay muted playsinline></video></div>
+    <div><div class="info"><b>How it works</b><br>1. Start camera<br>2. Hold the product code inside view<br>3. The decoded value is placed into Standard Finder</div><div class="toolbar" style="margin-top:12px"><button class="btn primary" onclick="startScanner()">Start camera</button><button class="btn ghost" onclick="stopScanner()">Stop</button></div><div id="scanResult" class="result"></div></div>
   </div>
 </section>
 
@@ -308,7 +334,13 @@ async function loadCompliance(){
   $('compOut').innerHTML=`<div class="grid2"><div>${standardCard(s)}</div><div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><span class="tag">READINESS</span><h2 id="compScore">0%</h2><p class="muted">Checked locally from the prototype checklist.</p></div><div class="score-ring" id="scoreRing" style="--score:0%"><span>0%</span></div></div><div id="checklist">${req.map((r,i)=>`<label class="checkrow"><input type="checkbox" data-req="${esc(r)}" onchange="updateLocalScore()"> <span>${esc(r)}</span></label>`).join('')}</div><button class="btn primary" onclick="submitCompliance('${esc(q)}')">Save assessment</button></div></div><div class="notice"><b>Important:</b> ${esc(d.prototype_notice||'Prototype assessment only. Verify official BIS requirements before relying on it.')}</div>`;
  }catch(e){$('compOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
-function updateLocalScore(){const c=[...document.querySelectorAll('#checklist input')];const n=c.filter(x=>x.checked).length;const pct=c.length?Math.round(n/c.length*100):0;$('compScore').textContent=pct+'%';$('scoreRing').style.setProperty('--score',pct+'%');$('scoreRing').querySelector('span').textContent=pct+'%'}
+function updateLocalScore(){
+ const c=[...document.querySelectorAll('#checklist input')];const n=c.filter(x=>x.checked).length;const pct=c.length?Math.round(n/c.length*100):0;
+ $('compScore').textContent=pct+'%';$('scoreRing').style.setProperty('--score',pct+'%');$('scoreRing').querySelector('span').textContent=pct+'%';
+ const risk=pct>=80?'LOW':pct>=55?'MEDIUM':'HIGH';
+ let el=$('riskSignal');if(!el){el=document.createElement('div');el.id='riskSignal';el.style.margin='12px 0';$('checklist').before(el)}
+ el.innerHTML=`<span class="risk-pill risk-${risk==='LOW'?'low':risk==='MEDIUM'?'medium':'high'}">● ${risk} RISK</span><div class="score-bar"><i style="width:${pct}%"></i></div><div class="tiny muted">Readiness ${pct}% • ${n} of ${c.length} checks satisfied</div>`;
+}
 async function submitCompliance(product){
  const checks={};document.querySelectorAll('#checklist input').forEach(x=>checks[x.dataset.req]=x.checked);try{const d=await api('/check-product',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product,checks})});toast('Assessment saved');$('compOut').insertAdjacentHTML('afterbegin',`<div class="card successbox"><b>${esc(d.status||'Assessment complete')}</b><p>${esc(d.summary?.passed??0)} passed • ${esc(d.summary?.failed??0)} failed • ${esc(d.summary?.not_checked??0)} not checked</p>${(d.recommended_actions||[]).map(x=>`<div class="tiny">• ${esc(x)}</div>`).join('')}</div>`);log('compliance',product)}catch(e){toast(e.message)}
 }
@@ -333,10 +365,21 @@ async function labs(){
  }catch(e){$('labsOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
 }
 async function doc(){
- const f=$('file').files[0];if(!f)return toast('Choose a TXT, MD or JSON file');loading('docOut','Reading document with the intelligence backend…');
+ const f=$('file').files[0];if(!f)return toast('Choose a document or image');loading('docOut','Reading document with the intelligence backend…');
  const fd=new FormData();fd.append('file',f);
- try{const d=await api('/document-analyze',{method:'POST',body:fd});log('document',f.name);$('docOut').innerHTML=`<div class="card"><div class="tags"><span class="tag">${esc(d.filename)}</span><span class="tag">${esc(d.characters)} characters</span></div><h2>Detected: ${esc(d.detected_product||'Unresolved')}</h2><div class="notice">This analysis maps text to prototype knowledge records. It is not document certification.</div></div><div class="section-head"><div><h2>Recommended standards</h2></div></div>${(d.recommendations||[]).map(standardCard).join('')||'<div class="card empty">No supported match.</div>'}<div class="card"><b>Missing-data hints</b>${(d.missing_data_hints||[]).map(x=>`<div class="reason"><span>•</span><span>${esc(x)}</span></div>`).join('')}</div>`}catch(e){$('docOut').innerHTML=`<div class="card error">${esc(e.message)}</div>`}
+ try{
+   const d=await api('/document-analyze',{method:'POST',body:fd});log('document',f.name);
+   $('docOut').innerHTML=`<div class="card"><div class="tags"><span class="tag">${esc(d.filename||f.name)}</span><span class="tag">${esc(d.characters??'—')} characters</span></div><h2>Detected: ${esc(d.detected_product||'Unresolved')}</h2><div class="notice">Prototype extraction only. A successful match is guidance, not document certification.</div></div><div class="section-head"><div><h2>Recommended standards</h2></div></div>${(d.recommendations||[]).map(standardCard).join('')||'<div class="card empty">No supported match.</div>'}<div class="card"><b>Missing-data hints</b>${(d.missing_data_hints||[]).map(x=>`<div class="reason"><span>•</span><span>${esc(x)}</span></div>`).join('')||'<div class="tiny muted" style="margin-top:8px">No additional hints returned.</div>'}</div>`;
+ }catch(e){
+   // Graceful local fallback for text-like files when the backend does not support the uploaded type.
+   if(/\.((txt)|(md)|(json))$/i.test(f.name)){
+     const text=await f.text();log('document-local',f.name);$('docOut').innerHTML=`<div class="card"><span class="tag amber">LOCAL FALLBACK</span><h2>${esc(f.name)}</h2><p class="muted">Backend extraction was unavailable, so the browser read the text locally.</p><div class="notice"><b>Next step:</b> Copy the key product description into Product Intelligence for standards matching.</div><textarea class="field" rows="8" style="margin-top:12px">${esc(text.slice(0,12000))}</textarea><button class="btn primary" style="margin-top:10px" onclick="useDocumentText()">Send text to Product Intelligence</button></div>`;
+     window.__docText=text;
+   }else $('docOut').innerHTML=`<div class="card error">${esc(e.message)}<br><span class="tiny">The current backend may need a document extraction service for this file type.</span></div>`;
+ }
 }
+function useDocumentText(){if(!window.__docText)return;const text=window.__docText.slice(0,12000);$('intelQ').value=text;const b=document.querySelectorAll('.nav button')[1];page('intel',b,'Product Intelligence');intel()}
+
 async function compare(){
  const a=$('cmpA').value.trim(),b=$('cmpB').value.trim();if(!a||!b)return toast('Enter both candidates');loading('compareOut','Comparing candidate evidence…');
  try{const [x,y]=await Promise.all([api('/recommend?product='+encodeURIComponent(a)),api('/recommend?product='+encodeURIComponent(b))]);log('compare',a+' vs '+b);
@@ -408,24 +451,18 @@ function stopSpeaking(){
  toast('Speech stopped');
 }
 
-function speak(text,responseLang,button){
+function speak(text,responseLang){
  if(!('speechSynthesis' in window))return toast('Speech output is not supported in this browser');
- const clean=String(text||'').trim();
- if(!clean)return;
+ const clean=String(text||'').trim();if(!clean)return;
  const lang=selectedSpeechLang(responseLang);
- const synth=window.speechSynthesis;
- synth.cancel();
- const speakNow=()=>{
-  const u=new SpeechSynthesisUtterance(clean);
-  u.lang=lang;u.rate=.96;u.pitch=1;u.volume=1;
-  const voice=pickSpeechVoice(lang);if(voice)u.voice=voice;
-  button=button||null;
-  if(button){button.dataset.originalText=button.textContent;button.textContent='🔊 Speaking…';}
-  u.onend=()=>{if(button)button.textContent='🔊 Listen Again';};
-  u.onerror=()=>{if(button)button.textContent='🔊 Listen Again';toast('Speech output failed. Try Listen again.');};
-  synth.speak(u);
- };
- setTimeout(speakNow,80);
+ window.speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(clean);u.lang=lang;u.rate=.96;u.pitch=1;u.volume=1;
+ const voice=pickSpeechVoice(lang);if(voice)u.voice=voice;
+ const button=window.event?.currentTarget;
+ if(button){button.dataset.originalText=button.textContent;button.textContent='🔊 Speaking…'}
+ u.onend=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen'};
+ u.onerror=()=>{if(button)button.textContent=button.dataset.originalText||'🔊 Listen';toast('Speech output failed. Try Listen again.')};
+ window.speechSynthesis.speak(u);
 }
 
 function startVoice(){
@@ -445,7 +482,7 @@ async function chat(){
   if(d.confidence!==undefined)h+=`<div class="evidence"><b>Confidence: ${Math.round(Number(d.confidence)*100)}%</b><br><small>Support level: ${esc(d.support_level||'retrieved evidence')}</small></div>`;
   const src=d.sources||d.retrieved||[];if(src.length)h+=`<div style="margin-top:8px"><b class="tiny">EVIDENCE TRAIL</b>${src.slice(0,5).map(s=>evidence(s)).join('')}</div>`;
   const speechLang=d.language||d.lang||$('lang').value;
-  h+=`<div class="voice-actions"><button class="voice-btn" onclick="speak(${JSON.stringify(text).replace(/</g,'\\u003c')},${JSON.stringify(speechLang)},this)">🔊 Listen</button></div></div>`;box.insertAdjacentHTML('beforeend',h);box.scrollTop=box.scrollHeight;log('chat',q);
+  h+=`<div class="voice-actions"><button class="voice-btn" onclick="speak(${JSON.stringify(text).replace(/</g,'\\u003c')},${JSON.stringify(speechLang)})">🔊 Listen</button></div></div>`;box.insertAdjacentHTML('beforeend',h);box.scrollTop=box.scrollHeight;log('chat',q);
   if(autoSpeak)speak(text,speechLang)
  }catch(e){$('typing')?.remove();box.insertAdjacentHTML('beforeend',`<div class="msg bot">${esc(e.message)}</div>`)}
 }
@@ -465,7 +502,41 @@ $('q').addEventListener('keydown',e=>{if(e.key==='Enter')chat()});$('stdQ').addE
 $('compQ').addEventListener('keydown',e=>{if(e.key==='Enter')loadCompliance()});$('mandQ').addEventListener('keydown',e=>{if(e.key==='Enter')mandatory()});$('certQ').addEventListener('keydown',e=>{if(e.key==='Enter')cert()});
 updateAutoSpeakButton();
 health();activityRender();
+
+
+/* ===== SIH 26107 advanced demo features ===== */
+let scanStream=null,scanTimer=null;
+function openScanner(){const buttons=[...document.querySelectorAll('.nav button')];const btn=buttons.find(b=>b.textContent.includes('QR / Barcode'));page('scanner',btn,'QR / Barcode Scanner');}
+async function startScanner(){
+ const support=$('scanSupport');
+ if(!('BarcodeDetector' in window)){support.textContent='● BarcodeDetector unavailable';support.className='status-badge warn';toast('Barcode scanning is not supported in this browser');return;}
+ try{
+  const detector=new BarcodeDetector({formats:['qr_code','code_128','ean_13','ean_8','upc_a','upc_e']});
+  scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});$('scanVideo').srcObject=scanStream;
+  support.textContent='● Camera active';support.className='status-badge success';
+  const loop=async()=>{if(!scanStream)return;try{const codes=await detector.detect($('scanVideo'));if(codes.length){const value=codes[0].rawValue||'';$('stdQ').value=value;$('scanResult').innerHTML=`<div class="successbox"><b>Code detected</b><br>${esc(value)}<br><button class="btn primary" style="margin-top:8px" onclick="standards();openFinder()">Find standard</button></div>`;stopScanner();return}}catch(e){}scanTimer=requestAnimationFrame(loop)};loop();
+ }catch(e){support.textContent='● Camera unavailable';support.className='status-badge danger';toast(e.message||'Camera permission failed')}
+}
+function stopScanner(){if(scanTimer)cancelAnimationFrame(scanTimer);scanTimer=null;if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null}const v=$('scanVideo');if(v)v.srcObject=null}
+function openFinder(){const b=document.querySelectorAll('.nav button')[2];page('finder',b,'Standard Finder')}
+const UI_LANG={
+ English:{analyze:'Analyze product →',overview:'Overview',finder:'Standard Finder',compliance:'Compliance Center',assistant:'AI Assistant'},
+ Hindi:{analyze:'उत्पाद का विश्लेषण करें →',overview:'अवलोकन',finder:'मानक खोज',compliance:'अनुपालन केंद्र',assistant:'AI सहायक'},
+ Kannada:{analyze:'ಉತ್ಪನ್ನವನ್ನು ವಿಶ್ಲೇಷಿಸಿ →',overview:'ಅವಲೋಕನ',finder:'ಮಾನದಂಡ ಹುಡುಕಾಟ',compliance:'ಅನುಸರಣೆ ಕೇಂದ್ರ',assistant:'AI ಸಹಾಯಕ'},
+ Telugu:{analyze:'ఉత్పత్తిని విశ్లేషించండి →',overview:'అవలోకనం',finder:'ప్రమాణాల శోధన',compliance:'అనుసరణ కేంద్రం',assistant:'AI సహాయకుడు'},
+ Tamil:{analyze:'தயாரிப்பை பகுப்பாய்வு செய்க →',overview:'கண்ணோட்டம்',finder:'தரநிலை தேடல்',compliance:'இணக்க மையம்',assistant:'AI உதவியாளர்'}
+};
+function applyUILanguage(lang){
+ const t=UI_LANG[lang]||UI_LANG.English;document.documentElement.lang=lang.toLowerCase();
+ const ab=document.querySelector('.hero .primary');if(ab)ab.textContent=t.analyze;
+ const nav=[...document.querySelectorAll('.nav button')];if(nav[0])nav[0].querySelector('span').textContent=t.overview;if(nav[2])nav[2].querySelector('span').textContent=t.finder;if(nav[3])nav[3].querySelector('span').textContent=t.compliance;
+ const av=nav.find(x=>x.textContent.includes('AI Assistant')||x.textContent.includes('AI सहायक')||x.textContent.includes('AI ಸಹಾಯಕ')||x.textContent.includes('AI உதவியாளர்'));if(av)av.querySelector('span').textContent=t.assistant;
+ const assistantLang=$('lang');if(assistantLang)assistantLang.value=lang;
+ localStorage.setItem('sgLang',lang);toast(lang+' language selected');
+}
+$('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
+(function initUpgrade(){const l=localStorage.getItem('sgLang')||'English';if($('globalLang'))$('globalLang').value=l;applyUILanguage(l);if($('scanSupport')){if('BarcodeDetector' in window)$('scanSupport').textContent='● Supported';else $('scanSupport').textContent='● Browser fallback needed';}window.addEventListener('beforeunload',stopScanner)})();
+
 </script>
 </body>
 </html>
-
