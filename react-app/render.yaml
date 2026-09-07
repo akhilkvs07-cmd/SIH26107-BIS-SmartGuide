@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: bis-smartguide-react
+    runtime: static
+    rootDir: react-app
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
