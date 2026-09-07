@@ -15,22 +15,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Attach V5 integration layer to existing UI
+      - name: Attach premium UI layers to existing UI
         shell: python
         run: |
           from pathlib import Path
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
-          tag = '<script src="smartguide-enhance.js"></script>'
-          if tag not in text:
+          changed = False
+          css = '<link rel="stylesheet" href="smartguide-pro.css">'
+          js = '<script src="smartguide-enhance.js"></script>'
+          marker = '</head>'
+          if css not in text:
+              if marker not in text:
+                  raise SystemExit('index.html has no closing head tag')
+              text = text.replace(marker, css + '\n' + marker, 1)
+              changed = True
+              print('Integrated smartguide-pro.css')
+          if js not in text:
               marker = '</body>'
               if marker not in text:
                   raise SystemExit('index.html has no closing body tag')
-              text = text.replace(marker, tag + '\n' + marker, 1)
+              text = text.replace(marker, js + '\n' + marker, 1)
+              changed = True
+              print('Integrated smartguide-enhance.js')
+          if changed:
               p.write_text(text, encoding='utf-8')
-              print('Integrated smartguide-enhance.js into index.html')
           else:
-              print('Integration already present')
+              print('UI integration already present')
 
       - name: Commit integration
         run: |
@@ -40,6 +51,6 @@ jobs:
             echo "No integration changes needed"
           else
             git add index.html
-            git commit -m "Integrate V4 compliance layer into main UI"
+            git commit -m "Integrate premium SmartGuide UI"
             git push
           fi
