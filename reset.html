@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIS SmartGuide — Resetting</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#071a36;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;text-align:center}
+main{padding:32px}h1{font-size:28px;margin:0 0 10px}p{color:#b9cbe3}
+</style>
+</head>
+<body>
+<main>
+<h1>Refreshing BIS SmartGuide</h1>
+<p>Removing the old cached app version…</p>
+</main>
+<script>
+(async()=>{
+  try{
+    if('serviceWorker' in navigator){
+      const regs=await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r=>r.unregister()));
+    }
+    if('caches' in window){
+      const keys=await caches.keys();
+      await Promise.all(keys.map(k=>caches.delete(k)));
+    }
+  }catch(e){console.warn('cache reset',e)}
+  location.replace('./?v='+Date.now());
+})();
+</script>
+</body>
+</html>
