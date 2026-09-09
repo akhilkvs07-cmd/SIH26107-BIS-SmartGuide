@@ -1,6 +1,4 @@
-"""Upgraded Render entrypoint for BIS SmartGuide.
-Loads the existing app, then registers V4 compliance, V6 intelligence and V7 platform services.
-"""
+"""Upgraded Render entrypoint for BIS SmartGuide."""
 import json
 import uuid
 from flask import jsonify, request
@@ -8,6 +6,7 @@ from app import app
 from compliance_upgrade import (_build_assessment,_db,_extract_values,_get_dependencies,_hash_evidence,_now,_read_document,register)
 from advanced_features import register as register_v6
 from v7_platform import register_v7
+from universal_product import register_universal
 
 register(app)
 
@@ -50,3 +49,4 @@ app.view_functions["check_compliance"]=upgraded_check_compliance
 _,_,find_matches=_get_dependencies()
 register_v6(app,find_matches)
 register_v7(app,find_matches)
+register_universal(app,find_matches)
