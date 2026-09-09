@@ -16,18 +16,31 @@ jobs:
         run: |
           from pathlib import Path
           p=Path('index.html'); text=p.read_text(encoding='utf-8')
-          text=text.replace('<script src="smartguide-v6.js"></script>','')
-          text=text.replace('<link rel="stylesheet" href="smartguide-v6.css">','')
-          text=text.replace('<link rel="manifest" href="manifest.webmanifest">','')
-          for layer in ['<link rel="stylesheet" href="smartguide-v7.css">']:
-            if layer not in text:text=text.replace('</head>',layer+'\n</head>',1)
+          # Remove previous V7/legacy V6 script and stylesheet hooks.
+          for old in [
+            '<script src="smartguide-v6.js"></script>',
+            '<script src="smartguide-v7.js"></script>',
+            '<script src="smartguide-v7-fix.js"></script>',
+            '<script src="smartguide-universal.js"></script>',
+            '<script src="smartguide-navigation-fix.js"></script>',
+            '<link rel="stylesheet" href="smartguide-v6.css">',
+            '<link rel="stylesheet" href="smartguide-v7.css">',
+            '<link rel="manifest" href="manifest.webmanifest">'
+          ]:
+            text=text.replace(old,'')
+          # Load the upgraded V6 assets with a new URL so stale mobile/browser
+          # copies of the old V6 JavaScript cannot be reused.
+          v6css='<link rel="stylesheet" href="smartguide-v6.css?v=20260909-v6-2">'
+          v6js='<script src="smartguide-v6.js?v=20260909-v6-2"></script>'
+          if v6css not in text:text=text.replace('</head>',v6css+'\n</head>',1)
+          if v6js not in text:text=text.replace('</body>',v6js+'\n</body>',1)
+          # Remove legacy service-worker/cache registrations that could restore
+          # an obsolete V6/V7 application shell.
           killer='''<script>\n/* SmartGuide stale-PWA cleanup: remove legacy service workers before app boot. */\n(async()=>{\n  try{\n    if('serviceWorker' in navigator){\n      const regs=await navigator.serviceWorker.getRegistrations();\n      await Promise.all(regs.map(r=>r.unregister()));\n    }\n    if('caches' in window){\n      const keys=await caches.keys();\n      await Promise.all(keys.map(k=>caches.delete(k)));\n    }\n  }catch(e){}\n})();\n</script>\n'''
           if killer not in text:text=text.replace('</head>',killer+'</head>',1)
-          for layer in ['<script src="smartguide-v7.js"></script>','<script src="smartguide-v7-fix.js"></script>','<script src="smartguide-universal.js"></script>','<script src="smartguide-navigation-fix.js"></script>']:
-            if layer not in text:text=text.replace('</body>',layer+'\n</body>',1)
           p.write_text(text,encoding='utf-8')
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Remove legacy PWA hooks and harden UI boot"; git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Load upgraded V6 with cache-busted assets"; git push; fi
