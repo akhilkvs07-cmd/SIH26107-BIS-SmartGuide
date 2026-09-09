@@ -70,29 +70,10 @@ def scan_stl(raw, filename="model.stl"):
         return {"filename": filename, "success": False, "message": "No STL vertices could be parsed."}
     xs, ys, zs = zip(*verts)
     dims = {"x": round(max(xs)-min(xs), 3), "y": round(max(ys)-min(ys), 3), "z": round(max(zs)-min(zs), 3)}
-    # Surface area is intentionally omitted rather than pretending a coarse parser is exact.
     volume = round(dims["x"] * dims["y"] * dims["z"], 3)
-    standards = {
-        "IS 15652:2006": "Electrical Insulation Mats",
-        "IS 1363:2002": "Hexagon Head Bolts",
-        "IS 4984:2016": "HDPE Pipes"
-    }
-    return {
-        "filename": filename, "success": True, "vertex_count": len(verts),
-        "bounding_dimensions": dims, "bounding_box_volume": volume,
-        "candidate_standards": [{"standard_number": k, "scope": v} for k,v in standards.items()],
-        "status": "DIMENSIONAL_SCREENING_ONLY",
-        "notice": "CAD dimensions are a prototype screening aid. Exact conformity requires the applicable BIS standard, tolerances and validated measurement method."
-    }
+    standards = {"IS 15652:2006": "Electrical Insulation Mats", "IS 1363:2002": "Hexagon Head Bolts", "IS 4984:2016": "HDPE Pipes"}
+    return {"filename": filename, "success": True, "vertex_count": len(verts), "bounding_dimensions": dims, "bounding_box_volume": volume, "candidate_standards": [{"standard_number": k, "scope": v} for k,v in standards.items()], "status": "DIMENSIONAL_SCREENING_ONLY", "notice": "CAD dimensions are a prototype screening aid. Exact conformity requires the applicable BIS standard, tolerances and validated measurement method."}
 
 
 def update_summary(query, rag_results):
-    return {
-        "query": query,
-        "checked_at": _utc(),
-        "live_bis_crawl": False,
-        "status": "SOURCE_CHECK_REQUIRED",
-        "changes_found": [],
-        "evidence": rag_results[:5],
-        "message": "SmartGuide does not invent Gazette amendments. Add verified BIS/Gazette documents to the local knowledge base, then rebuild RAG to compare them."
-    }
+    return {"query": query, "checked_at": _utc(), "live_bis_crawl": False, "status": "SOURCE_CHECK_REQUIRED", "changes_found": [], "evidence": rag_results[:5], "message": "SmartGuide does not invent Gazette amendments. Add verified BIS/Gazette documents to the local knowledge base, then rebuild RAG to compare them."}
