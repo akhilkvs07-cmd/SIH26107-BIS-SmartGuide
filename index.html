@@ -84,22 +84,8 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 
 
 
-<script>
-/* SmartGuide stale-PWA cleanup: remove legacy service workers before app boot. */
-(async()=>{
-  try{
-    if('serviceWorker' in navigator){
-      const regs=await navigator.serviceWorker.getRegistrations();
-      await Promise.all(regs.map(r=>r.unregister()));
-    }
-    if('caches' in window){
-      const keys=await caches.keys();
-      await Promise.all(keys.map(k=>caches.delete(k)));
-    }
-  }catch(e){}
-})();
-</script>
-<link rel="stylesheet" href="smartguide-v6.css?v=20260909-v6-2">
+<link rel="stylesheet" href="smartguide-v6.css?v=20260909-v6-3">
+<link rel="manifest" href="manifest.webmanifest">
 </head>
 <body>
 <div class="app">
@@ -566,6 +552,7 @@ $('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
 
 
 
-<script src="smartguide-v6.js?v=20260909-v6-2"></script>
+
+<script src="smartguide-v6.js?v=20260909-v6-3"></script>
 </body>
 </html>
