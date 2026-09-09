@@ -1,46 +1,68 @@
 name: Integrate SmartGuide UI upgrades
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   integrate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Attach SmartGuide UI layers
+
+      - name: Restore original V6 UI hooks
         shell: python
         run: |
           from pathlib import Path
-          p=Path('index.html'); text=p.read_text(encoding='utf-8')
-          # Remove previous V7/legacy V6 script and stylesheet hooks.
-          for old in [
-            '<script src="smartguide-v6.js"></script>',
-            '<script src="smartguide-v7.js"></script>',
-            '<script src="smartguide-v7-fix.js"></script>',
-            '<script src="smartguide-universal.js"></script>',
-            '<script src="smartguide-navigation-fix.js"></script>',
-            '<link rel="stylesheet" href="smartguide-v6.css">',
-            '<link rel="stylesheet" href="smartguide-v7.css">',
-            '<link rel="manifest" href="manifest.webmanifest">'
+          import re
+
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+
+          # The original project should use V6 only. Remove experimental V7 layers.
+          for layer in [
+              '<link rel="stylesheet" href="smartguide-v7.css">',
+              '<script src="smartguide-v7.js"></script>',
+              '<script src="smartguide-v7-fix.js"></script>',
+              '<script src="smartguide-universal.js"></script>',
+              '<script src="smartguide-navigation-fix.js"></script>'
           ]:
-            text=text.replace(old,'')
-          # Load the upgraded V6 assets with a new URL so stale mobile/browser
-          # copies of the old V6 JavaScript cannot be reused.
-          v6css='<link rel="stylesheet" href="smartguide-v6.css?v=20260909-v6-2">'
-          v6js='<script src="smartguide-v6.js?v=20260909-v6-2"></script>'
-          if v6css not in text:text=text.replace('</head>',v6css+'\n</head>',1)
-          if v6js not in text:text=text.replace('</body>',v6js+'\n</body>',1)
-          # Remove legacy service-worker/cache registrations that could restore
-          # an obsolete V6/V7 application shell.
-          killer='''<script>\n/* SmartGuide stale-PWA cleanup: remove legacy service workers before app boot. */\n(async()=>{\n  try{\n    if('serviceWorker' in navigator){\n      const regs=await navigator.serviceWorker.getRegistrations();\n      await Promise.all(regs.map(r=>r.unregister()));\n    }\n    if('caches' in window){\n      const keys=await caches.keys();\n      await Promise.all(keys.map(k=>caches.delete(k)));\n    }\n  }catch(e){}\n})();\n</script>\n'''
-          if killer not in text:text=text.replace('</head>',killer+'</head>',1)
-          p.write_text(text,encoding='utf-8')
+              text = text.replace(layer, '')
+
+          # Remove any V6/V7 script and stylesheet variants before restoring them.
+          text = re.sub(r'<script\s+src=["\']smartguide-v6\.js(?:\?[^"\']*)?["\']\s*></script>', '', text)
+          text = re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>', '', text)
+          text = re.sub(r'<script\s+src=["\']smartguide-v7[^"\']*["\']\s*></script>', '', text)
+          text = re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v7[^"\']*["\']\s*>', '', text)
+
+          # Remove the stale-PWA killer. The original project owns its PWA lifecycle.
+          text = re.sub(r'<script>\s*/\* SmartGuide stale-PWA cleanup:.*?</script>\s*', '', text, flags=re.S)
+
+          # Restore V6 with an explicit version query to bypass old cached JS.
+          v6css = '<link rel="stylesheet" href="smartguide-v6.css?v=20260909-v6-3">'
+          v6js = '<script src="smartguide-v6.js?v=20260909-v6-3"></script>'
+          text = text.replace('</head>', v6css + '\n</head>', 1)
+          text = text.replace('</body>', v6js + '\n</body>', 1)
+
+          # Restore the original manifest if it is absent.
+          if '<link rel="manifest"' not in text:
+              text = text.replace('</head>', '<link rel="manifest" href="manifest.webmanifest">\n</head>', 1)
+
+          p.write_text(text, encoding='utf-8')
+
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Load upgraded V6 with cache-busted assets"; git push; fi
+          if git diff --quiet; then
+            echo "No integration changes needed"
+          else
+            git add index.html
+            git commit -m "Restore original V6 UI hooks"
+            git push
+          fi
