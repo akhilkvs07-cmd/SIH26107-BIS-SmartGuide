@@ -20,11 +20,11 @@ jobs:
           text=text.replace('<link rel="stylesheet" href="smartguide-v6.css">','')
           for layer in ['<link rel="stylesheet" href="smartguide-v7.css">','<link rel="manifest" href="manifest.webmanifest">']:
             if layer not in text:text=text.replace('</head>',layer+'\n</head>',1)
-          for layer in ['<script src="smartguide-v7.js"></script>','<script src="smartguide-v7-fix.js"></script>','<script src="smartguide-universal.js"></script>']:
+          for layer in ['<script src="smartguide-v7.js"></script>','<script src="smartguide-v7-fix.js"></script>','<script src="smartguide-universal.js"></script>','<script src="smartguide-navigation-fix.js"></script>']:
             if layer not in text:text=text.replace('</body>',layer+'\n</body>',1)
           p.write_text(text,encoding='utf-8')
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Integrate Universal Product Intelligence"; git push; fi
+          git config user.email "41898282+users.noreply.github.com"
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Integrate navigation hardening"; git push; fi
