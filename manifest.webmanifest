@@ -1,0 +1,10 @@
+{
+  "name":"BIS SmartGuide — AI Standards Intelligence",
+  "short_name":"BIS SmartGuide",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f4f7fb",
+  "theme_color":"#071a36",
+  "description":"Evidence-grounded BIS standards and compliance intelligence workspace.",
+  "icons":[]
+}
