@@ -1,47 +1,33 @@
 name: Integrate SmartGuide UI upgrades
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: write
-
 jobs:
   integrate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Attach premium UI layers to existing UI
+      - name: Attach SmartGuide UI layers
         shell: python
         run: |
           from pathlib import Path
-          p = Path('index.html')
-          text = p.read_text(encoding='utf-8')
-          changed = False
-          css = '<link rel="stylesheet" href="smartguide-pro.css">'
-          ref_css = '<link rel="stylesheet" href="reference-ui.css">'
-          v6_css = '<link rel="stylesheet" href="smartguide-v6.css">'
-          js = '<script src="smartguide-enhance.js"></script>'
-          navfix = '<script src="command-center-fix.js"></script>'
-          v6_js = '<script src="smartguide-v6.js"></script>'
-          marker = '</head>'
-          for layer in (css, ref_css, v6_css):
-              if layer not in text:
-                  if marker not in text: raise SystemExit('index.html has no closing head tag')
-                  text = text.replace(marker, layer + '\n' + marker, 1); changed = True
-          marker = '</body>'
-          for layer in (js, navfix, v6_js):
-              if layer not in text:
-                  if marker not in text: raise SystemExit('index.html has no closing body tag')
-                  text = text.replace(marker, layer + '\n' + marker, 1); changed = True
-          if changed: p.write_text(text, encoding='utf-8')
-
+          p=Path('index.html'); text=p.read_text(encoding='utf-8')
+          # Remove the broken/obsolete V6 console and its duplicate navigation.
+          text=text.replace('<script src="smartguide-v6.js"></script>','')
+          text=text.replace('<link rel="stylesheet" href="smartguide-v6.css">','')
+          layers_head=['<link rel="stylesheet" href="smartguide-v7.css">','<link rel="manifest" href="manifest.webmanifest">']
+          layers_body=['<script src="smartguide-v7.js"></script>']
+          for layer in layers_head:
+            if layer not in text:text=text.replace('</head>',layer+'\n</head>',1)
+          for layer in layers_body:
+            if layer not in text:text=text.replace('</body>',layer+'\n</body>',1)
+          p.write_text(text,encoding='utf-8')
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Integrate V6 advanced intelligence UI"; git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Integrate V7 complete feature console"; git push; fi
