@@ -43,11 +43,15 @@ jobs:
           # Remove the stale-PWA killer. The original project owns its PWA lifecycle.
           text = re.sub(r'<script>\s*/\* SmartGuide stale-PWA cleanup:.*?</script>\s*', '', text, flags=re.S)
 
+          # Remove/re-add our V6 helper so the production page has exactly one copy.
+          text = re.sub(r'<script\s+src=["\']smartguide-v6-click-fix\.js(?:\?[^"\']*)?["\']\s*></script>', '', text)
+
           # Restore V6 with an explicit version query to bypass old cached JS.
-          v6css = '<link rel="stylesheet" href="smartguide-v6.css?v=20260909-v6-3">'
-          v6js = '<script src="smartguide-v6.js?v=20260909-v6-3"></script>'
+          v6css = '<link rel="stylesheet" href="smartguide-v6.css?v=20260909-v6-4">'
+          v6js = '<script src="smartguide-v6.js?v=20260909-v6-4"></script>'
+          v6fix = '<script src="smartguide-v6-click-fix.js?v=20260909-v6-4"></script>'
           text = text.replace('</head>', v6css + '\n</head>', 1)
-          text = text.replace('</body>', v6js + '\n</body>', 1)
+          text = text.replace('</body>', v6js + '\n' + v6fix + '\n</body>', 1)
 
           # Restore the original manifest if it is absent.
           if '<link rel="manifest"' not in text:
@@ -63,6 +67,6 @@ jobs:
             echo "No integration changes needed"
           else
             git add index.html
-            git commit -m "Restore original V6 UI hooks"
+            git commit -m "Restore V6 hooks and click bridge"
             git push
           fi
