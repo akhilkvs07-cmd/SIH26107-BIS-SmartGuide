@@ -1,17 +1,27 @@
 name: Deploy BIS SmartGuide to GitHub Pages
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Integrate SmartGuide UI upgrades"]
+    types: [completed]
+
 permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
   deploy:
+    # Deploy after the integration workflow finishes successfully. This avoids
+    # GitHub's GITHUB_TOKEN workflow-trigger suppression leaving Pages stale.
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -19,6 +29,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload site
