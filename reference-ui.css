@@ -32,5 +32,34 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sa
 .meter{background:#edf1f5!important}.messages{background:#f6f8fa!important;border-color:#dbe3eb!important}.msg.bot{background:#fff!important;border-color:#dbe3eb!important}.msg-head{color:#6d7f95!important}.chatbar .field{background:#fff!important}
 .drop{background:#fafcfe!important;border-color:#b8cbe0!important}.activity-item{border-color:#dbe3eb!important;background:#fff!important}.graphbox{background:radial-gradient(circle at center,#e8f3ff,#fff 64%)!important;border-color:#dbe3eb!important}
 .footer{color:#738197!important}
+/* Responsive layout */
 @media(max-width:1120px){.sidebar{width:220px!important}.main{margin-left:220px!important}.upgrade-grid{grid-template-columns:1fr 1fr!important}.content{padding:18px!important}}
-@media(max-width:800px){.sidebar{width:246px!important}.main{margin-left:0!important}.topbar{height:64px!important;padding:0 14px!important}.content{padding:14px!important}.hero{padding:26px!important;border-radius:19px!important}.hero h1{font-size:35px!important;letter-spacing:-1.8px!important}.upgrade-grid{grid-template-columns:1fr!important}.grid4,.grid3,.grid2{grid-template-columns:1fr!important}}
+@media(max-width:800px){
+  html,body{width:100%;max-width:100%;overflow-x:hidden!important}
+  .sidebar{position:fixed!important;left:0!important;top:0!important;bottom:0!important;width:260px!important;max-width:82vw!important;height:100vh!important;transform:translateX(-105%)!important;transition:transform .25s ease!important;z-index:1000!important;overflow-y:auto!important;overflow-x:hidden!important}
+  .sidebar.open{transform:translateX(0)!important}
+  .main{width:100%!important;max-width:100%!important;margin-left:0!important;min-width:0!important}
+  .topbar{height:64px!important;padding:0 12px!important;position:sticky!important;z-index:900!important}
+  .mobile-toggle{display:block!important;flex:none!important}
+  .top-actions .pill:last-child{display:none!important}
+  .content{width:100%!important;max-width:100%!important;padding:14px!important;overflow-x:hidden!important}
+  .hero{width:100%!important;padding:25px!important;min-height:0!important;border-radius:19px!important}
+  .hero h1{font-size:36px!important;letter-spacing:-1.5px!important;overflow-wrap:anywhere!important}
+  .hero-search,.chatbar{flex-direction:column!important}
+  .hero-search .btn,.chatbar .btn{width:100%!important}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr!important}
+  .upgrade-grid{grid-template-columns:1fr!important}
+  .card,.module,.result-card,.upgrade-card{min-width:0!important;max-width:100%!important}
+  .result-top{flex-wrap:wrap!important}
+  .reqs{grid-template-columns:1fr!important}
+  .searchbar{flex-direction:column!important}
+  .field{min-width:0!important;max-width:100%!important}
+  .btn{min-height:42px!important}
+  .page{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+}
+/* Final mobile guard: keep desktop sidebar from ever consuming phone width. */
+@media (pointer:coarse) and (max-width:900px){
+  .sidebar{position:fixed!important;transform:translateX(-105%)!important;width:260px!important;max-width:82vw!important}
+  .sidebar.open{transform:translateX(0)!important}
+  .main{margin-left:0!important;width:100%!important}
+}
