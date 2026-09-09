@@ -24,26 +24,24 @@ jobs:
           changed = False
           css = '<link rel="stylesheet" href="smartguide-pro.css">'
           ref_css = '<link rel="stylesheet" href="reference-ui.css">'
+          v6_css = '<link rel="stylesheet" href="smartguide-v6.css">'
           js = '<script src="smartguide-enhance.js"></script>'
           navfix = '<script src="command-center-fix.js"></script>'
+          v6_js = '<script src="smartguide-v6.js"></script>'
           marker = '</head>'
-          if css not in text:
-              if marker not in text: raise SystemExit('index.html has no closing head tag')
-              text = text.replace(marker, css + '\n' + marker, 1); changed = True
-          if ref_css not in text:
-              if marker not in text: raise SystemExit('index.html has no closing head tag')
-              text = text.replace(marker, ref_css + '\n' + marker, 1); changed = True
+          for layer in (css, ref_css, v6_css):
+              if layer not in text:
+                  if marker not in text: raise SystemExit('index.html has no closing head tag')
+                  text = text.replace(marker, layer + '\n' + marker, 1); changed = True
           marker = '</body>'
-          if js not in text:
-              if marker not in text: raise SystemExit('index.html has no closing body tag')
-              text = text.replace(marker, js + '\n' + marker, 1); changed = True
-          if navfix not in text:
-              if marker not in text: raise SystemExit('index.html has no closing body tag')
-              text = text.replace(marker, navfix + '\n' + marker, 1); changed = True
+          for layer in (js, navfix, v6_js):
+              if layer not in text:
+                  if marker not in text: raise SystemExit('index.html has no closing body tag')
+                  text = text.replace(marker, layer + '\n' + marker, 1); changed = True
           if changed: p.write_text(text, encoding='utf-8')
 
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Integrate UI navigation fix"; git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Integrate V6 advanced intelligence UI"; git push; fi
