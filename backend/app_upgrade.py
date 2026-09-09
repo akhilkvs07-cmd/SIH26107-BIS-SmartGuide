@@ -1,8 +1,8 @@
 """Upgraded Render entrypoint for BIS SmartGuide.
 
 Loads the existing app unchanged, registers the modular V4 compliance layer,
-and transparently upgrades the legacy document/compliance endpoints used by
-the existing frontend.
+and the V6 advanced intelligence layer, and transparently upgrades the legacy
+endpoints used by the existing frontend.
 """
 import json
 import uuid
@@ -20,6 +20,7 @@ from compliance_upgrade import (
     _read_document,
     register,
 )
+from advanced_features import register as register_v6
 
 register(app)
 
@@ -33,7 +34,7 @@ def _save_assessment(result, product):
     result["evidence_hash"] = evidence_hash
     with _db() as con:
         con.execute(
-            "INSERT INTO assessments VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            "INSERT INTO assessments VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
             (
                 assessment_id,
                 created_at,
@@ -125,3 +126,7 @@ def upgraded_check_compliance():
 app.view_functions["document_analyze"] = upgraded_document_analyze
 app.view_functions["check_product"] = upgraded_check_product
 app.view_functions["check_compliance"] = upgraded_check_compliance
+
+# Register V6 after the existing V4 layer so all new routes share the same
+# product-ranking function and official-source boundary.
+register_v6(app, _get_dependencies()[2])
