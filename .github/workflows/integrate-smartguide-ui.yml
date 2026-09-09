@@ -23,6 +23,7 @@ jobs:
           text = p.read_text(encoding='utf-8')
           changed = False
           css = '<link rel="stylesheet" href="smartguide-pro.css">'
+          ref_css = '<link rel="stylesheet" href="reference-ui.css">'
           js = '<script src="smartguide-enhance.js"></script>'
           marker = '</head>'
           if css not in text:
@@ -31,6 +32,12 @@ jobs:
               text = text.replace(marker, css + '\n' + marker, 1)
               changed = True
               print('Integrated smartguide-pro.css')
+          if ref_css not in text:
+              if marker not in text:
+                  raise SystemExit('index.html has no closing head tag')
+              text = text.replace(marker, ref_css + '\n' + marker, 1)
+              changed = True
+              print('Integrated reference-ui.css')
           if js not in text:
               marker = '</body>'
               if marker not in text:
@@ -51,6 +58,6 @@ jobs:
             echo "No integration changes needed"
           else
             git add index.html
-            git commit -m "Integrate premium SmartGuide UI"
+            git commit -m "Integrate reference-inspired SmartGuide UI"
             git push
           fi
