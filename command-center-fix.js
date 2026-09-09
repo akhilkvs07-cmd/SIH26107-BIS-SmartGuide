@@ -77,3 +77,5 @@
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
+
+/* Deployment trigger: V6 test build 2026-09-09 */
