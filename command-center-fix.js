@@ -57,3 +57,23 @@
   function init() { wire(); setTimeout(wire, 300); setTimeout(wire, 1000); setTimeout(wire, 1600); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
+
+/* Production V6 loader: guarantees the original V6 workflow console is present
+   even when the GitHub Pages integration workflow has not yet rewritten index.html. */
+(() => {
+  const VERSION = '20260909-v6-5';
+  const load = (tag, attrs) => new Promise(resolve => {
+    const existing = document.querySelector(`${tag}[data-sg-v6-loader="${attrs.src || attrs.href}"]`);
+    if (existing) return resolve();
+    const el = document.createElement(tag);
+    Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k,v));
+    el.onload = resolve; el.onerror = resolve;
+    document.head.appendChild(el);
+  });
+  const boot = async () => {
+    await load('link', {rel:'stylesheet', href:`smartguide-v6.css?v=${VERSION}`, 'data-sg-v6-loader':'smartguide-v6.css'});
+    await load('script', {src:`smartguide-v6.js?v=${VERSION}`, 'data-sg-v6-loader':'smartguide-v6.js'});
+    await load('script', {src:`smartguide-v6-click-fix.js?v=${VERSION}`, 'data-sg-v6-loader':'smartguide-v6-click-fix.js'});
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+})();
