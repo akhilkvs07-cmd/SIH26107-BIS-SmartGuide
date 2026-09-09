@@ -1,0 +1,51 @@
+/* BIS SmartGuide V6 — advanced feature console.
+   Keeps the existing HTML app and adds the missing engineering, verification,
+   laboratory, amendment and enterprise workflows as a single extension page.
+*/
+(() => {
+  const API='https://sih26107-bis-smartguide-api.onrender.com';
+  const $=id=>document.getElementById(id);
+  const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  async function api(path,opt={}){const r=await fetch(API+path,opt);let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||d.message||'Request failed');return d}
+  function nav(){const n=document.querySelector('.nav');if(!n||$('v6Nav'))return;const b=document.createElement('button');b.id='v6Nav';b.innerHTML='<span>✦</span><span>Advanced Intelligence</span>';b.onclick=()=>{if(typeof page==='function')page('v6',b,'Advanced Intelligence');loadStatus()};n.appendChild(b)}
+  function page(){if($('v6'))return;const m=document.querySelector('.content');if(!m)return;const s=document.createElement('section');s.id='v6';s.className='page';s.innerHTML=`
+    <div class="section-head"><div><h2>Advanced Intelligence</h2><p>Engineering, verification, laboratory, amendment and enterprise workflows — grounded in official BIS source boundaries.</p></div><span class="sg-v6-badge">V6 FEATURE LAYER</span></div>
+    <div class="sg-v6-kpis"><div class="sg-v6-kpi"><b id="v6Active">—</b><span class="sg-v6-muted">Feature workflows active</span></div><div class="sg-v6-kpi"><b>V4 + V6</b><span class="sg-v6-muted">Evidence + intelligence</span></div><div class="sg-v6-kpi"><b>6</b><span class="sg-v6-muted">Official BIS source links</span></div><div class="sg-v6-kpi"><b>0</b><span class="sg-v6-muted">Automated BIS certificates</span></div></div>
+    <div class="sg-v6-grid">
+      ${card('Product intelligence','Description → ranked standards, confidence and human-review flag','Product intelligence','openProduct()')}
+      ${card('ISI + CM/L verifier','Screen a label/licence string before official verification','Mark verification','openMark()')}
+      ${card('Test-report intelligence','Parse reported measurements without inventing limits','Test report','openTest()')}
+      ${card('Laboratory matcher','Map product/IS/test to the official BIS lab/LIMS scope','Lab matching','openLab()')}
+      ${card('QCO + amendment impact','Screen affected requirements and verification areas','Amendment impact','openAmendment()')}
+      ${card('3D CAD / STL scanner','Measure ASCII STL geometry and run supplied dimensional limits','STL engineering','openSTL()')}
+      ${card('Label / packaging check','Detect product, manufacturer, model, standard and marking fields','Label check','openLabel()')}
+      ${card('Procurement intelligence','Product + raw material + HS-code assisted compliance screening','Procurement','openProcurement()')}
+      ${card('Consumer issue report','Create a structured draft case with evidence checklist','Report issue','openIssue()')}
+    </div>
+    <div class="sg-v6-section"><h2>Feature status</h2><p class="sg-v6-muted">Active means the SmartGuide workflow is implemented. Official registry decisions remain source-bound.</p><div id="v6Status" class="sg-v6-grid"><div class="sg-v6-card">Loading…</div></div></div>
+    <div id="v6Tool" class="sg-v6-output"></div>`;m.appendChild(s)}
+  function card(title,desc,label,fn){return `<div class="sg-v6-card"><span class="sg-v6-badge">READY</span><h3>${title}</h3><p>${desc}</p><button class="btn primary" onclick="${fn}">${label}</button></div>`}
+  function tool(title,body){$('v6Tool').innerHTML=`<div class="sg-v6-card"><div class="section-head"><div><h2>${title}</h2></div><button class="btn" onclick="document.getElementById('v6Tool').innerHTML=''">Close</button></div>${body}</div>`}
+  function output(d){$('v6Out').innerHTML='<pre>'+esc(JSON.stringify(d,null,2))+'</pre>'}
+  window.openProduct=()=>tool('Product → standard intelligence',`<div class="sg-v6-form"><div class="full"><textarea id="v6Product" placeholder="Describe the product, model, use and ratings…"></textarea></div><div class="full"><button class="btn primary" onclick="runProduct()">Rank standards</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runProduct=async()=>{try{output(await api('/v5/product-intelligence',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({description:$('v6Product').value})}))}catch(e){output({error:e.message})}};
+  window.openMark=()=>tool('ISI + CM/L verification',`<div class="sg-v6-form"><input id="v6MarkText" class="full" placeholder="Paste label / licence text"><input id="v6Licence" placeholder="Licence / CM/L number"><div><button class="btn primary" onclick="runMark()">Verify markers</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runMark=async()=>{try{output(await api('/v5/verify-mark',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:$('v6MarkText').value,licence:$('v6Licence').value})}))}catch(e){output({error:e.message})}};
+  window.openTest=()=>tool('Test-report intelligence',`<div class="sg-v6-form"><input id="v6Std" placeholder="Applicable IS number (optional)"><div></div><textarea id="v6Report" class="full" placeholder="Paste test report text…"></textarea><div><button class="btn primary" onclick="runTest()">Parse report</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runTest=async()=>{try{output(await api('/v5/test-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({standard:$('v6Std').value,text:$('v6Report').value})}))}catch(e){output({error:e.message})}};
+  window.openLab=()=>tool('Intelligent laboratory matching',`<div class="sg-v6-form"><input id="v6LabProduct" placeholder="Product"><input id="v6LabStd" placeholder="IS number"><input id="v6LabTest" class="full" placeholder="Required test / parameter"><div><button class="btn primary" onclick="runLab()">Match labs</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runLab=async()=>{try{const q=new URLSearchParams({product:$('v6LabProduct').value,standard:$('v6LabStd').value,test:$('v6LabTest').value});output(await api('/v5/lab-match?'+q))}catch(e){output({error:e.message})}};
+  window.openAmendment=()=>tool('QCO / amendment impact',`<div class="sg-v6-form"><input id="v6AmStd" placeholder="Standard / IS"><input id="v6AmProduct" placeholder="Product"><textarea id="v6AmText" class="full" placeholder="Paste amendment/QCO notice text or summary…"></textarea><div><button class="btn primary" onclick="runAmendment()">Analyze impact</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runAmendment=async()=>{try{output(await api('/v5/amendment-impact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({standard:$('v6AmStd').value,product:$('v6AmProduct').value,amendment:$('v6AmText').value})}))}catch(e){output({error:e.message})}};
+  window.openSTL=()=>tool('3D CAD / STL engineering scanner',`<div class="sg-v6-form"><input id="v6STL" type="file" accept=".stl" class="full"><input id="v6X" placeholder="Max X dimension (optional)"><input id="v6Y" placeholder="Max Y dimension (optional)"><input id="v6Z" placeholder="Max Z dimension (optional)"><div><button class="btn primary" onclick="runSTL()">Scan STL</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runSTL=async()=>{try{const f=$('v6STL').files[0];if(!f)return output({error:'Select an STL file'});const fd=new FormData();fd.append('file',f);[['x','v6X'],['y','v6Y'],['z','v6Z']].forEach(([a,id])=>{if($(id).value)fd.append('max_dimensions',$(id).value)});output(await api('/v5/stl-scan',{method:'POST',body:fd}))}catch(e){output({error:e.message})}};
+  window.openLabel=()=>tool('Label / packaging compliance screen',`<div class="sg-v6-form"><textarea id="v6Label" class="full" placeholder="Paste label/package text…"></textarea><div><button class="btn primary" onclick="runLabel()">Check label</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runLabel=async()=>{try{output(await api('/v5/label-check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:$('v6Label').value})}))}catch(e){output({error:e.message})}};
+  window.openProcurement=()=>tool('Procurement intelligence',`<div class="sg-v6-form"><input id="v6Proc" placeholder="Product"><input id="v6HS" placeholder="HS code (optional)"><input id="v6Raw" class="full" placeholder="Raw material / component"><div><button class="btn primary" onclick="runProcurement()">Screen procurement</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runProcurement=async()=>{try{output(await api('/v5/procurement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:$('v6Proc').value,hs_code:$('v6HS').value,raw_material:$('v6Raw').value})}))}catch(e){output({error:e.message})}};
+  window.openIssue=()=>tool('Consumer / counterfeit issue draft',`<div class="sg-v6-form"><input id="v6IssueProduct" placeholder="Product"><textarea id="v6Issue" class="full" placeholder="Describe the suspected issue…"></textarea><div><button class="btn primary" onclick="runIssue()">Create case draft</button></div></div><div id="v6Out" class="sg-v6-output"></div>`);
+  window.runIssue=async()=>{try{output(await api('/v5/issue-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:$('v6IssueProduct').value,issue:$('v6Issue').value})}))}catch(e){output({error:e.message})}};
+  async function loadStatus(){try{const d=await api('/v5/feature-status');const a=d.features||[];$('v6Active').textContent=a.filter(x=>x.status.startsWith('ACTIVE')).length;$('v6Status').innerHTML=a.map(x=>`<div class="sg-v6-card"><span class="sg-v6-badge">${esc(x.status)}</span><h3>${esc(x.feature)}</h3></div>`).join('')}catch(e){$('v6Status').innerHTML='<div class="sg-v6-card sg-v6-warn"><b>V6 backend unavailable</b><p>'+esc(e.message)+'</p></div>'}}
+  function init(){nav();page();if(typeof page==='function')setTimeout(()=>{nav();page()},500)}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
