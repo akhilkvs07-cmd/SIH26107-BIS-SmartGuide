@@ -25,39 +25,25 @@ jobs:
           css = '<link rel="stylesheet" href="smartguide-pro.css">'
           ref_css = '<link rel="stylesheet" href="reference-ui.css">'
           js = '<script src="smartguide-enhance.js"></script>'
+          navfix = '<script src="command-center-fix.js"></script>'
           marker = '</head>'
           if css not in text:
-              if marker not in text:
-                  raise SystemExit('index.html has no closing head tag')
-              text = text.replace(marker, css + '\n' + marker, 1)
-              changed = True
-              print('Integrated smartguide-pro.css')
+              if marker not in text: raise SystemExit('index.html has no closing head tag')
+              text = text.replace(marker, css + '\n' + marker, 1); changed = True
           if ref_css not in text:
-              if marker not in text:
-                  raise SystemExit('index.html has no closing head tag')
-              text = text.replace(marker, ref_css + '\n' + marker, 1)
-              changed = True
-              print('Integrated reference-ui.css')
+              if marker not in text: raise SystemExit('index.html has no closing head tag')
+              text = text.replace(marker, ref_css + '\n' + marker, 1); changed = True
+          marker = '</body>'
           if js not in text:
-              marker = '</body>'
-              if marker not in text:
-                  raise SystemExit('index.html has no closing body tag')
-              text = text.replace(marker, js + '\n' + marker, 1)
-              changed = True
-              print('Integrated smartguide-enhance.js')
-          if changed:
-              p.write_text(text, encoding='utf-8')
-          else:
-              print('UI integration already present')
+              if marker not in text: raise SystemExit('index.html has no closing body tag')
+              text = text.replace(marker, js + '\n' + marker, 1); changed = True
+          if navfix not in text:
+              if marker not in text: raise SystemExit('index.html has no closing body tag')
+              text = text.replace(marker, navfix + '\n' + marker, 1); changed = True
+          if changed: p.write_text(text, encoding='utf-8')
 
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then
-            echo "No integration changes needed"
-          else
-            git add index.html
-            git commit -m "Integrate reference-inspired SmartGuide UI"
-            git push
-          fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html; git commit -m "Integrate UI navigation fix"; git push; fi
