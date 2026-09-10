@@ -1,4 +1,4 @@
-/* BIS SmartGuide Advanced Intelligence — rebuilt workflow console v8.1. */
+/* BIS SmartGuide Advanced Features — rebuilt workflow console v8.2. */
 (() => {
   'use strict';
   const API='https://sih26107-bis-smartguide-api.onrender.com';
@@ -14,7 +14,7 @@
     const s=document.createElement('section');
     s.id='v8'; s.className='page';
     s.innerHTML=`
-      <div class="section-head"><div><h2>Advanced Intelligence</h2><p>Source-grounded workflows for product intelligence, verification, testing, laboratories, engineering and reporting.</p></div><span class="sg-v8-badge">ADVANCED V8.1</span></div>
+      <div class="section-head"><div><h2>Advanced Features</h2><p>Source-grounded workflows for product intelligence, verification, testing, laboratories, engineering and reporting.</p></div><span class="sg-v8-badge">ADVANCED V8.2</span></div>
       <div class="sg-v8-kpis"><div class="sg-v8-kpi"><b id="v8Active">—</b><span class="sg-v8-muted">Functional workflows</span></div><div class="sg-v8-kpi"><b>V4 + V8</b><span class="sg-v8-muted">Evidence + intelligence</span></div><div class="sg-v8-kpi"><b>6</b><span class="sg-v8-muted">Official BIS sources</span></div><div class="sg-v8-kpi"><b>0</b><span class="sg-v8-muted">Automated certificates</span></div></div>
       <div class="sg-v8-grid">
         ${card('🔎','Product AI','Rank applicable standards from a product description','openProduct')}
@@ -28,7 +28,8 @@
         ${card('⚠️','Issue Report','Create a structured complaint draft','openIssue')}
       </div>
       <div class="sg-v8-section"><div class="section-head"><div><h2>Live feature status</h2><p class="sg-v8-muted">Functional means the workflow is implemented. Official BIS decisions remain source-bound.</p></div><button class="btn ghost" type="button" onclick="runV8SelfTest()">Run self-test</button></div><div id="v8Status" class="sg-v8-grid"><div class="sg-v8-card">Loading…</div></div><div id="v8SelfTest" class="sg-v8-result"></div></div>
-      <div id="v8Tool" class="sg-v8-output"></div>`;
+      <div id="v8Tool" class="sg-v8-output"></div>
+      <footer class="sg-v8-context">BIS SmartGuide • SIH 2026 • Problem Statement 26107 • Prototype intelligence layer — verify final requirements with official BIS sources.</footer>`;
     m.appendChild(s);
   }
   function tool(title,body){const el=$('v8Tool');if(!el)return;el.innerHTML=`<div class="sg-v8-card sg-v8-tool"><div class="section-head"><div><h2>${title}</h2></div><button class="btn" type="button" onclick="$('v8Tool').innerHTML=''">Close</button></div>${body}</div>`;el.scrollIntoView({behavior:'smooth',block:'start'})}
