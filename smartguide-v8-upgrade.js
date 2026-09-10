@@ -1,4 +1,4 @@
-/* BIS SmartGuide V8.6 integration layer. Keeps the existing V6/V8 UI and adds polished evidence-safe workflows. */
+/* BIS SmartGuide V8.7 integration layer. Keeps the existing V6/V8 UI and adds polished evidence-safe workflows. */
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
@@ -12,16 +12,16 @@
     return data;
   }
   function injectStyles(){
-    if(document.getElementById('sg-v86-style')) return;
-    const s=document.createElement('style'); s.id='sg-v86-style'; s.textContent=`
-      .sg-v86-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff);margin-bottom:12px}
-      .sg-v86-kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#6f86a4;font-weight:950}.sg-v86-summary h3{margin:5px 0 7px;font-size:20px}.sg-v86-summary p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
-      .sg-v86-score{text-align:center;min-width:105px}.sg-v86-score b{display:block;font-size:30px;color:var(--blue);line-height:1}.sg-v86-score span{display:block;margin-top:5px;color:var(--muted);font-size:10px;font-weight:850}
-      .sg-v86-meter{height:7px;background:#e9eef5;border-radius:99px;overflow:hidden;margin-top:12px}.sg-v86-meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#45b0ff);border-radius:99px}
-      .sg-v86-standard{border:1px solid var(--line);border-radius:15px;padding:16px;margin:10px 0;background:#fff}.sg-v86-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.sg-v86-no{color:var(--blue);font-weight:950;font-size:13px}.sg-v86-title{font-size:15px;font-weight:900;margin-top:4px}.sg-v86-score-small{font-size:20px;font-weight:950;color:var(--blue);white-space:nowrap}.sg-v86-standard p{margin:8px 0;color:var(--muted);font-size:12px;line-height:1.5}.sg-v86-reasons{display:grid;gap:5px;margin:10px 0}.sg-v86-reason{font-size:11px;color:#536781}.sg-v86-reason:before{content:'✓';color:var(--success);font-weight:950;margin-right:7px}.sg-v86-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.sg-v86-btn{border:1px solid var(--line);background:#fff;color:var(--blue);border-radius:9px;padding:7px 10px;font-size:10px;font-weight:900}.sg-v86-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
-      .sg-v86-empty{padding:20px;border:1px solid #f1dfb6;background:#fff8e9;border-radius:14px}.sg-v86-empty h3{margin:0 0 7px;font-size:15px}.sg-v86-empty p{margin:5px 0;color:#72500d;font-size:12px;line-height:1.55}.sg-v86-suggestions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.sg-v86-chip{border:1px solid #cde5fb;background:#eef7ff;color:#24527f;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900;cursor:pointer}
-      .sg-v86-evidence{margin-top:12px;padding:13px;border:1px solid #cfe1f5;background:#f8fbff;border-radius:13px}.sg-v86-evidence b{font-size:11px}.sg-v86-evidence div{margin-top:5px;color:var(--muted);font-size:10px;line-height:1.5}.sg-v86-raw{margin-top:10px}.sg-v86-raw summary{cursor:pointer;color:#6d7e98;font-size:10px;font-weight:850}.sg-v86-raw pre{margin-top:7px;max-height:260px;overflow:auto;background:#0b1428;color:#dce7f5;border-radius:11px;padding:12px;font-size:10px}
-      @media(max-width:650px){.sg-v86-summary{grid-template-columns:1fr}.sg-v86-score{text-align:left}.sg-v86-top{flex-direction:column}.sg-v86-score-small{font-size:17px}}
+    if(document.getElementById('sg-v87-style')) return;
+    const s=document.createElement('style'); s.id='sg-v87-style'; s.textContent=`
+      .sg-v87-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:18px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,#f8fbff,#fff);margin-bottom:12px}
+      .sg-v87-kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:#6f86a4;font-weight:950}.sg-v87-summary h3{margin:5px 0 7px;font-size:20px}.sg-v87-summary p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+      .sg-v87-score{text-align:center;min-width:105px}.sg-v87-score b{display:block;font-size:30px;color:var(--blue);line-height:1}.sg-v87-score span{display:block;margin-top:5px;color:var(--muted);font-size:10px;font-weight:850}
+      .sg-v87-meter{height:7px;background:#e9eef5;border-radius:99px;overflow:hidden;margin-top:12px}.sg-v87-meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),#45b0ff);border-radius:99px}
+      .sg-v87-standard{border:1px solid var(--line);border-radius:15px;padding:16px;margin:10px 0;background:#fff}.sg-v87-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.sg-v87-no{color:var(--blue);font-weight:950;font-size:13px}.sg-v87-title{font-size:15px;font-weight:900;margin-top:4px}.sg-v87-score-small{font-size:20px;font-weight:950;color:var(--blue);white-space:nowrap}.sg-v87-standard p{margin:8px 0;color:var(--muted);font-size:12px;line-height:1.5}.sg-v87-reasons{display:grid;gap:5px;margin:10px 0}.sg-v87-reason{font-size:11px;color:#536781}.sg-v87-reason:before{content:'✓';color:var(--success);font-weight:950;margin-right:7px}.sg-v87-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.sg-v87-btn{border:1px solid var(--line);background:#fff;color:var(--blue);border-radius:9px;padding:7px 10px;font-size:10px;font-weight:900;text-decoration:none}.sg-v87-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+      .sg-v87-empty{padding:20px;border:1px solid #f1dfb6;background:#fff8e9;border-radius:14px}.sg-v87-empty h3{margin:0 0 7px;font-size:15px}.sg-v87-empty p{margin:5px 0;color:#72500d;font-size:12px;line-height:1.55}.sg-v87-suggestions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.sg-v87-chip{border:1px solid #cde5fb;background:#eef7ff;color:#24527f;border-radius:999px;padding:7px 10px;font-size:10px;font-weight:900;cursor:pointer}
+      .sg-v87-evidence{margin-top:12px;padding:13px;border:1px solid #cfe1f5;background:#f8fbff;border-radius:13px}.sg-v87-evidence b{font-size:11px}.sg-v87-evidence div{margin-top:5px;color:var(--muted);font-size:10px;line-height:1.5}.sg-v87-raw{margin-top:10px}.sg-v87-raw summary{cursor:pointer;color:#6d7e98;font-size:10px;font-weight:850}.sg-v87-raw pre{margin-top:7px;max-height:260px;overflow:auto;background:#0b1428;color:#dce7f5;border-radius:11px;padding:12px;font-size:10px}
+      @media(max-width:650px){.sg-v87-summary{grid-template-columns:1fr}.sg-v87-score{text-align:left}.sg-v87-top{flex-direction:column}.sg-v87-score-small{font-size:17px}}
     `; document.head.appendChild(s);
   }
   function tool(title, body) {
@@ -45,29 +45,30 @@
     const status=String(data.status||'').toUpperCase();
     const matched=list.length>0 && status!=='NO_MATCH';
     const sourceNames=(data.sources||[]).map(s=>s && (s.name||s.title)).filter(Boolean).slice(0,4);
-    let html=`<div class="sg-v86-summary"><div><div class="sg-v86-kicker">Product intelligence</div><h3>${esc(q)}</h3><p>${matched?'Potentially applicable BIS standards ranked using the available SmartGuide evidence.':'No sufficiently supported standard was found in the current SmartGuide corpus. This is a search limitation, not a certification decision.'}</p>${pct?`<div class="sg-v86-meter"><i style="width:${pct}%"></i></div>`:''}</div><div class="sg-v86-score"><b>${pct}%</b><span>${matched?'confidence':'confidence'}</span></div></div>`;
+    let html=`<div class="sg-v87-summary"><div><div class="sg-v87-kicker">Product intelligence</div><h3>${esc(q)}</h3><p>${matched?'Potentially applicable BIS standards ranked using the available SmartGuide evidence.':'No sufficiently supported standard was found in the current SmartGuide corpus. This is a search limitation, not a certification decision.'}</p>${pct?`<div class="sg-v87-meter"><i style="width:${pct}%"></i></div>`:''}</div><div class="sg-v87-score"><b>${pct}%</b><span>confidence</span></div></div>`;
     if(matched){
-      list.slice(0,6).forEach((s,i)=>{
+      list.slice(0,6).forEach(s=>{
         const scoreRaw=Number(s.match_score ?? s.score ?? s.raw_match_score);
         const score=Number.isFinite(scoreRaw)?Math.round(scoreRaw>1?scoreRaw:scoreRaw*100):null;
         const title=s.title || s.name || 'Applicable standard candidate';
         const no=s.standard_number || s.number || 'Standard number unavailable';
         const reasons=Array.isArray(s.match_reasons)?s.match_reasons:(Array.isArray(s.reasons)?s.reasons:[]);
         const source=s.official_source || s.source_url || s.source;
-        html+=`<div class="sg-v86-standard"><div class="sg-v86-top"><div><div class="sg-v86-no">${esc(no)}</div><div class="sg-v86-title">${esc(title)}</div></div>${score!==null?`<div class="sg-v86-score-small">${score}%</div>`:''}</div>`;
+        html+=`<div class="sg-v87-standard"><div class="sg-v87-top"><div><div class="sg-v87-no">${esc(no)}</div><div class="sg-v87-title">${esc(title)}</div></div>${score!==null?`<div class="sg-v87-score-small">${score}%</div>`:''}</div>`;
         if(s.description) html+=`<p>${esc(s.description)}</p>`;
-        if(score!==null) html+=`<div class="sg-v86-meter"><i style="width:${Math.max(0,Math.min(100,score))}%"></i></div>`;
-        if(reasons.length) html+=`<div class="sg-v86-reasons">${reasons.slice(0,5).map(r=>`<div class="sg-v86-reason">${esc(typeof r==='string'?r:(r.reason||r.text||JSON.stringify(r)))}</div>`).join('')}</div>`;
-        html+=`<div class="sg-v86-actions">${source?`<a class="sg-v86-btn" href="${esc(source)}" target="_blank" rel="noopener">Open source ↗</a>`:''}<button class="sg-v86-btn primary" type="button" onclick="window.sgUseStandard?.(${JSON.stringify(no)})">Use for compliance</button></div></div>`;
+        if(score!==null) html+=`<div class="sg-v87-meter"><i style="width:${Math.max(0,Math.min(100,score))}%"></i></div>`;
+        if(reasons.length) html+=`<div class="sg-v87-reasons">${reasons.slice(0,5).map(r=>`<div class="sg-v87-reason">${esc(typeof r==='string'?r:(r.reason||r.text||JSON.stringify(r)))}</div>`).join('')}</div>`;
+        html+=`<div class="sg-v87-actions">${source?`<a class="sg-v87-btn" href="${esc(source)}" target="_blank" rel="noopener">Open source ↗</a>`:''}<button class="sg-v87-btn primary" type="button" onclick="window.sgUseStandard?.(${JSON.stringify(no)})">Use for compliance</button></div></div>`;
       });
     } else {
       const suggestions=['mobile phone','smartphone','cellular phone','mobile device'];
-      html+=`<div class="sg-v86-empty"><h3>We couldn't confidently match this product</h3><p>Try a more specific product description. <b>“mobile”</b> is broad and may not map to a single BIS product category in the current corpus.</p><div class="sg-v86-suggestions">${suggestions.map(x=>`<button class="sg-v86-chip" type="button" onclick="window.sgRetryProduct?.(${JSON.stringify(x)})">${esc(x)}</button>`).join('')}</div></div>`;
+      html+=`<div class="sg-v87-empty"><h3>We couldn't confidently match this product</h3><p>Try a more specific product description. <b>${esc(q)}</b> is broad and may not map to a single BIS product category in the current corpus.</p><div class="sg-v87-suggestions">${suggestions.map(x=>`<button class="sg-v87-chip" type="button" onclick="window.sgRetryProduct?.(${JSON.stringify(x)})">${esc(x)}</button>`).join('')}</div></div>`;
     }
-    if(sourceNames.length) html+=`<div class="sg-v86-evidence"><b>Evidence sources</b><div>${sourceNames.map(esc).join(' · ')}</div></div>`;
+    if(sourceNames.length) html+=`<div class="sg-v87-evidence"><b>Evidence sources</b><div>${sourceNames.map(esc).join(' · ')}</div></div>`;
     const notice=data.prototype_notice || data.notice || 'AI-assisted screening only. Verify the current applicable BIS standard, amendment, QCO and official registry before acting.';
     html+=`<div class="notice" style="margin-top:12px">${esc(notice)}</div>`;
-    html+=`<details class="sg-v86-raw"><summary>Developer details</summary><pre>${esc(pretty(data))}</pre></details>`;
+    html+=`<details class="sg-v87-raw"><summary>Developer details</summary><pre>${esc(pretty(data))}</pre></details>`;
+    el.dataset.sgV87Rendered='1';
     el.innerHTML=html;
     return true;
   }
@@ -79,18 +80,20 @@
     if(btn) btn.click();
   };
   window.sgRetryProduct = async product => {
-    const el=$('v8Out'); if(el) el.innerHTML='<div class="sg-v8-loading">Searching the BIS standards corpus…</div>';
+    const el=$('v8Out'); if(el){el.dataset.sgV87Rendered='1';el.innerHTML='<div class="sg-v8-loading">Searching the BIS standards corpus…</div>';}
     try{out(await api('/v8/product-intelligence',jsonBody({query:product})));}catch(e){rawOut({error:e.message});}
   };
 
   // Catch Product Intelligence results produced by the legacy UI as well as V8 workflows.
   function observeLegacyResults(){
-    const root=document.body; if(!root || root.dataset.sgV86Observer==='1')return;
-    root.dataset.sgV86Observer='1';
+    const root=document.body; if(!root || root.dataset.sgV87Observer==='1')return;
+    root.dataset.sgV87Observer='1';
     const observer=new MutationObserver(()=>{
-      const pre=document.querySelector('#v8Out pre'); if(!pre || pre.dataset.sgV86Done==='1')return;
+      const el=$('v8Out');
+      if(!el || el.dataset.sgV87Rendered==='1')return;
+      const pre=el.querySelector('pre'); if(!pre)return;
       const text=pre.textContent||''; if(!text.includes('ranked_standards') && !text.includes('"feature": "Product intelligence"'))return;
-      try{const data=JSON.parse(text); if(renderProductIntelligence(data)) pre.dataset.sgV86Done='1';}catch{}
+      try{const data=JSON.parse(text); renderProductIntelligence(data);}catch{}
     });
     observer.observe(root,{subtree:true,childList:true,characterData:true});
   }
