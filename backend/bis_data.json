@@ -57,9 +57,19 @@
         "personal computer",
         "ultrabook",
         "desktop computer",
-        "automatic data processing machine"
+        "automatic data processing machine",
+        "mobile phone",
+        "mobile phones",
+        "smartphone",
+        "smartphones",
+        "cell phone",
+        "cell phones",
+        "cellular phone",
+        "mobile handset",
+        "telecom handset",
+        "wireless handset"
       ],
-      "description": "Safety standard applicable to audio, video, information and communication technology equipment. Replaces IS 13252 (Part 1): 2010. Mandatory under BIS Compulsory Registration Scheme (CRS) for laptops, tablets and computers.",
+      "description": "Safety standard applicable to audio, video, information and communication technology equipment. Replaces IS 13252 (Part 1): 2010. Mandatory under BIS Compulsory Registration Scheme (CRS) for laptops, tablets and computers. Product terminology also includes mobile phones and related cellular handsets for discovery; exact applicability remains subject to the current BIS/CRS scope.",
       "requirements": [
         "Protection against electric shock (energy source classification ES1, ES2, ES3)",
         "Electrically-caused fire safety and thermal limits (PS1, PS2, PS3)",

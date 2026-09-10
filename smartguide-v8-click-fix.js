@@ -23,7 +23,7 @@
       card.setAttribute('role','button');
       card.setAttribute('tabindex','0');
       const open = card.querySelector('.sg-v8-open');
-      if(open) open.textContent='Open workflow →';
+      if(open) open.textContent='Get started →';
       const run=()=>window[fn]();
       card.addEventListener('click', e => { if(e.target.closest('button,a,input,textarea,select')) return; run(); });
       card.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){e.preventDefault();run();} });
