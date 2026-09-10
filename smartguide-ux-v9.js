@@ -1,4 +1,4 @@
-/* BIS SmartGuide UX v9.3 — task-first language, guided workflows, lab navigation and accessibility. */
+/* BIS SmartGuide UX v9.4 — task-first language, guided workflows, lab navigation and accessibility. */
 (() => {
   'use strict';
 
@@ -11,7 +11,17 @@
     '3d cad / stl': ['Check my 3D file →', 'Review available product-design information before compliance testing.'],
     'label / packaging': ['Check my label →', 'Review important BIS marking and packaging information.'],
     'procurement ai': ['Check a product before buying →', 'Screen standards, certification evidence and test information before approval.'],
-    'issue report': ['Create a complaint draft →', 'Prepare a structured report for submission through official BIS channels.']
+    'issue report': ['Create a complaint draft →', 'Prepare a structured report for submission through official BIS channels.'],
+    'document intelligence': ['Analyze a document →', 'Extract useful product, standard and evidence signals from a document.'],
+    'real ocr': ['Run OCR →', 'Extract visible ISI, CM/L, R-number and HUID candidates from an image.'],
+    'qr / barcode': ['Scan a code →', 'Decode a QR or barcode and classify the destination or product signal.'],
+    'mark verification': ['Verify a mark →', 'Screen ISI / CM-L references and show the verification boundary.'],
+    'lab intelligence': ['Find a laboratory →', 'Match a product, standard and test scope to suitable facilities.'],
+    'test report ai': ['Analyze a test report →', 'Extract reported measurements without fabricating limits.'],
+    'amendment impact': ['Check amendment impact →', 'Review supplied amendment evidence against the selected product or standard.'],
+    'agent router': ['Ask SmartGuide →', 'Route your question to the relevant standards, RAG or compliance workflow.'],
+    'compliance passport': ['Open compliance passport →', 'Review persistent assessment evidence and traceability.'],
+    'pdf reports': ['Generate a report →', 'Create an evidence-aware report from the available SmartGuide results.']
   };
 
   const navLabels = {
@@ -38,19 +48,27 @@
       const h = card.querySelector('h3');
       const key = norm(h && h.textContent);
       const cfg = labels[key];
-      if (!cfg) return;
       const open = card.querySelector('.sg-v8-open');
-      if (open && open.textContent !== cfg[0]) open.textContent = cfg[0];
-      const p = card.querySelector('p');
-      if (p && p.textContent !== cfg[1]) p.textContent = cfg[1];
-      card.classList.add('sg-friendly-card');
-      const aria = cfg[0].replace(/\s*→$/, '');
-      if (card.getAttribute('aria-label') !== aria) card.setAttribute('aria-label', aria);
+      if (cfg) {
+        if (open && open.textContent !== cfg[0]) open.textContent = cfg[0];
+        const p = card.querySelector('p');
+        if (p && p.textContent !== cfg[1]) p.textContent = cfg[1];
+        card.classList.add('sg-friendly-card');
+        const aria = cfg[0].replace(/\s*→$/, '');
+        if (card.getAttribute('aria-label') !== aria) card.setAttribute('aria-label', aria);
+      } else if (open && /^open workflow\s*→?$/i.test(open.textContent.trim())) {
+        // No feature should expose the old generic placeholder CTA.
+        open.textContent = 'Get started →';
+        card.classList.add('sg-friendly-card');
+      }
     });
 
-    document.querySelectorAll('button, a').forEach(el => {
+    // Also catch workflow labels rendered outside the feature-card selector.
+    document.querySelectorAll('.sg-v8-open, button, a').forEach(el => {
       const t = norm(el.textContent);
-      if ((t === 'open workflow →' || t === 'open workflow') && el.textContent !== 'Get started →') el.textContent = 'Get started →';
+      if ((t === 'open workflow →' || t === 'open workflow') && el.textContent !== 'Get started →') {
+        el.textContent = 'Get started →';
+      }
     });
 
     document.querySelectorAll('.nav button, .nav a').forEach(el => {
@@ -104,8 +122,6 @@
     document.head.appendChild(s);
   }
 
-  // Route the new home task cards to the real page ids used by index.html.
-  // The ISI / CM-L task intentionally opens the V8 verification workflow.
   function go(pageName, title) {
     try {
       const routes = {
@@ -202,5 +218,5 @@
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-  [400,1200,2500].forEach(ms=>setTimeout(boot,ms));
+  [400,1200,2500,5000].forEach(ms=>setTimeout(boot,ms));
 })();
