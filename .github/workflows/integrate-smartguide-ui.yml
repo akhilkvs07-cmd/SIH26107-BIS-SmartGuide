@@ -55,9 +55,15 @@ jobs:
           })();
           </script>'''
 
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-3">'
-          js='<script src="smartguide-v8.js?v=20260910-v8-3"></script>'
-          fix='<script src="command-center-fix.js?v=20260910-v8-3"></script>'
+          # Make Advanced Intelligence a real sidebar item in the HTML itself.
+          # Do not rely on JavaScript timing to create the navigation entry.
+          nav_button = '''<button id="v8Nav" type="button" onclick="if(window.page){window.page('v8',this,'Advanced Intelligence')}" aria-label="Open Advanced Intelligence"><span>✦</span><span>Advanced Intelligence</span></button>'''
+          if 'id="v8Nav"' not in text:
+              text = text.replace('<nav class="nav">', '<nav class="nav">\n    ' + nav_button, 1)
+
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-4">'
+          js='<script src="smartguide-v8.js?v=20260910-v8-4"></script>'
+          fix='<script src="command-center-fix.js?v=20260910-v8-4"></script>'
           text=text.replace('</head>',cleanup+'\n'+css+'\n</head>',1)
           text=text.replace('</body>',js+'\n'+fix+'\n</body>',1)
           if '<link rel="manifest"' not in text:
@@ -68,4 +74,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Force Advanced Intelligence V8 and clear legacy cache" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Make Advanced Intelligence navigation static" && git push; fi
