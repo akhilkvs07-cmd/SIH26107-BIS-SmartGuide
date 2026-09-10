@@ -1,0 +1,1 @@
+Deployment trigger for the SmartGuide browser failsafe integration. This file is intentionally harmless and can be removed later.
