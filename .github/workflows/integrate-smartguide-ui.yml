@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install rebuilt Advanced Intelligence UI hooks
+      - name: Install clean Advanced Intelligence UI
         shell: python
         run: |
           from pathlib import Path
@@ -23,55 +23,47 @@ jobs:
           p=Path('index.html')
           text=p.read_text(encoding='utf-8')
 
-          # Remove every legacy V6/V7/universal injection so the old layer cannot boot.
-          patterns = [
-              r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v7[^"\']*["\']\s*>',
-              r'<script\s+src=["\']smartguide-v7[^"\']*["\']\s*></script>',
-              r'<script\s+src=["\']smartguide-universal\.js[^"\']*["\']\s*></script>',
-              r'<script\s+src=["\']smartguide-navigation-fix\.js[^"\']*["\']\s*></script>',
-              r'<script\s+src=["\']smartguide-v6(?:-click-fix)?\.js(?:\?[^"\']*)?["\']\s*></script>',
-              r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>',
-              r'<script\s+src=["\']command-center-fix\.js(?:\?[^"\']*)?["\']\s*></script>'
+          patterns=[
+            r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v7[^"\']*["\']\s*>',
+            r'<script\s+src=["\']smartguide-v7[^"\']*["\']\s*></script>',
+            r'<script\s+src=["\']smartguide-universal\.js[^"\']*["\']\s*></script>',
+            r'<script\s+src=["\']smartguide-navigation-fix\.js[^"\']*["\']\s*></script>',
+            r'<script\s+src=["\']smartguide-v6(?:-click-fix)?\.js(?:\?[^"\']*)?["\']\s*></script>',
+            r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>',
+            r'<script\s+src=["\']command-center-fix\.js(?:\?[^"\']*)?["\']\s*></script>'
           ]
           for pattern in patterns:
-              text = re.sub(pattern, '', text, flags=re.I)
+            text=re.sub(pattern,'',text,flags=re.I)
 
-          # Remove any previous cache/service-worker cleanup blocks inserted by this workflow.
-          text = re.sub(r'<script data-sg-cache-cleanup="1">.*?</script>\s*', '', text, flags=re.I|re.S)
-
-          cleanup = '''<script data-sg-cache-cleanup="1">
+          text=re.sub(r'<script data-sg-cache-cleanup="1">.*?</script>\s*','',text,flags=re.I|re.S)
+          cleanup='''<script data-sg-cache-cleanup="1">
           (() => {
             try {
-              if (location.hash === '#sw-disabled') {
-                history.replaceState(null, document.title, location.pathname + location.search);
-              }
-              if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.map(r => r.unregister()))).catch(() => {});
-              }
-              if ('caches' in window) {
-                caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).catch(() => {});
-              }
-            } catch (_) {}
+              if(location.hash==='#sw-disabled') history.replaceState(null,document.title,location.pathname+location.search);
+              if('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).catch(()=>{});
+              if('caches' in window) caches.keys().then(ks=>Promise.all(ks.map(k=>caches.delete(k)))).catch(()=>{});
+            } catch(_){}
           })();
           </script>'''
 
-          # Make Advanced Intelligence a real sidebar item in the HTML itself.
-          # Do not rely on JavaScript timing to create the navigation entry.
-          nav_button = '''<button id="v8Nav" type="button" onclick="if(window.page){window.page('v8',this,'Advanced Intelligence')}" aria-label="Open Advanced Intelligence"><span>✦</span><span>Advanced Intelligence</span></button>'''
-          if 'id="v8Nav"' not in text:
-              text = text.replace('<nav class="nav">', '<nav class="nav">\n    ' + nav_button, 1)
+          nav_button='''<button id="v8Nav" type="button" aria-label="Open Advanced Intelligence"><span>✦</span><span>Advanced Intelligence</span></button>'''
+          text=re.sub(r'<button[^>]*id=["\']v8Nav["\'][\s\S]*?</button>\s*','',text,flags=re.I)
+          if '<nav class="nav">' in text:
+            text=text.replace('<nav class="nav">','<nav class="nav">\n    '+nav_button,1)
 
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-4">'
-          js='<script src="smartguide-v8.js?v=20260910-v8-4"></script>'
-          fix='<script src="command-center-fix.js?v=20260910-v8-4"></script>'
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-5">'
+          js='<script src="smartguide-v8.js?v=20260910-v8-5"></script>'
+          fix='<script src="command-center-fix.js?v=20260910-v8-5"></script>'
+          text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v8\.css(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
+          text=re.sub(r'<script\s+src=["\']smartguide-v8\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
           text=text.replace('</head>',cleanup+'\n'+css+'\n</head>',1)
           text=text.replace('</body>',js+'\n'+fix+'\n</body>',1)
           if '<link rel="manifest"' not in text:
-              text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
+            text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
           p.write_text(text,encoding='utf-8')
 
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Make Advanced Intelligence navigation static" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Clean Advanced Intelligence UI integration" && git push; fi
