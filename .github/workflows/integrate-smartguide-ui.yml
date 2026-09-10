@@ -22,29 +22,26 @@ jobs:
           import re
           p=Path('index.html')
           text=p.read_text(encoding='utf-8')
-          for layer in [
-              '<link rel="stylesheet" href="smartguide-v7.css">',
-              '<script src="smartguide-v7.js"></script>',
-              '<script src="smartguide-v7-fix.js"></script>',
-              '<script src="smartguide-universal.js"></script>',
-              '<script src="smartguide-navigation-fix.js"></script>'
-          ]: text=text.replace(layer,'')
-          text=re.sub(r'<script\s+src=["\']smartguide-v6\.js(?:\?[^"\']*)?["\']\s*></script>','',text)
-          text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>','',text)
-          text=re.sub(r'<script\s+src=["\']smartguide-v7[^"\']*["\']\s*></script>','',text)
-          text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v7[^"\']*["\']\s*>','',text)
-          text=re.sub(r'<script>\s*/\* SmartGuide stale-PWA cleanup:.*?</script>\s*','',text,flags=re.S)
-          text=re.sub(r'<script\s+src=["\']smartguide-v6-click-fix\.js(?:\?[^"\']*)?["\']\s*></script>','',text)
-          css='<link rel="stylesheet" href="smartguide-v6.css?v=20260910-v8-1">'
-          js='<script src="smartguide-v6.js?v=20260910-v8-1"></script>'
-          fix='<script src="smartguide-v6-click-fix.js?v=20260910-v8-1"></script>'
+          for pattern in [
+              r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v7[^"\']*["\']\s*>',
+              r'<script\s+src=["\']smartguide-v7[^"\']*["\']\s*></script>',
+              r'<script\s+src=["\']smartguide-universal\.js[^"\']*["\']\s*></script>',
+              r'<script\s+src=["\']smartguide-navigation-fix\.js[^"\']*["\']\s*></script>',
+              r'<script\s+src=["\']smartguide-v6(?:-click-fix)?\.js(?:\?[^"\']*)?["\']\s*></script>',
+              r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>'
+          ]:
+              text=re.sub(pattern,'',text,flags=re.I)
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-2">'
+          js='<script src="smartguide-v8.js?v=20260910-v8-2"></script>'
+          fix='<script src="smartguide-v8-click-fix.js?v=20260910-v8-2"></script>'
           text=text.replace('</head>',css+'\n</head>',1)
           text=text.replace('</body>',js+'\n'+fix+'\n</body>',1)
-          if '<link rel="manifest"' not in text: text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
+          if '<link rel="manifest"' not in text:
+              text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
           p.write_text(text,encoding='utf-8')
 
       - name: Commit integration
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Install rebuilt Advanced Intelligence V8 hooks" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Install Advanced Intelligence V8 hooks" && git push; fi
