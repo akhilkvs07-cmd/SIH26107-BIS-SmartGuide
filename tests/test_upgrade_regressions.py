@@ -1,0 +1,45 @@
+"""Regression tests for the SIH demo-critical SmartGuide journeys."""
+import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+BACKEND_DIR = os.path.join(BASE_DIR, "backend")
+if BACKEND_DIR not in sys.path:
+    sys.path.insert(0, BACKEND_DIR)
+
+from app_upgrade import app
+
+
+def test_mobile_phone_finds_electronics_standard():
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        response = client.post("/v8/product-intelligence", json={"query": "mobile phone"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data["classification"] != "NON_PRODUCT"
+        candidates = data.get("candidate_standards", [])
+        numbers = " ".join(str(x.get("standard_number", "")) for x in candidates)
+        assert numbers, "mobile phone must not silently return an empty standards list"
+        assert "62368" in numbers or "16046" in numbers or "13252" in numbers
+
+
+def test_mobile_phone_typo_and_description_do_not_crash():
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        for query in ["smartphone", "cell phone", "mobile handset", "moblie phone"]:
+            response = client.post("/v8/product-intelligence", json={"query": query})
+            assert response.status_code == 200
+            data = response.get_json()
+            assert data.get("status") in {"OK", "INSUFFICIENT_EVIDENCE", "ERROR"}
+            assert data.get("data") is not None or data.get("errors")
+
+
+def test_lab_search_returns_official_verification_handoff():
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        response = client.get("/v8/labs/search?standard=IS%2FIEC%2062368-1")
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data.get("laboratories") is not None
+        resources = data.get("official_resources", {})
+        assert resources.get("bis_lims_search") or data.get("official_lims_search")
