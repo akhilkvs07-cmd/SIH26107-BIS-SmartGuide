@@ -99,6 +99,22 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 
 <link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-2">
 <link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-2">
+<script data-sg-cache-cleanup="1">
+(() => {
+  try {
+    if (location.hash === '#sw-disabled') {
+      history.replaceState(null, document.title, location.pathname + location.search);
+    }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.map(r => r.unregister()))).catch(() => {});
+    }
+    if ('caches' in window) {
+      caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).catch(() => {});
+    }
+  } catch (_) {}
+})();
+</script>
+<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-3">
 </head>
 <body>
 <div class="app">
@@ -559,7 +575,7 @@ $('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
 
 </script>
 <script src="smartguide-enhance.js"></script>
-<script src="command-center-fix.js"></script>
+
 
 
 
@@ -592,5 +608,7 @@ $('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
 <script src="smartguide-v8-click-fix.js?v=20260910-v8-2"></script>
 <script src="smartguide-v8.js?v=20260910-v8-2"></script>
 <script src="smartguide-v8-click-fix.js?v=20260910-v8-2"></script>
+<script src="smartguide-v8.js?v=20260910-v8-3"></script>
+<script src="command-center-fix.js?v=20260910-v8-3"></script>
 </body>
 </html>
