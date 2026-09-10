@@ -14,6 +14,7 @@ from compliance_upgrade import (
 )
 from advanced_features import register as register_v6
 from v7_platform import register_v7
+import platform_v8
 from platform_v8 import register as register_v8
 
 register_compliance(app)
@@ -102,6 +103,11 @@ app.view_functions["check_compliance_route"] = upgraded_check_compliance
 register_v6(app, find_matches)
 register_v7(app, find_matches)
 register_v8(app)
+
+# The repository already exposes legacy /v8 URLs. Point the overlapping routes
+# at the new source-grounded handlers rather than creating a second architecture.
+app.view_functions["v8_product_intelligence"] = platform_v8.product_intelligence
+app.view_functions["v8_labs_search"] = platform_v8.labs_match
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
