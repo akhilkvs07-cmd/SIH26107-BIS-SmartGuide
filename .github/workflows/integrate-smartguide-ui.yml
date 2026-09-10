@@ -22,19 +22,43 @@ jobs:
           import re
           p=Path('index.html')
           text=p.read_text(encoding='utf-8')
-          for pattern in [
+
+          # Remove every legacy V6/V7/universal injection so the old layer cannot boot.
+          patterns = [
               r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v7[^"\']*["\']\s*>',
               r'<script\s+src=["\']smartguide-v7[^"\']*["\']\s*></script>',
               r'<script\s+src=["\']smartguide-universal\.js[^"\']*["\']\s*></script>',
               r'<script\s+src=["\']smartguide-navigation-fix\.js[^"\']*["\']\s*></script>',
               r'<script\s+src=["\']smartguide-v6(?:-click-fix)?\.js(?:\?[^"\']*)?["\']\s*></script>',
-              r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>'
-          ]:
-              text=re.sub(pattern,'',text,flags=re.I)
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-2">'
-          js='<script src="smartguide-v8.js?v=20260910-v8-2"></script>'
-          fix='<script src="smartguide-v8-click-fix.js?v=20260910-v8-2"></script>'
-          text=text.replace('</head>',css+'\n</head>',1)
+              r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>',
+              r'<script\s+src=["\']command-center-fix\.js(?:\?[^"\']*)?["\']\s*></script>'
+          ]
+          for pattern in patterns:
+              text = re.sub(pattern, '', text, flags=re.I)
+
+          # Remove any previous cache/service-worker cleanup blocks inserted by this workflow.
+          text = re.sub(r'<script data-sg-cache-cleanup="1">.*?</script>\s*', '', text, flags=re.I|re.S)
+
+          cleanup = '''<script data-sg-cache-cleanup="1">
+          (() => {
+            try {
+              if (location.hash === '#sw-disabled') {
+                history.replaceState(null, document.title, location.pathname + location.search);
+              }
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.map(r => r.unregister()))).catch(() => {});
+              }
+              if ('caches' in window) {
+                caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).catch(() => {});
+              }
+            } catch (_) {}
+          })();
+          </script>'''
+
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-3">'
+          js='<script src="smartguide-v8.js?v=20260910-v8-3"></script>'
+          fix='<script src="command-center-fix.js?v=20260910-v8-3"></script>'
+          text=text.replace('</head>',cleanup+'\n'+css+'\n</head>',1)
           text=text.replace('</body>',js+'\n'+fix+'\n</body>',1)
           if '<link rel="manifest"' not in text:
               text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
@@ -44,4 +68,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Install Advanced Intelligence V8 hooks" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Force Advanced Intelligence V8 and clear legacy cache" && git push; fi
