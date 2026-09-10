@@ -50,20 +50,23 @@ jobs:
           mobile = c.post('/api/v8/product-intelligence', json={'query':'mobile phone'})
           assert mobile.status_code == 200
           mobile_data = mobile.get_json()
-          mobile_candidates = mobile_data.get('candidate_standards', [])
-          assert mobile_data.get('classification') != 'NON_PRODUCT'
+          mobile_payload = mobile_data.get('data') or {}
+          mobile_candidates = mobile_payload.get('candidate_standards', [])
+          assert mobile_payload.get('classification') != 'NON_PRODUCT'
           assert any('62368' in str(x.get('standard_number', '')) for x in mobile_candidates), mobile_data
 
           for alias in ['smartphone', 'cell phone', 'mobile handset']:
               alias_result = c.post('/api/v8/product-intelligence', json={'query':alias})
               assert alias_result.status_code == 200
-              assert alias_result.get_json().get('candidate_standards') is not None
+              alias_payload = alias_result.get_json().get('data') or {}
+              assert alias_payload.get('candidate_standards') is not None
 
           labs = c.get('/api/v8/labs/search?standard=IS%2FIEC%2062368-1')
           assert labs.status_code == 200
-          lab_data = labs.get_json()
+          lab_data = labs.get_json().get('data') or {}
           assert lab_data.get('laboratories') is not None
-          assert lab_data.get('official_resources', {}).get('bis_lims_search') or lab_data.get('official_lims_search')
+          resources = lab_data.get('official_resources') or {}
+          assert resources.get('bis_lims_search') or lab_data.get('official_lims_search')
 
           mark = c.post('/api/v8/verify/mark', json={'text':'ISI CM/L 1234567 IS 4246'})
           assert mark.status_code == 200 and mark.get_json()['status'] == 'SOURCE_UNAVAILABLE'
