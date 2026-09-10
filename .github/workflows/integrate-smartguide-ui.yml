@@ -51,9 +51,13 @@ jobs:
           if '<nav class="nav">' in text:
             text=text.replace('<nav class="nav">','<nav class="nav">\n    '+nav_button,1)
 
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-5">'
-          js='<script src="smartguide-v8.js?v=20260910-v8-5"></script>'
-          fix='<script src="command-center-fix.js?v=20260910-v8-5"></script>'
+          # Give AI Assistant its own icon; Advanced Intelligence keeps ✦.
+          text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦ <span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
+          text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦&nbsp;<span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
+
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-6">'
+          js='<script src="smartguide-v8.js?v=20260910-v8-6"></script>'
+          fix='<script src="command-center-fix.js?v=20260910-v8-6"></script>'
           text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v8\.css(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
           text=re.sub(r'<script\s+src=["\']smartguide-v8\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
           text=text.replace('</head>',cleanup+'\n'+css+'\n</head>',1)
@@ -66,4 +70,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Clean Advanced Intelligence UI integration" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Give AI Assistant a unique navigation icon" && git push; fi
