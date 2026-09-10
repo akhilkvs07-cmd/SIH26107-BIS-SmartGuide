@@ -105,6 +105,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 
 
 
+
 <script data-sg-cache-cleanup="1">
 (() => {
   try {
@@ -114,7 +115,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
   } catch(_){}
 })();
 </script>
-<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-7">
+<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-8">
 </head>
 <body>
 <div class="app">
@@ -123,7 +124,6 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
   <div class="side-label">Intelligence Workspace</div>
   <nav class="nav">
     <button class="active" onclick="page('dash',this,'Overview')">⌂ <span>Overview</span></button>
-    <button id="v8Nav" type="button" onclick="if(window.page){window.page('v8',this,'Advanced Features')}" aria-label="Open Advanced Features"><span>✦</span><span>Advanced Features</span></button>
     <button onclick="page('intel',this,'Product Intelligence')">◈ <span>Product Intelligence</span></button>
     <button onclick="page('finder',this,'Standard Finder')">⌕ <span>Standard Finder</span></button>
     <button onclick="page('compliance',this,'Compliance Center')">✓ <span>Compliance</span></button>
@@ -137,6 +137,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
     <button onclick="page('scanner',this,'QR / Barcode Scanner')">▣ <span>QR / Barcode</span></button><button onclick="page('assistant',this,'AI Assistant')">◎ <span>AI Assistant</span></button>
     <button onclick="page('reports',this,'Report Studio')">▤ <span>Report Studio</span></button>
     <button onclick="page('history',this,'Activity & Analytics')">◷ <span>Analytics</span></button>
+    <button id="v8Nav" type="button" onclick="if(window.page){window.page('v8',this,'Advanced Features')}" aria-label="Open Advanced Features"><span>✦</span><span>Advanced Features</span></button>
   </nav>
   <div class="side-bottom">
     <div class="system"><span class="dot"></span><b>Knowledge Engine</b><br><small id="engineSub">Agentic RAG • Connecting…</small></div>
@@ -621,7 +622,9 @@ $('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
 
 
 
-<script src="smartguide-v8.js?v=20260910-v8-7"></script>
-<script src="command-center-fix.js?v=20260910-v8-7"></script>
+
+
+<script src="smartguide-v8.js?v=20260910-v8-8"></script>
+<script src="command-center-fix.js?v=20260910-v8-8"></script>
 </body>
 </html>
