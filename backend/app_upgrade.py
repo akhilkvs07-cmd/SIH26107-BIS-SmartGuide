@@ -1,10 +1,7 @@
-"""Upgraded production entrypoint for BIS SmartGuide.
+"""Production upgrade entrypoint for BIS SmartGuide.
 
-Integrates:
-- Compliance Intelligence V4 (SQLite persistence, Compliance Passports, Document AI)
-- Advanced Intelligence Layer V6/V8 (Mark verification, Test report parsing, Lab LIMS)
-- V7 platform feature status and hybrid search
-- Universal Product Intelligence
+Keeps the existing Flask/V6 architecture and layers the V8 source-grounded
+intelligence APIs on top. Existing V4/V6/V7 routes remain available.
 """
 
 import json
@@ -17,9 +14,10 @@ from compliance_upgrade import (
 )
 from advanced_features import register as register_v6
 from v7_platform import register_v7
+from platform_v8 import register as register_v8
 
-# Register compliance blueprints and ensure database exists
 register_compliance(app)
+
 
 def _save_assessment(result, product):
     assessment_id = "BIS-" + uuid.uuid4().hex[:10].upper()
@@ -28,39 +26,28 @@ def _save_assessment(result, product):
     result["assessment_id"] = assessment_id
     result["created_at"] = created_at
     result["evidence_hash"] = evidence_hash
-
     with _db() as con:
         con.execute(
             "INSERT INTO assessments VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
             (
-                assessment_id,
-                created_at,
-                product,
+                assessment_id, created_at, product,
                 result.get("evidence", {}).get("model", ""),
                 result.get("evidence", {}).get("manufacturer", ""),
                 result.get("standard", {}).get("standard_number", ""),
-                int(result.get("score", 0)),
-                result.get("risk", "MEDIUM"),
-                result.get("status", "REVIEW"),
-                result.get("evidence_quality", "LOW"),
-                json.dumps(result, ensure_ascii=False),
-                evidence_hash
+                int(result.get("score", 0)), result.get("risk", "MEDIUM"),
+                result.get("status", "REVIEW"), result.get("evidence_quality", "LOW"),
+                json.dumps(result, ensure_ascii=False), evidence_hash
             )
         )
         for action in result.get("corrective_actions", []):
             con.execute(
                 "INSERT INTO actions VALUES (?,?,?,?,?,?,?)",
-                (
-                    uuid.uuid4().hex[:12],
-                    assessment_id,
-                    action.get("requirement", ""),
-                    action.get("priority", "MEDIUM"),
-                    action.get("action", ""),
-                    "OPEN",
-                    created_at
-                )
+                (uuid.uuid4().hex[:12], assessment_id,
+                 action.get("requirement", ""), action.get("priority", "MEDIUM"),
+                 action.get("action", ""), "OPEN", created_at)
             )
     return result
+
 
 def upgraded_document_analyze():
     file_storage = request.files.get("file")
@@ -72,30 +59,21 @@ def upgraded_document_analyze():
         return jsonify({"error": str(exc)}), 400
     except Exception as exc:
         return jsonify({"error": "Document extraction failed.", "details": str(exc)}), 422
-
-    matches = []
-    if text.strip():
-        matches = find_matches(text[:12000], 5)
+    matches = find_matches(text[:12000], 5) if text.strip() else []
     extracted = _extract_values(text)
-
-    hints = [
-        "Rated voltage/power/current specification",
-        "Product scope, model and manufacturer details",
-        "Batch test laboratory parameters and measured limits",
-        "Markings: ISI / CM-L format or CRS registration R-number"
-    ]
-
     return jsonify({
-        "filename": name,
-        "characters": len(text),
-        "characters_extracted": len(text),
+        "filename": name, "characters": len(text), "characters_extracted": len(text),
         "detected_product": matches[0].get("product") if matches else None,
-        "recommendations": matches,
-        "extracted_fields": extracted,
-        "metadata": metadata,
-        "missing_data_hints": hints,
+        "recommendations": matches, "extracted_fields": extracted, "metadata": metadata,
+        "missing_data_hints": [
+            "Rated voltage/power/current specification",
+            "Product scope, model and manufacturer details",
+            "Batch test laboratory parameters and measured limits",
+            "Markings: ISI / CM/L format or CRS registration R-number"
+        ],
         "notice": "AI-assisted document analysis — not official BIS certification."
     })
+
 
 def upgraded_check_product():
     body = request.get_json(silent=True) or {}
@@ -109,20 +87,21 @@ def upgraded_check_product():
         return jsonify(result), 404
     return jsonify(_save_assessment(result, product))
 
+
 def upgraded_check_compliance():
     product = request.args.get("product", "").strip()
     if not product:
         return jsonify({"error": "Please provide a product name"}), 400
     return jsonify(_build_assessment(product, {}, {}, ""))
 
-# Override endpoint functions
+
 app.view_functions["document_analyze"] = upgraded_document_analyze
 app.view_functions["check_product_route"] = upgraded_check_product
 app.view_functions["check_compliance_route"] = upgraded_check_compliance
 
-# Register advanced layers
 register_v6(app, find_matches)
 register_v7(app, find_matches)
+register_v8(app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
