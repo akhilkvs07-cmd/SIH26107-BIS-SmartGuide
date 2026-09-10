@@ -1,4 +1,4 @@
-/* BIS SmartGuide Advanced Intelligence — rebuilt workflow console v8. */
+/* BIS SmartGuide Advanced Intelligence — rebuilt workflow console v8.1. */
 (() => {
   'use strict';
   const API='https://sih26107-bis-smartguide-api.onrender.com';
@@ -6,25 +6,32 @@
   const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const pretty=x=>{try{return JSON.stringify(x,null,2)}catch{return String(x)}};
   async function api(path,opt={}){const r=await fetch(API+path,opt);let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||d.message||`Request failed (${r.status})`);return d}
-  function nav(){const n=document.querySelector('.nav');if(!n||$('v8Nav'))return;const b=document.createElement('button');b.id='v8Nav';b.innerHTML='<span>✦</span><span>Advanced Intelligence</span>';b.onclick=()=>{if(window.page)window.page('v8',b,'Advanced Intelligence');loadStatus()};n.appendChild(b)}
   function card(icon,title,desc,fn){return `<button class="sg-v8-card sg-v8-feature" onclick="${fn}()" type="button"><span class="sg-v8-icon">${icon}</span><h3>${title}</h3><p>${desc}</p><span class="sg-v8-open">Open workflow →</span></button>`}
-  function page(){if($('v8'))return;const m=document.querySelector('.content');if(!m)return;const s=document.createElement('section');s.id='v8';s.className='page';s.innerHTML=`
-    <div class="section-head"><div><h2>Advanced Intelligence</h2><p>Rebuilt source-grounded workflows for product intelligence, verification, testing, laboratories, engineering and reporting.</p></div><span class="sg-v8-badge">ADVANCED V8</span></div>
-    <div class="sg-v8-kpis"><div class="sg-v8-kpi"><b id="v8Active">—</b><span class="sg-v8-muted">Functional workflows</span></div><div class="sg-v8-kpi"><b>V4 + V8</b><span class="sg-v8-muted">Evidence + intelligence</span></div><div class="sg-v8-kpi"><b>6</b><span class="sg-v8-muted">Official BIS sources</span></div><div class="sg-v8-kpi"><b>0</b><span class="sg-v8-muted">Automated certificates</span></div></div>
-    <div class="sg-v8-grid">
-      ${card('🔎','Product AI','Rank applicable standards from a product description','openProduct')}
-      ${card('✓','ISI / CM-L','Screen marks and licence references','openMark')}
-      ${card('📄','Test Reports','Extract measurements without inventing limits','openTest')}
-      ${card('🧪','Lab Matcher','Prepare exact IS/test scope lookup','openLab')}
-      ${card('📋','QCO + Amendment','Screen likely impact areas','openAmendment')}
-      ${card('🧊','3D CAD / STL','Scan ASCII and binary STL geometry','openSTL')}
-      ${card('🏷️','Label / Packaging','Screen key marking fields','openLabel')}
-      ${card('🛒','Procurement AI','Screen product, raw material and HS format','openProcurement')}
-      ${card('⚠️','Issue Report','Create a structured complaint draft','openIssue')}
-    </div>
-    <div class="sg-v8-section"><div class="section-head"><div><h2>Live feature status</h2><p class="sg-v8-muted">Functional means the workflow is implemented. Official BIS decisions remain source-bound.</p></div><button class="btn ghost" type="button" onclick="runV8SelfTest()">Run self-test</button></div><div id="v8Status" class="sg-v8-grid"><div class="sg-v8-card">Loading…</div></div><div id="v8SelfTest" class="sg-v8-result"></div></div>
-    <div id="v8Tool" class="sg-v8-output"></div>`;m.appendChild(s)}
-  function tool(title,body){const el=$('v8Tool');el.innerHTML=`<div class="sg-v8-card sg-v8-tool"><div class="section-head"><div><h2>${title}</h2></div><button class="btn" type="button" onclick="$('v8Tool').innerHTML=''">Close</button></div>${body}</div>`;el.scrollIntoView({behavior:'smooth',block:'start'})}
+  function page(){
+    if($('v8'))return;
+    const m=document.querySelector('.content');
+    if(!m)return;
+    const s=document.createElement('section');
+    s.id='v8'; s.className='page';
+    s.innerHTML=`
+      <div class="section-head"><div><h2>Advanced Intelligence</h2><p>Source-grounded workflows for product intelligence, verification, testing, laboratories, engineering and reporting.</p></div><span class="sg-v8-badge">ADVANCED V8.1</span></div>
+      <div class="sg-v8-kpis"><div class="sg-v8-kpi"><b id="v8Active">—</b><span class="sg-v8-muted">Functional workflows</span></div><div class="sg-v8-kpi"><b>V4 + V8</b><span class="sg-v8-muted">Evidence + intelligence</span></div><div class="sg-v8-kpi"><b>6</b><span class="sg-v8-muted">Official BIS sources</span></div><div class="sg-v8-kpi"><b>0</b><span class="sg-v8-muted">Automated certificates</span></div></div>
+      <div class="sg-v8-grid">
+        ${card('🔎','Product AI','Rank applicable standards from a product description','openProduct')}
+        ${card('✓','ISI / CM-L','Screen marks and licence references','openMark')}
+        ${card('📄','Test Reports','Extract measurements without inventing limits','openTest')}
+        ${card('🧪','Lab Matcher','Prepare exact IS/test scope lookup','openLab')}
+        ${card('📋','QCO + Amendment','Screen likely impact areas','openAmendment')}
+        ${card('🧊','3D CAD / STL','Scan ASCII and binary STL geometry','openSTL')}
+        ${card('🏷️','Label / Packaging','Screen key marking fields','openLabel')}
+        ${card('🛒','Procurement AI','Screen product, raw material and HS format','openProcurement')}
+        ${card('⚠️','Issue Report','Create a structured complaint draft','openIssue')}
+      </div>
+      <div class="sg-v8-section"><div class="section-head"><div><h2>Live feature status</h2><p class="sg-v8-muted">Functional means the workflow is implemented. Official BIS decisions remain source-bound.</p></div><button class="btn ghost" type="button" onclick="runV8SelfTest()">Run self-test</button></div><div id="v8Status" class="sg-v8-grid"><div class="sg-v8-card">Loading…</div></div><div id="v8SelfTest" class="sg-v8-result"></div></div>
+      <div id="v8Tool" class="sg-v8-output"></div>`;
+    m.appendChild(s);
+  }
+  function tool(title,body){const el=$('v8Tool');if(!el)return;el.innerHTML=`<div class="sg-v8-card sg-v8-tool"><div class="section-head"><div><h2>${title}</h2></div><button class="btn" type="button" onclick="$('v8Tool').innerHTML=''">Close</button></div>${body}</div>`;el.scrollIntoView({behavior:'smooth',block:'start'})}
   function output(d){const out=$('v8Out');if(out)out.innerHTML=`<div class="sg-v8-result-head"><b>Workflow result</b><button class="btn ghost" type="button" onclick="navigator.clipboard?.writeText(this.closest('.sg-v8-result').querySelector('pre').textContent)">Copy</button></div><pre>${esc(pretty(d))}</pre>`}
   function loading(){if($('v8Out'))$('v8Out').innerHTML='<div class="sg-v8-loading">Running SmartGuide analysis…</div>'}
   function fail(e){output({error:e?.message||String(e),hint:'Check backend health and retry.'})}
@@ -46,8 +53,9 @@
   window.runProcurement=async()=>{loading();try{output(await api('/v5/procurement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:$('v8Proc').value,hs_code:$('v8HS').value,raw_material:$('v8Raw').value})}))}catch(e){fail(e)}};
   window.openIssue=()=>tool('Issue / counterfeit report draft',`<div class="sg-v8-form"><input id="v8IssueProduct" placeholder="Product (optional)"><textarea id="v8Issue" class="full" placeholder="Describe the suspected issue, marking problem or safety concern"></textarea><div><button class="btn primary" onclick="runIssue()">Create case draft</button></div></div><div id="v8Out" class="sg-v8-result"></div>`);
   window.runIssue=async()=>{loading();try{output(await api('/v5/issue-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:$('v8IssueProduct').value,issue:$('v8Issue').value})}))}catch(e){fail(e)}};
-  window.runV8SelfTest=async()=>{const el=$('v8SelfTest');if(el)el.innerHTML='<div class="sg-v8-loading">Running backend self-test…</div>';try{const d=await api('/v5/self-test');if(el)el.innerHTML='<pre>'+esc(pretty(d))+'</pre>'}catch(e){if(el)el.innerHTML='<pre>'+esc(JSON.stringify({ok:false,error:e.message},null,2))+'</pre>')}};
-  async function loadStatus(){try{const d=await api('/v5/feature-status');const a=d.features||[];$('v8Active').textContent=a.filter(x=>String(x.status).startsWith('FUNCTIONAL')).length;$('v8Status').innerHTML=a.map(x=>`<div class="sg-v8-card sg-v8-status-card"><span class="sg-v8-badge">${esc(x.status)}</span><h3>${esc(x.feature)}</h3></div>`).join('')}catch(e){$('v8Status').innerHTML='<div class="sg-v8-card sg-v8-warn"><b>Backend unavailable</b><p>'+esc(e.message)+'</p></div>'}}
-  function init(){nav();page();setTimeout(()=>{nav();page()},500)}
+  window.runV8SelfTest=async()=>{const el=$('v8SelfTest');if(el)el.innerHTML='<div class="sg-v8-loading">Running backend self-test…</div>';try{const d=await api('/v5/self-test');if(el)el.innerHTML='<pre>'+esc(pretty(d))+'</pre>'}catch(e){if(el)el.innerHTML='<pre>'+esc(JSON.stringify({ok:false,error:e.message},null,2))+'</pre>'}};
+  async function loadStatus(){try{const d=await api('/v5/feature-status');const a=d.features||[];if($('v8Active'))$('v8Active').textContent=a.filter(x=>String(x.status).startsWith('FUNCTIONAL')).length;if($('v8Status'))$('v8Status').innerHTML=a.map(x=>`<div class="sg-v8-card sg-v8-status-card"><span class="sg-v8-badge">${esc(x.status)}</span><h3>${esc(x.feature)}</h3></div>`).join('')}catch(e){if($('v8Status'))$('v8Status').innerHTML='<div class="sg-v8-card sg-v8-warn"><b>Backend unavailable</b><p>'+esc(e.message)+'</p></div>'}}
+  window.loadV8Status=loadStatus;
+  function init(){page();loadStatus();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
