@@ -100,7 +100,7 @@ app.view_functions["document_analyze"] = upgraded_document_analyze
 app.view_functions["check_product_route"] = upgraded_check_product
 app.view_functions["check_compliance_route"] = upgraded_check_compliance
 
-register_v6(app, find_matches)
+register_v6(app)
 register_v7(app, find_matches)
 register_v8(app)
 
@@ -108,6 +108,43 @@ register_v8(app)
 # at the new source-grounded handlers rather than creating a second architecture.
 app.view_functions["v8_product_intelligence"] = platform_v8.product_intelligence
 app.view_functions["v8_labs_search"] = platform_v8.labs_match
+
+
+@app.get("/v8/compliance/passport")
+def v8_compliance_passport():
+    assessment_id = request.args.get("assessment_id", "").strip()
+    if not assessment_id:
+        return jsonify({"status": "ERROR", "error": "assessment_id is required", "notice": platform_v8.NOTICE}), 400
+    with _db() as con:
+        row = con.execute("SELECT * FROM assessments WHERE id=?", (assessment_id,)).fetchone()
+        if not row:
+            return jsonify({"status": "NOT_FOUND", "error": "Assessment not found", "notice": platform_v8.NOTICE}), 404
+        actions = con.execute("SELECT * FROM actions WHERE assessment_id=? ORDER BY created_at", (assessment_id,)).fetchall()
+    result = json.loads(row["result_json"])
+    return jsonify({
+        "status": "OK",
+        "data": {
+            "passport_id": "PASS-" + assessment_id,
+            "assessment_id": assessment_id,
+            "product": row["product"],
+            "model": row["model"],
+            "manufacturer": row["manufacturer"],
+            "standard_number": row["standard_number"],
+            "status": row["status"],
+            "risk": row["risk"],
+            "score": row["score"],
+            "evidence_hash": row["evidence_hash"],
+            "evidence": result.get("evidence", {}),
+            "corrective_actions": [dict(a) for a in actions],
+            "created_at": row["created_at"],
+        },
+        "confidence": result.get("confidence", 0),
+        "evidence": result.get("evidence", {}),
+        "source": "SmartGuide assessment history",
+        "timestamp": _now(),
+        "errors": [],
+        "notice": platform_v8.NOTICE,
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
