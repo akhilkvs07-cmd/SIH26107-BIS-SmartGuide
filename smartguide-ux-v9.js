@@ -1,4 +1,4 @@
-/* BIS SmartGuide UX v9.1 — task-first language, guided workflows, lab navigation and accessibility. */
+/* BIS SmartGuide UX v9.2 — task-first language, guided workflows, lab navigation and accessibility. */
 (() => {
   'use strict';
 
@@ -40,16 +40,17 @@
       const cfg = labels[key];
       if (!cfg) return;
       const open = card.querySelector('.sg-v8-open');
-      if (open) open.textContent = cfg[0];
+      if (open && open.textContent !== cfg[0]) open.textContent = cfg[0];
       const p = card.querySelector('p');
-      if (p) p.textContent = cfg[1];
+      if (p && p.textContent !== cfg[1]) p.textContent = cfg[1];
       card.classList.add('sg-friendly-card');
-      card.setAttribute('aria-label', cfg[0].replace(/\s*→$/, ''));
+      const aria = cfg[0].replace(/\s*→$/, '');
+      if (card.getAttribute('aria-label') !== aria) card.setAttribute('aria-label', aria);
     });
 
     document.querySelectorAll('button, a').forEach(el => {
       const t = norm(el.textContent);
-      if (t === 'open workflow →' || t === 'open workflow') el.textContent = 'Get started →';
+      if ((t === 'open workflow →' || t === 'open workflow') && el.textContent !== 'Get started →') el.textContent = 'Get started →';
     });
 
     document.querySelectorAll('.nav button, .nav a').forEach(el => {
@@ -57,22 +58,23 @@
       Object.keys(navLabels).forEach(k => {
         if (text === k || text.endsWith(k)) {
           const span = el.querySelector('span:last-child');
-          if (span) span.textContent = navLabels[k];
+          if (span && span.textContent !== navLabels[k]) span.textContent = navLabels[k];
         }
       });
     });
 
     const productInput = document.querySelector('#productInput, #product, input[name="product"], #piProduct');
     if (productInput) {
-      productInput.setAttribute('placeholder', 'Try: mobile phone, gas stove, laptop, PVC cable…');
+      const placeholder = 'Try: mobile phone, gas stove, laptop, PVC cable…';
+      if (productInput.getAttribute('placeholder') !== placeholder) productInput.setAttribute('placeholder', placeholder);
       productInput.setAttribute('aria-label', 'Product name or description');
     }
   }
 
   function injectStyles() {
-    if (document.getElementById('sg-v91-style')) return;
+    if (document.getElementById('sg-v92-style')) return;
     const s = document.createElement('style');
-    s.id = 'sg-v91-style';
+    s.id = 'sg-v92-style';
     s.textContent = `
       .sg-friendly-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
       .sg-friendly-card:hover { transform: translateY(-2px); }
@@ -151,7 +153,6 @@
   }
 
   function addMapLinks() {
-    // Enhance laboratory result cards without claiming live location or live lab availability.
     document.querySelectorAll('[data-lab-address], .lab-card, .laboratory-card').forEach(card => {
       if (card.querySelector('.sg-map-btn')) return;
       const address = card.getAttribute('data-lab-address') || card.querySelector('.address')?.textContent;
@@ -166,9 +167,16 @@
   }
 
   function boot() {
-    injectStyles(); applyLabels(); addHelpStrip(); addTaskStrip(); addMapLinks();
+    injectStyles();
+    applyLabels();
+    addHelpStrip();
+    addTaskStrip();
+    addMapLinks();
   }
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
-  [250,800,1600,3000].forEach(ms=>setTimeout(boot,ms));
-  new MutationObserver(()=>{ applyLabels(); addMapLinks(); }).observe(document.documentElement,{childList:true,subtree:true});
+  [400,1200,2500].forEach(ms=>setTimeout(boot,ms));
+
+  // Deliberately no MutationObserver here. The previous observer watched DOM changes
+  // caused by applyLabels itself, creating a mutation feedback loop and excessive work.
 })();
