@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install clean Advanced Intelligence UI
+      - name: Install clean Advanced Features UI
         shell: python
         run: |
           from pathlib import Path
@@ -46,18 +46,21 @@ jobs:
           })();
           </script>'''
 
-          nav_button='''<button id="v8Nav" type="button" aria-label="Open Advanced Intelligence"><span>✦</span><span>Advanced Intelligence</span></button>'''
+          nav_button='''<button id="v8Nav" type="button" onclick="if(window.page){window.page('v8',this,'Advanced Features')}" aria-label="Open Advanced Features"><span>✦</span><span>Advanced Features</span></button>'''
           text=re.sub(r'<button[^>]*id=["\']v8Nav["\'][\s\S]*?</button>\s*','',text,flags=re.I)
-          if '<nav class="nav">' in text:
+          nav_match=re.search(r'<nav class="nav">\s*(<button\b[\s\S]*?</button>)',text,flags=re.I)
+          if nav_match:
+            text=text[:nav_match.end()]+'\n    '+nav_button+text[nav_match.end():]
+          elif '<nav class="nav">' in text:
             text=text.replace('<nav class="nav">','<nav class="nav">\n    '+nav_button,1)
 
-          # Give AI Assistant its own icon; Advanced Intelligence keeps ✦.
           text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦ <span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
           text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦&nbsp;<span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
+          text=text.replace('Advanced Intelligence','Advanced Features')
 
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-6">'
-          js='<script src="smartguide-v8.js?v=20260910-v8-6"></script>'
-          fix='<script src="command-center-fix.js?v=20260910-v8-6"></script>'
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-7">'
+          js='<script src="smartguide-v8.js?v=20260910-v8-7"></script>'
+          fix='<script src="command-center-fix.js?v=20260910-v8-7"></script>'
           text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v8\.css(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
           text=re.sub(r'<script\s+src=["\']smartguide-v8\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
           text=text.replace('</head>',cleanup+'\n'+css+'\n</head>',1)
@@ -70,4 +73,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Give AI Assistant a unique navigation icon" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Rename Advanced Intelligence to Advanced Features" && git push; fi
