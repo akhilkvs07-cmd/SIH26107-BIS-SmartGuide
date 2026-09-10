@@ -1,8 +1,9 @@
 name: Integrate SmartGuide UI upgrades
 
+# Manual-only maintenance workflow.
+# The previous push trigger caused this workflow to edit index.html and push again,
+# which retriggered itself and created a deployment loop.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,13 +13,10 @@ jobs:
   integrate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout latest main
         uses: actions/checkout@v4
-
-      - name: Sync with latest main
-        run: |
-          git fetch origin main
-          git reset --hard origin/main
+        with:
+          ref: main
 
       - name: Install clean Advanced Features UI
         shell: python
@@ -79,4 +77,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Improve SmartGuide user-friendly workflows" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Apply SmartGuide UI integration" && git push; fi
