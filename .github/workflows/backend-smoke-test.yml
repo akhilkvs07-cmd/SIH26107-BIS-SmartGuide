@@ -1,0 +1,52 @@
+name: BIS SmartGuide backend smoke test
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run endpoint smoke tests
+        env:
+          PYTHONPATH: .
+        run: |
+          python - <<'PY'
+          import io, struct
+          from app_upgrade import app
+
+          c = app.test_client()
+          assert c.get('/health').status_code == 200
+          assert c.get('/v5/feature-status').status_code == 200
+          assert c.get('/v5/self-test').get_json()['ok'] is True
+          assert c.post('/v5/product-intelligence', json={'description':'1200W electric kettle'}).status_code == 200
+          assert c.post('/v5/verify-mark', json={'text':'ISI IS 302 CM/L-1234567'}).status_code == 200
+          assert c.post('/v5/test-report', json={'standard':'IS 302','text':'Voltage: 230 V Power: 1200 W'}).status_code == 200
+          assert c.post('/v5/label-check', json={'text':'Electric Kettle Manufacturer ABC Model EK-1200 IS 302 1200 W 230 V ISI'}).status_code == 200
+          assert c.get('/v5/lab-match?standard=IS%20302').status_code == 200
+          assert c.post('/v5/amendment-impact', json={'standard':'IS 302','amendment':'testing and marking requirements'}).status_code == 200
+          assert c.post('/v5/procurement', json={'product':'electric kettle','hs_code':'851679','raw_material':'stainless steel'}).status_code == 200
+          assert c.post('/v5/issue-report', json={'product':'electric kettle','issue':'suspected counterfeit ISI mark'}).status_code == 200
+
+          # Minimal valid binary STL: one triangle.
+          header=b'SIH SmartGuide STL'.ljust(80,b' ')
+          tri=struct.pack('<12fH',0,0,1, 0,0,0, 1,0,0, 0,1,0, 0)
+          stl=header+struct.pack('<I',1)+tri
+          r=c.post('/v5/stl-scan', data={'file':(io.BytesIO(stl),'triangle.stl')}, content_type='multipart/form-data')
+          assert r.status_code == 200, r.get_json()
+          assert r.get_json()['triangle_count'] == 1
+          print('BIS SmartGuide backend smoke tests passed')
+          PY
