@@ -1,4 +1,4 @@
-/* BIS SmartGuide UX v9.2 — task-first language, guided workflows, lab navigation and accessibility. */
+/* BIS SmartGuide UX v9.3 — task-first language, guided workflows, lab navigation and accessibility. */
 (() => {
   'use strict';
 
@@ -78,7 +78,6 @@
     s.textContent = `
       .sg-friendly-card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
       .sg-friendly-card:hover { transform: translateY(-2px); }
-      .sg-friendly-card .sg-v8-open { font-weight: 800; }
       .sg-task-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0; }
       .sg-task { display:flex;flex-direction:column;gap:7px;text-align:left;padding:16px;border:1px solid #dce6f2;border-radius:16px;background:#fff;cursor:pointer;box-shadow:0 3px 14px rgba(24,45,74,.05); }
       .sg-task:hover,.sg-task:focus-visible { transform:translateY(-2px);box-shadow:0 8px 22px rgba(24,45,74,.10);outline:none; }
@@ -105,11 +104,39 @@
     document.head.appendChild(s);
   }
 
+  // Route the new home task cards to the real page ids used by index.html.
+  // The ISI / CM-L task intentionally opens the V8 verification workflow.
   function go(pageName, title) {
     try {
-      if (typeof window.page === 'function') { window.page(pageName, null, title); return; }
-      const btn = [...document.querySelectorAll('.nav button')].find(b => norm(b.textContent).includes(norm(title)));
-      if (btn) btn.click();
+      const routes = {
+        'product-intelligence': 'intel',
+        'qco': 'mandatory',
+        'documents': 'docs'
+      };
+      const id = routes[pageName] || pageName;
+
+      if (pageName === 'advanced' && typeof window.openMark === 'function') {
+        if (typeof window.page === 'function' && document.getElementById('v8')) {
+          window.page('v8', null, 'ISI + CM/L verification');
+        }
+        setTimeout(() => window.openMark(), 0);
+        return;
+      }
+
+      const target = document.getElementById(id);
+      if (typeof window.page === 'function' && target) {
+        window.page(id, null, title);
+        return;
+      }
+
+      const btn = [...document.querySelectorAll('.nav button, .nav a')]
+        .find(b => norm(b.textContent).includes(norm(title)));
+      if (btn) { btn.click(); return; }
+
+      if (target) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        target.classList.add('active');
+      }
     } catch (_) {}
   }
 
@@ -176,7 +203,4 @@
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   [400,1200,2500].forEach(ms=>setTimeout(boot,ms));
-
-  // Deliberately no MutationObserver here. The previous observer watched DOM changes
-  // caused by applyLabels itself, creating a mutation feedback loop and excessive work.
 })();
