@@ -41,6 +41,19 @@ jobs:
           assert c.post('/v5/procurement', json={'product':'electric kettle','hs_code':'851679','raw_material':'stainless steel'}).status_code == 200
           assert c.post('/v5/issue-report', json={'product':'electric kettle','issue':'suspected counterfeit ISI mark'}).status_code == 200
 
+          # V8.5 source-grounded layer.
+          assert c.get('/api/v8/health').status_code == 200
+          pi = c.post('/api/v8/product-intelligence', json={'query':'2 burner domestic LPG gas stove'})
+          assert pi.status_code == 200 and 'evidence_classification' in pi.get_json()['data']
+          mark = c.post('/api/v8/verify/mark', json={'text':'ISI CM/L 1234567 IS 4246'})
+          assert mark.status_code == 200 and mark.get_json()['status'] == 'SOURCE_UNAVAILABLE'
+          doc = c.post('/api/v8/document/ingest', data={'file':(io.BytesIO(b'IS 4246\n1.1 Scope\n1.2 Requirements'), 'sample.txt')}, content_type='multipart/form-data')
+          assert doc.status_code == 200 and doc.get_json()['data']['metadata']['document_hash']
+          am = c.post('/api/v8/amendments/impact', json={'standard':'IS 4246','amendment':'1.2 revised requirement shall apply'})
+          assert am.status_code == 200 and am.get_json()['status'] == 'INFERRED'
+          agent = c.post('/api/v8/agent/orchestrate', json={'role':'manufacturer_msme','message':'I manufacture gas stoves. Find a lab and check the standard.'})
+          assert agent.status_code == 200 and 'labs/match' in agent.get_json()['data']['route']
+
           # Minimal valid binary STL: one triangle.
           header=b'SIH SmartGuide STL'.ljust(80,b' ')
           tri=struct.pack('<12fH',0,0,1, 0,0,0, 1,0,0, 0,1,0, 0)
