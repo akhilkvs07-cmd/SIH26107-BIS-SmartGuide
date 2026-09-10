@@ -48,7 +48,6 @@
       details.style.display='none';
       pre.dataset.sgAgentDone='1';
       pre.replaceWith(wrap);
-      // Preserve the raw response for debugging without destroying surrounding controls.
       details.innerHTML=`<summary>raw</summary><pre>${esc(raw)}</pre>`;
       wrap.appendChild(details);
     }
@@ -60,12 +59,13 @@
   `;
   document.head.appendChild(style);
 
-  let timer=0;
-  const schedule=()=>{clearTimeout(timer);timer=setTimeout(scan,80);};
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',scan); else scan();
   [300,800,1500,3000,6000,10000].forEach(t=>setTimeout(scan,t));
-  // Scoped, debounced observer catches results inserted after Route request without touching the rest of the app.
-  const observer=new MutationObserver(schedule);
-  const startObserver=()=>observer.observe(document.body,{subtree:true,childList:true});
-  if(document.body) startObserver(); else document.addEventListener('DOMContentLoaded',startObserver,{once:true});
+
+  // Re-check only after the user explicitly starts the Agent route action.
+  document.addEventListener('click', e => {
+    const button=e.target.closest && e.target.closest('button');
+    if(!button || !/route request/i.test(button.textContent||'')) return;
+    [150,500,1000,2000,4000].forEach(t=>setTimeout(scan,t));
+  });
 })();
