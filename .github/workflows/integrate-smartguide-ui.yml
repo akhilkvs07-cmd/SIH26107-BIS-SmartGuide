@@ -67,7 +67,7 @@ jobs:
           js='<script src="smartguide-v8.js?v=20260910-v8-9"></script>'
           fix='<script src="command-center-fix.js?v=20260910-v8-9"></script>'
           ux='<script src="smartguide-ux-v9.js?v=20260910-v9-2"></script>'
-          failsafe='<script src="smartguide-failsafe.js?v=20260910-2"></script>'
+          failsafe='<script src="smartguide-failsafe.js?v=20260910-3"></script>'
           text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v8\.css(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
           text=re.sub(r'<script\s+src=["\']smartguide-v8\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
           text=re.sub(r'<script\s+src=["\']smartguide-ux-v9\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
