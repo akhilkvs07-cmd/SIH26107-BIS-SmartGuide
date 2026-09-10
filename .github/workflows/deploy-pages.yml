@@ -2,8 +2,7 @@ name: Deploy BIS SmartGuide to GitHub Pages
 
 on:
   # Deploy only after the integration workflow completes successfully.
-  # This prevents the direct push trigger and workflow_run trigger from
-  # starting competing Pages deployments for the same change.
+  # This prevents competing Pages deployments for the same change.
   workflow_run:
     workflows: ["Integrate SmartGuide UI upgrades"]
     types: [completed]
@@ -30,15 +29,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
-
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
