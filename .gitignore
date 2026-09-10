@@ -1,7 +1,9 @@
 # Python
+.venv/
 backend/venv/
 __pycache__/
 *.pyc
+*.db
 
 # Environment / secrets
 .env

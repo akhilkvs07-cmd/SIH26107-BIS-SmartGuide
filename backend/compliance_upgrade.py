@@ -252,8 +252,10 @@ def assess():
     product = str(body.get("product", "")).strip()
     if not product:
         return jsonify({"error": "Product is required."}), 400
-    checks = body.get("checks") or {}
+    checks = body.get("checks") or body.get("checklist") or {}
     evidence = body.get("evidence") or {}
+    if not evidence and (body.get("model") or body.get("manufacturer")):
+        evidence = {"model": body.get("model", ""), "manufacturer": body.get("manufacturer", "")}
     result = _build_assessment(product, checks, evidence, str(body.get("document_text", "")))
     if not result.get("standard"):
         return jsonify(result), 404
@@ -262,7 +264,7 @@ def assess():
     result["assessment_id"] = assessment_id
     result["created_at"] = _now()
     with _db() as con:
-        con.execute("INSERT INTO assessments VALUES (?,?,?,?,?,?,?,?,?,?,?)", (assessment_id, result["created_at"], product, result["evidence"].get("model"), result["evidence"].get("manufacturer"), result["standard"].get("standard_number"), int(result["score"]), result["risk"], result["status"], result["evidence_quality"], json.dumps(result, ensure_ascii=False), evidence_hash))
+        con.execute("INSERT INTO assessments VALUES (?,?,?,?,?,?,?,?,?,?,?,?)", (assessment_id, result["created_at"], product, result["evidence"].get("model"), result["evidence"].get("manufacturer"), result["standard"].get("standard_number"), int(result["score"]), result["risk"], result["status"], result["evidence_quality"], json.dumps(result, ensure_ascii=False), evidence_hash))
         for action in result["corrective_actions"]:
             con.execute("INSERT INTO actions VALUES (?,?,?,?,?,?,?)", (uuid.uuid4().hex[:12], assessment_id, action["requirement"], action["priority"], action["action"], "OPEN", result["created_at"]))
     result["evidence_hash"] = evidence_hash

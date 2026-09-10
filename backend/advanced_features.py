@@ -57,6 +57,7 @@ def verify_mark(body):
     out = base_result("ISI / CM-L verification", "REQUIRES_OFFICIAL_VERIFICATION")
     out.update({"isi_mark_detected": isi, "cm_l_detected": cml, "cm_l_numbers": nums,
                 "checks": ["mark presence", "licence number format", "product/scope match", "manufacturer details", "current licence validity"],
+                "official_care_url": "https://www.bis.gov.in/bis-apps/?lang=en",
                 "official_verification": "Use BIS official verification services before treating a mark or licence as genuine."})
     return out
 

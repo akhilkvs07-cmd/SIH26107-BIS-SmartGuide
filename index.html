@@ -301,11 +301,35 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 <div id="toast" class="toast"></div>
 
 <script>
-const API='https://sih26107-bis-smartguide-api.onrender.com';
+const API = (typeof window.getSmartGuideApiHost === 'function')
+  ? window.getSmartGuideApiHost()
+  : ((location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? (location.port === '5000' ? '' : 'http://127.0.0.1:5000')
+    : (location.protocol === 'file:' ? 'http://127.0.0.1:5000' : (location.origin && !location.origin.includes('github.io') ? location.origin : 'https://sih26107-bis-smartguide-api.onrender.com')));
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const openOfficial=(url)=>{if(url){log('source',url);window.open(url,'_blank','noopener')}};
-async function api(path,opt={}){const r=await fetch(API+path,opt);let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||d.message||'Backend request failed');return d}
+async function api(path,opt={}){
+  const base = (typeof window.getSmartGuideApiHost === 'function') ? window.getSmartGuideApiHost() : API;
+  const url = base + path;
+  try {
+    const r = await fetch(url, opt);
+    let d = {}; try { d = await r.json(); } catch {}
+    if (!r.ok) throw Error(d.error || d.message || 'Backend request failed');
+    return d;
+  } catch (err) {
+    if (base.includes('127.0.0.1') || base.includes('localhost') || base === '') {
+      const fbUrl = 'https://sih26107-bis-smartguide-api.onrender.com' + path;
+      try {
+        const r2 = await fetch(fbUrl, opt);
+        let d2 = {}; try { d2 = await r2.json(); } catch {}
+        if (!r2.ok) throw Error(d2.error || d2.message || 'Remote request failed');
+        return d2;
+      } catch (fbErr) {}
+    }
+    throw err;
+  }
+}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2600)}
 function page(id,btn,title){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));btn?.classList.add('active');$('crumb').textContent=title||id;document.getElementById('sidebar').classList.remove('open');if(id==='labs')labs();if(id==='history')activityRender()}
 function fill(id,v){$(id).value=v}
@@ -603,30 +627,8 @@ $('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
 
 
 
-
-
-
-
-
+<script src="smartguide-core.js?v=20260910-v8-5"></script>
 <script src="smartguide-v8-click-fix.js?v=20260910-v8-2"></script>
-
-<script src="smartguide-v8-click-fix.js?v=20260910-v8-2"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script src="smartguide-v8.js?v=20260910-v8-8"></script>
 <script src="command-center-fix.js?v=20260910-v8-8"></script>
 </body>

@@ -1,11 +1,34 @@
 /* BIS SmartGuide Advanced Features — rebuilt workflow console v8.2. */
 (() => {
-  'use strict';
-  const API='https://sih26107-bis-smartguide-api.onrender.com';
+  const API = (typeof window.getSmartGuideApiHost === 'function')
+    ? window.getSmartGuideApiHost()
+    : ((location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+      ? (location.port === '5000' ? '' : 'http://127.0.0.1:5000')
+      : (location.protocol === 'file:' ? 'http://127.0.0.1:5000' : (location.origin && !location.origin.includes('github.io') ? location.origin : 'https://sih26107-bis-smartguide-api.onrender.com')));
   const $=id=>document.getElementById(id);
   const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const pretty=x=>{try{return JSON.stringify(x,null,2)}catch{return String(x)}};
-  async function api(path,opt={}){const r=await fetch(API+path,opt);let d={};try{d=await r.json()}catch{}if(!r.ok)throw Error(d.error||d.message||`Request failed (${r.status})`);return d}
+  async function api(path,opt={}){
+    const base = (typeof window.getSmartGuideApiHost === 'function') ? window.getSmartGuideApiHost() : API;
+    const url = base + path;
+    try {
+      const r = await fetch(url, opt);
+      let d = {}; try { d = await r.json(); } catch {}
+      if (!r.ok) throw Error(d.error || d.message || `Request failed (${r.status})`);
+      return d;
+    } catch (err) {
+      if (base.includes('127.0.0.1') || base.includes('localhost') || base === '') {
+        const fbUrl = 'https://sih26107-bis-smartguide-api.onrender.com' + path;
+        try {
+          const r2 = await fetch(fbUrl, opt);
+          let d2 = {}; try { d2 = await r2.json(); } catch {}
+          if (!r2.ok) throw Error(d2.error || d2.message || `Remote request failed (${r2.status})`);
+          return d2;
+        } catch (fbErr) {}
+      }
+      throw err;
+    }
+  }
   function card(icon,title,desc,fn){return `<button class="sg-v8-card sg-v8-feature" onclick="${fn}()" type="button"><span class="sg-v8-icon">${icon}</span><h3>${title}</h3><p>${desc}</p><span class="sg-v8-open">Open workflow →</span></button>`}
   function page(){
     if($('v8'))return;

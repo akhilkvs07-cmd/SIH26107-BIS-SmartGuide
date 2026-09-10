@@ -1,271 +1,1272 @@
 {
-  "count": 26,
+  "count": 31,
   "standards": [
     {
-      "category": "Electrical Appliances",
-      "compliance_text": "Prototype checklist based on the selected product category. Verify applicable requirements against the latest official BIS standard.",
-      "description": "Prototype record for demonstrating electrical appliance safety checks.",
-      "product": "household electrical appliance",
-      "requirements": [
-        "Protection against electric shock",
-        "Protection against excessive temperature",
-        "Requirements for insulation",
-        "Mechanical safety requirements"
-      ],
-      "standard_number": "IS 302",
-      "title": "Safety of Household and Similar Electrical Appliances"
-    },
-    {
-      "category": "Electrical",
-      "compliance_text": "Prototype checklist. Applicable cable requirements should be verified against the latest official BIS documentation.",
-      "description": "Prototype record for demonstrating cable compliance checks.",
-      "product": "pvc insulated cable",
-      "requirements": [
-        "Conductor requirements",
-        "Insulation requirements",
-        "Electrical resistance requirements",
-        "Voltage withstand requirements"
-      ],
-      "standard_number": "IS 694",
-      "title": "PVC Insulated Cables"
-    },
-    {
-      "category": "Gas Appliances",
-      "compliance_text": "Prototype checklist for demonstration purposes. Verify applicable requirements against the latest official BIS standard.",
-      "description": "Prototype record for demonstrating domestic gas cooking appliance checks.",
-      "product": "domestic gas stove",
-      "requirements": [
-        "Gas safety",
-        "Burner performance",
-        "Construction requirements",
-        "Safety during operation"
-      ],
       "standard_number": "IS 4246",
-      "title": "Domestic Gas Cooking Appliances"
+      "title": "Domestic Gas Cooking Appliances for Use with Liquefied Petroleum Gases",
+      "product": "domestic gas stove",
+      "category": "Gas Appliances",
+      "synonyms": [
+        "gas stove",
+        "gas cooker",
+        "lpg stove",
+        "gas chulha",
+        "gas burner",
+        "domestic cooking appliance",
+        "lpg burner",
+        "gas cooking plate",
+        "gas stve"
+      ],
+      "description": "Specifies construction, operation and safety requirements for domestic gas cooking appliances burning liquefied petroleum gases at a supply pressure of 2.94 kPa (30 gf/cm²). Covers table-top gas stoves, built-in hobs, and cooking ranges.",
+      "requirements": [
+        "Gas soundness and leakage prevention at rated working pressure",
+        "Thermal efficiency (minimum 68% for domestic burners)",
+        "Combustion characteristics (CO/CO2 ratio not exceeding 0.02)",
+        "Surface temperature limits on control knobs and body parts",
+        "Flame stability, flash back and flame lift resistance",
+        "Durability of pan supports and mechanical stability"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Domestic Gas Stoves for Use with LPG (Quality Control) Order, 2019 (Ministry of Petroleum & Natural Gas)",
+      "effective_date": "2020-01-01",
+      "testing_parameters": [
+        "Gas soundness test (0.07 bar pneumatic test)",
+        "Thermal efficiency test per burner",
+        "Carbon monoxide emission / combustion test",
+        "Pan support strength and deflection test",
+        "Burner flame ignition and stability test"
+      ],
+      "related_standards": [
+        "IS 5116",
+        "IS 6044",
+        "IS 11483"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
-      "category": "Water",
-      "compliance_text": "Prototype checklist. Actual water quality assessment should use the applicable official BIS requirements.",
-      "description": "Prototype record for demonstrating drinking water quality checks.",
-      "product": "drinking water",
-      "requirements": [
-        "Physical quality parameters",
-        "Chemical quality parameters",
-        "Microbiological quality",
-        "Acceptable quality limits"
-      ],
-      "standard_number": "IS 10500",
-      "title": "Drinking Water"
-    },
-    {
-      "category": "Metals",
-      "compliance_text": "Prototype checklist. Confirm the applicable official BIS testing requirements before real-world use.",
-      "description": "Prototype record for demonstrating metallic material testing.",
-      "product": "metallic materials",
-      "requirements": [
-        "Test specimen requirements",
-        "Testing procedures",
-        "Measurement requirements",
-        "Reporting of test results"
-      ],
-      "standard_number": "IS 1608",
-      "title": "Metallic Materials"
-    },
-    {
-      "category": "Electronics and IT",
-      "compliance_text": "Official BIS reference identified from the BIS Compulsory Registration Scheme listing. This record is a prototype knowledge-base reference, not a complete certification checklist. Verify the latest BIS notification, applicable scheme and product scope before relying on it.",
-      "description": "BIS reference for laptop, notebook and tablet products under the Compulsory Registration Scheme. BIS currently lists IS/IEC 62368: Part 1: 2023 for Laptop/Notebook/Tablets.",
-      "product": "laptop notebook tablet",
-      "requirements": [
-        "Electrical and safety requirements",
-        "Protection against fire hazards",
-        "Requirements for external circuits",
-        "Battery charging safety"
-      ],
-      "standard_number": "IS/IEC 62368: Part 1: 2023",
+      "standard_number": "IS/IEC 62368-1: 2023",
       "title": "Audio/Video, Information and Communication Technology Equipment – Part 1 Safety Requirements",
-      "official_source": "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en",
-      "scheme": "Compulsory Registration Scheme (Scheme II)"
+      "product": "laptop notebook tablet",
+      "category": "Electronics and IT",
+      "synonyms": [
+        "laptop",
+        "notebook",
+        "tablet",
+        "portable computer",
+        "personal computer",
+        "ultrabook",
+        "desktop computer",
+        "automatic data processing machine"
+      ],
+      "description": "Safety standard applicable to audio, video, information and communication technology equipment. Replaces IS 13252 (Part 1): 2010. Mandatory under BIS Compulsory Registration Scheme (CRS) for laptops, tablets and computers.",
+      "requirements": [
+        "Protection against electric shock (energy source classification ES1, ES2, ES3)",
+        "Electrically-caused fire safety and thermal limits (PS1, PS2, PS3)",
+        "Protection against hazardous substances and battery combustion/short-circuit",
+        "Mechanically-caused injury protection and enclosure strength",
+        "Thermal burn injury prevention on touchable exterior surfaces",
+        "Radiation and acoustic energy safety (laser, audio, optical emissions)"
+      ],
+      "scheme": "Scheme II (Compulsory Registration Scheme - CRS)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electronics and Information Technology Goods (Requirement for Compulsory Registration) Order, MeitY",
+      "effective_date": "2013-04-03 (Updated to 62368-1 in 2023)",
+      "testing_parameters": [
+        "Input current and power rating test",
+        "Dielectric voltage withstand test",
+        "Lithium-ion battery charging and short-circuit test per IS 16046",
+        "Drop test and mechanical impact test on outer enclosure",
+        "Touch temperature and thermal dissipation test under full load"
+      ],
+      "related_standards": [
+        "IS 13252 (Part 1)",
+        "IS 16046 (Part 2)",
+        "IS/IEC 60950-1"
+      ],
+      "official_source": "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en"
     },
     {
-      "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for electric fan checks.",
-      "product": "electric fan",
-      "requirements": ["Electrical safety", "Insulation safety", "Mechanical safety", "Temperature safety"],
-      "standard_number": "DEMO-001",
-      "title": "Electric Fan Safety"
-    },
-    {
-      "category": "Lighting",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for LED lamp checks.",
-      "product": "led lamp",
-      "requirements": ["Electrical safety", "Insulation", "Temperature control", "Construction quality"],
-      "standard_number": "DEMO-002",
-      "title": "LED Lamp Safety"
-    },
-    {
-      "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for electric iron checks.",
-      "product": "electric iron",
-      "requirements": ["Electrical protection", "Heating performance", "Insulation", "Mechanical construction"],
-      "standard_number": "DEMO-003",
-      "title": "Electric Iron Safety"
-    },
-    {
-      "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for electric kettle checks.",
+      "standard_number": "IS 302 (Part 2/Sec 15)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 15 Appliances for Heating Liquids",
       "product": "electric kettle",
-      "requirements": ["Electrical safety", "Heating performance", "Insulation", "Overheating protection"],
-      "standard_number": "DEMO-004",
-      "title": "Electric Kettle Safety"
-    },
-    {
       "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for mixer grinder checks.",
-      "product": "mixer grinder",
-      "requirements": ["Motor safety", "Electrical insulation", "Mechanical safety", "Overload protection"],
-      "standard_number": "DEMO-005",
-      "title": "Mixer Grinder Safety"
+      "synonyms": [
+        "electric kettle",
+        "kettle",
+        "water kettle",
+        "tea maker",
+        "electric liquid boiler",
+        "electric lunch box",
+        "electric milk warmer",
+        "cordless kettle",
+        "elec kettle"
+      ],
+      "description": "Covers safety requirements for electric kettles, cordless water kettles, electric lunch boxes, milk boilers and similar liquid-heating household appliances having a rated capacity not exceeding 10 litres.",
+      "requirements": [
+        "Protection against electric shock during pouring and cleaning",
+        "Boil-dry thermal cutoff protection and automatic steam switch",
+        "Heating element insulation resistance and high-voltage withstand",
+        "Spillage protection and overflow water drain safety",
+        "Cordless base electrical contact safety and interlock mechanism",
+        "Thermal endurance and maximum temperature rise on handle"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Input power verification and heating rate",
+        "Electric strength at 1250V AC test",
+        "Boil-dry endurance cycling test (100 cycles)",
+        "Moisture resistance and water spillage test",
+        "Handle temperature rise test under boiling conditions"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 1293",
+        "IS 694"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
+      "standard_number": "IS 302 (Part 2/Sec 3)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 3 Electric Irons",
+      "product": "electric iron",
+      "category": "Electrical Appliances",
+      "synonyms": [
+        "electric iron",
+        "dry iron",
+        "steam iron",
+        "clothes iron",
+        "pressing iron",
+        "steam press"
+      ],
+      "description": "Covers safety and operational requirements for electric dry irons and steam irons for domestic use, including temperature regulation and soleplate safety.",
+      "requirements": [
+        "Thermostat temperature calibration and thermal fuse cutout",
+        "Electrical insulation and leakage current limits (max 0.75 mA)",
+        "Thermal endurance of soleplate and soleplate drop test",
+        "Steam chamber pressure relief and water leakage protection",
+        "Flexible cord strain relief, cord guard flexing durability",
+        "Stability and resistance to tipping on heel rest"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2023-12-01",
+      "testing_parameters": [
+        "Thermostat cycling test (1000 operational cycles)",
+        "Cord anchorage and 20,000 cycle flexing test",
+        "Electric insulation strength test at operating temperature",
+        "Steam spray and pressure containment test",
+        "Drop test on soleplate from 100mm height"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 366",
+        "IS 694"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 694",
+      "title": "Polyvinyl Chloride (PVC) Insulated Cables for Working Voltages up to and Including 1100 V",
+      "product": "pvc insulated cable",
+      "category": "Electrical",
+      "synonyms": [
+        "pvc cable",
+        "insulated cable",
+        "electrical wire",
+        "copper wire",
+        "house wire",
+        "flexible cord",
+        "power cable",
+        "building wire"
+      ],
+      "description": "Covers requirements and test methods for single-core and multi-core PVC insulated copper/aluminium electrical cables and wires for working voltages up to 1100 V AC.",
+      "requirements": [
+        "Conductor DC electrical resistance limits per km at 20°C",
+        "Insulation thickness and outer sheath dimensions",
+        "Tensile strength and elongation at break of insulation before and after aging",
+        "High voltage spark test in water (3 kV AC for 5 minutes)",
+        "Flame retardant properties and thermal heat shock resistance",
+        "Cold bend and cold impact resistance at sub-zero temperatures"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Wires and Cables (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-03-01",
+      "testing_parameters": [
+        "Conductor resistance measurement via Kelvin double bridge",
+        "Insulation spark testing at extrusion line",
+        "High voltage withstand test (3000 V AC)",
+        "Oxygen index and flammability test per IS 10810",
+        "Thermal stability test at 200°C"
+      ],
+      "related_standards": [
+        "IS 8130",
+        "IS 5831",
+        "IS 10810"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 4151",
+      "title": "Protective Helmets for Motorcycle Riders – Specification",
+      "product": "motorcycle helmet",
+      "category": "Protective Equipment",
+      "synonyms": [
+        "helmet",
+        "motorcycle helmet",
+        "two wheeler helmet",
+        "rider helmet",
+        "protective helmet",
+        "full face helmet",
+        "open face helmet"
+      ],
+      "description": "Specifies protective requirements, impact attenuation, retention system strength and visor optical requirements for motorcycle helmets intended for riders of two-wheeled motor vehicles on Indian roads.",
+      "requirements": [
+        "Impact absorption test at ambient, hot (50°C), cold (-10°C) and water immersion conditions",
+        "Retention system (chin strap) dynamic elongation and slippage limits",
+        "Rigidity and lateral deformation resistance",
+        "Visor optical transmission, light dispersion, and scratch/shatter resistance",
+        "Peripheral vision field of view (minimum 105° horizontal and 30° upward)",
+        "Audibility and non-interference with sound perception"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Helmet for Two-Wheeler Riders (Quality Control) Order, 2020 (MoRTH)",
+      "effective_date": "2021-06-01",
+      "testing_parameters": [
+        "Impact attenuation drop test with monorail/free-fall drop rig",
+        "Retention system dynamic test with 10 kg drop mass",
+        "Visor luminous transmittance spectrophotometer test",
+        "Chin strap quick release button release force test",
+        "Shell penetration resistance test with conical striker"
+      ],
+      "related_standards": [
+        "IS 9944",
+        "IS 7692"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 2347",
+      "title": "Domestic Pressure Cookers – Specification",
+      "product": "domestic pressure cooker",
+      "category": "Kitchenware",
+      "synonyms": [
+        "pressure cooker",
+        "cooker",
+        "domestic cooker",
+        "aluminium pressure cooker",
+        "stainless steel pressure cooker",
+        "handi pressure cooker"
+      ],
+      "description": "Specifies design, material, construction and safety requirements for domestic pressure cookers made of aluminium alloys or stainless steel having capacity between 1 litre and 20 litres.",
+      "requirements": [
+        "Operating pressure regulation between 98 kPa and 137 kPa (1.0 to 1.4 kgf/cm²)",
+        "Safety relief valve secondary release pressure (must release before 275 kPa)",
+        "Fusible plug or gasket release system for overpressure blowout safety",
+        "Proof pressure hydrostatic burst test without leakage or permanent distortion",
+        "Handle strength and thermal insulation under full boiling weight",
+        "Food grade contact material compliance (non-toxic non-corrosive)"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Domestic Pressure Cookers (Quality Control) Order, 2020 (DPIIT)",
+      "effective_date": "2021-02-01",
+      "testing_parameters": [
+        "Hydrostatic pressure test at 2.5 times operating pressure (300 kPa)",
+        "Pressure regulator weight accuracy and venting test",
+        "Safety valve blowout pressure test",
+        "Handle torque and drop test under full load",
+        "Material chemical composition analysis via optical emission spectrometer"
+      ],
+      "related_standards": [
+        "IS 21",
+        "IS 6911",
+        "IS 737"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 302 (Part 2/Sec 9)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 9 Electric Toasters, Grills, Roasters and Similar Appliances",
+      "product": "air fryer toaster grill",
       "category": "Kitchen Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for microwave oven checks.",
-      "product": "microwave oven",
-      "requirements": ["Electrical safety", "Door safety", "Thermal protection", "Construction safety"],
-      "standard_number": "DEMO-006",
-      "title": "Microwave Oven Safety"
+      "synonyms": [
+        "air fryer",
+        "electric toaster",
+        "toaster",
+        "electric grill",
+        "sandwich maker",
+        "roaster",
+        "electric oven toaster grill",
+        "otg"
+      ],
+      "description": "Applies to electric toasters, air fryers, sandwich makers, waffle irons, electric raclettes and tabletop barbecue grills for household use.",
+      "requirements": [
+        "Heating element enclosure and protection against contact with live parts",
+        "Thermal cut-out operation under forced fan failure / abnormal use",
+        "Outer body touch temperature limits on plastic and metal panels",
+        "High temperature food basket and crumb tray non-combustibility",
+        "High voltage insulation resistance under maximum hot operating state",
+        "Timer and thermostat precision for fire hazard prevention"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Temperature rise measurement at 240V under continuous air frying cycle",
+        "High voltage dielectric test at 1250V AC",
+        "Abnormal operation with stalled circulation fan motor",
+        "Earth continuity and leakage current test (< 0.75 mA)",
+        "Mechanical stability on a 15-degree inclined surface"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 1293",
+        "IS 694"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
-      "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for electric heater checks.",
-      "product": "electric heater",
-      "requirements": ["Electrical safety", "Thermal protection", "Insulation", "Mechanical construction"],
-      "standard_number": "DEMO-007",
-      "title": "Electric Heater Safety"
+      "standard_number": "IS 302 (Part 2/Sec 6)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 6 Cooking Ranges, Hobs, Ovens and Similar Appliances",
+      "product": "smart induction cooking plate",
+      "category": "Kitchen Appliances",
+      "synonyms": [
+        "induction cooktop",
+        "induction cooker",
+        "induction stove",
+        "smart induction cooking plate",
+        "electric hob",
+        "cooking range",
+        "hot plate",
+        "smart cooking plate",
+        "induction"
+      ],
+      "description": "Covers safety requirements for household electric cooking ranges, hobs, induction cooktops, tabletop induction heating plates, and built-in electric ovens.",
+      "requirements": [
+        "Electromagnetic coil insulation and magnetic field shielding",
+        "Ceramic glass plate mechanical shock and thermal shock resistance (liquid spill)",
+        "Pan detection sensor safety (no heating without ferromagnetic pan)",
+        "Overheating protection on IGBT heat sink and glass surface",
+        "Protection against water and oil ingress into cooling vents",
+        "Leakage current and high-voltage dielectric breakdown resistance"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Glass thermal shock test (pouring cold water on 200°C glass top)",
+        "Impact test with 500g steel ball dropped from 200mm onto ceramic cooktop",
+        "Dielectric test at 1500V AC across power circuit and coil insulation",
+        "Thermal rise on IGBT and internal electronics under continuous maximum power",
+        "Spillage test with 500ml boiling liquid"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS/IEC 61000",
+        "IS 1293"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
+      "standard_number": "IS 1293",
+      "title": "Plugs and Socket-Outlets of Rated Voltage up to and Including 250 Volts and Rated Current up to and Including 16 Amperes – Specification",
+      "product": "plug and socket outlet smart extension board",
       "category": "Electrical",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for extension board checks.",
-      "product": "extension board",
-      "requirements": ["Electrical insulation", "Socket safety", "Cable safety", "Overload protection"],
-      "standard_number": "DEMO-008",
-      "title": "Extension Board Safety"
+      "synonyms": [
+        "socket",
+        "plug",
+        "extension board",
+        "smart extension board",
+        "power strip",
+        "surge protector",
+        "electrical socket",
+        "multi plug",
+        "wall socket"
+      ],
+      "description": "Covers plugs, fixed socket-outlets, portable socket-outlets, multi-plug adapters and extension cords for AC domestic electrical distribution up to 250 V, 6A and 16A.",
+      "requirements": [
+        "Contact dimension tolerances and non-interchangeability of ratings",
+        "Safety shutters on live and neutral socket apertures to prevent child probe insertion",
+        "Earthing pin lead and making-before-breaking earthing contact",
+        "Terminal temperature rise (< 45°C rise at rated 6A/16A current)",
+        "Insulating material glow-wire flammability test at 850°C",
+        "Retention force test on plug pins after 10,000 insertion cycles"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Plugs and Socket-Outlets (Quality Control) Order, 2020 (DPIIT)",
+      "effective_date": "2021-06-01",
+      "testing_parameters": [
+        "Glow wire ignition test at 850°C on shutter and socket faceplate",
+        "Temperature rise test at 1.25 times rated current",
+        "Withdrawal force test with calibrated gauges",
+        "Electric strength test at 2000V AC for 1 minute",
+        "Mechanical endurance test (10,000 insertions at 30 strokes/minute)"
+      ],
+      "related_standards": [
+        "IS 3854",
+        "IS 694",
+        "IS/IEC 60884"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
-      "category": "Electrical",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for electrical switch checks.",
+      "standard_number": "IS 3854",
+      "title": "Switches for Domestic and Similar Purposes – Specification",
       "product": "electrical switch",
-      "requirements": ["Electrical contact safety", "Insulation", "Mechanical operation", "Construction quality"],
-      "standard_number": "DEMO-009",
-      "title": "Electrical Switch Safety"
-    },
-    {
       "category": "Electrical",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for socket checks.",
-      "product": "electrical socket",
-      "requirements": ["Electrical safety", "Insulation", "Contact safety", "Mechanical strength"],
-      "standard_number": "DEMO-010",
-      "title": "Electrical Socket Safety"
+      "synonyms": [
+        "switch",
+        "electrical switch",
+        "wall switch",
+        "modular switch",
+        "rocker switch",
+        "piano switch",
+        "smart light switch",
+        "light switch"
+      ],
+      "description": "Covers manually operated general purpose switches for AC circuits only, with rated voltage not exceeding 440 V and rated current up to 63 A.",
+      "requirements": [
+        "Normal operation electrical and mechanical endurance (40,000 operations)",
+        "Contact separation gap and breaking capacity under inductive/fluorescent lamp load",
+        "Temperature rise at terminals not exceeding 45°C during continuous rated current",
+        "Clearance and creepage distances between live parts and accessible surfaces",
+        "Resistance to abnormal heat, fire and tracking (glow wire 850°C)",
+        "Protection against electric shock during installation and operation"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Switches for Domestic and Similar Purposes (Quality Control) Order, 2020 (DPIIT)",
+      "effective_date": "2021-06-01",
+      "testing_parameters": [
+        "40,000 cycle endurance test with full rated current at 250V AC",
+        "Fluorescent lamp load test with inrush current surge",
+        "Electric strength test at 2000 V AC",
+        "Terminal pull test and torque test on screws",
+        "Glow-wire test at 850°C on switch body"
+      ],
+      "related_standards": [
+        "IS 1293",
+        "IS 694",
+        "IS/IEC 60669"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
-      "category": "Home Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for refrigerator checks.",
-      "product": "refrigerator",
-      "requirements": ["Electrical safety", "Insulation", "Temperature performance", "Mechanical safety"],
-      "standard_number": "DEMO-011",
-      "title": "Refrigerator Safety"
-    },
-    {
-      "category": "Home Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for washing machine checks.",
-      "product": "washing machine",
-      "requirements": ["Electrical safety", "Water protection", "Mechanical safety", "Insulation"],
-      "standard_number": "DEMO-012",
-      "title": "Washing Machine Safety"
-    },
-    {
-      "category": "Home Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for water heater checks.",
-      "product": "water heater",
-      "requirements": ["Electrical safety", "Temperature control", "Insulation", "Pressure protection"],
-      "standard_number": "DEMO-013",
-      "title": "Water Heater Safety"
-    },
-    {
-      "category": "Home Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for air conditioner checks.",
-      "product": "air conditioner",
-      "requirements": ["Electrical safety", "Insulation", "Temperature control", "Mechanical safety"],
-      "standard_number": "DEMO-014",
-      "title": "Air Conditioner Safety"
-    },
-    {
-      "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for ceiling fan checks.",
+      "standard_number": "IS 374",
+      "title": "Electric Ceiling Type Fans and Regulators – Specification",
       "product": "ceiling fan",
-      "requirements": ["Electrical safety", "Motor performance", "Mechanical strength", "Insulation"],
-      "standard_number": "DEMO-015",
-      "title": "Ceiling Fan Safety"
+      "category": "Electrical Appliances",
+      "synonyms": [
+        "ceiling fan",
+        "bldc ceiling fan",
+        "fan",
+        "electric fan",
+        "sweep fan",
+        "smart ceiling fan"
+      ],
+      "description": "Specifies design, performance, air delivery, energy efficiency and safety requirements for AC and BLDC ceiling fans and their electronic/stepped speed regulators.",
+      "requirements": [
+        "Air delivery minimum limits (e.g. 210 m³/min for 1200 mm sweep)",
+        "Service value (energy efficiency ratio: air delivery / power input)",
+        "Motor winding insulation temperature rise and thermal protection",
+        "Blade balance, downrod suspension mechanical shear pin safety",
+        "Dielectric test at 1500V AC and earthing continuity",
+        "Starting voltage down to 85% of rated 230V mains"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Ceiling Fans (Quality Control) Order, 2023 (DPIIT) & BEE Star Labelling",
+      "effective_date": "2023-09-01",
+      "testing_parameters": [
+        "Air delivery test in standard anemometer test chamber",
+        "Service value calculation (m³/min per Watt)",
+        "Suspension drop and mechanical tensile test on fan shackle/downrod",
+        "Motor winding temperature rise test by resistance method",
+        "Blade angle and balance alignment test"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 555",
+        "IS 2312"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
-      "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for table fan checks.",
+      "standard_number": "IS 555",
+      "title": "Table Type Electric Fans and Regulators – Specification",
       "product": "table fan",
-      "requirements": ["Electrical safety", "Motor performance", "Mechanical protection", "Insulation"],
-      "standard_number": "DEMO-016",
-      "title": "Table Fan Safety"
-    },
-    {
-      "category": "Kitchen Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for toaster checks.",
-      "product": "toaster",
-      "requirements": ["Electrical safety", "Heating safety", "Insulation", "Overheating protection"],
-      "standard_number": "DEMO-017",
-      "title": "Electric Toaster Safety"
-    },
-    {
-      "category": "Kitchen Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for rice cooker checks.",
-      "product": "rice cooker",
-      "requirements": ["Electrical safety", "Heating performance", "Insulation", "Temperature protection"],
-      "standard_number": "DEMO-018",
-      "title": "Rice Cooker Safety"
-    },
-    {
       "category": "Electrical Appliances",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for immersion heater checks.",
-      "product": "immersion heater",
-      "requirements": ["Electrical insulation", "Heating safety", "Water protection", "Overheating protection"],
-      "standard_number": "DEMO-019",
-      "title": "Immersion Heater Safety"
+      "synonyms": [
+        "table fan",
+        "pedestal fan",
+        "desk fan",
+        "stand fan",
+        "personal cooling fan",
+        "oscillating fan"
+      ],
+      "description": "Covers portable table fans, desk fans, bracket fans and pedestal fans driven by single-phase AC or DC/BLDC motors.",
+      "requirements": [
+        "Finger guard mesh safety to prevent contact with rotating blades",
+        "Mechanical stability against toppling on a 10-degree incline",
+        "Air delivery output and oscillation angle mechanism durability",
+        "Motor temperature rise and high-voltage dielectric insulation",
+        "Cord anchorage and strain relief for flexible supply cable",
+        "Motor stall protection without fire hazard"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "VOLUNTARY",
+      "qco_order": "BIS Voluntary Standard (General Safety under Electrical Appliances QCO applies)",
+      "effective_date": "2022-01-01",
+      "testing_parameters": [
+        "Standard test probe finger insertion test through blade guard",
+        "Tilt test on 10-degree test plane",
+        "Air delivery test via calibrated vane anemometers",
+        "Winding temperature rise test under locked rotor conditions",
+        "Insulation resistance test before and after humidity conditioning"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 374"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     },
     {
-      "category": "Electrical",
-      "compliance_text": "Demo data only. Not an official BIS certification checklist.",
-      "description": "Prototype demonstration record for charger checks.",
-      "product": "electric charger",
-      "requirements": ["Electrical insulation", "Voltage protection", "Temperature safety", "Construction quality"],
-      "standard_number": "DEMO-020",
-      "title": "Electric Charger Safety"
+      "standard_number": "IS 4250",
+      "title": "Domestic Electric Food Mixers (Liquidizers and Grinders) and Centrifugal Juicers – Specification",
+      "product": "mixer grinder",
+      "category": "Electrical Appliances",
+      "synonyms": [
+        "mixer grinder",
+        "grinder",
+        "mixie",
+        "food processor",
+        "blender",
+        "juicer mixer grinder",
+        "wet grinder"
+      ],
+      "description": "Covers domestic electric food mixers, blenders, wet and dry grinders, liquidizers and juicers driven by universal or induction motors up to 1000 W.",
+      "requirements": [
+        "Overload thermal circuit breaker trip protection under jammed rotor",
+        "Blade coupling interlock safety (no exposed blade rotation without jar lid)",
+        "Liquid spillage protection into motor housing during liquidizer processing",
+        "Motor insulation withstand voltage and leakage current limits",
+        "Mechanical balance and vibration stability on smooth countertop",
+        "Jar coupler shear pin safety and blade retention integrity"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Locked rotor endurance and thermal overload trip test",
+        "Liquid ingress test by pouring 200ml saline liquid over drive coupling",
+        "Dielectric test at 1500 V AC across live terminals and motor frame",
+        "Noise level and vibration amplitude measurement",
+        "Continuous 30-minute grinding temperature rise test"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 1293",
+        "IS 694"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 302 (Part 2/Sec 25)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 25 Microwave Ovens",
+      "product": "microwave oven",
+      "category": "Kitchen Appliances",
+      "synonyms": [
+        "microwave",
+        "microwave oven",
+        "solo microwave",
+        "convection microwave",
+        "grill microwave",
+        "built-in microwave"
+      ],
+      "description": "Covers the safety of microwave ovens for household use, including combination microwave ovens with resistance heating elements.",
+      "requirements": [
+        "Microwave radiation leakage limit (maximum 50 W/m² or 5 mW/cm² at 50mm)",
+        "Door interlock system safety (minimum two independent interlocks to cut magnetron)",
+        "Door seal durability and protection against opening during active emission",
+        "High voltage capacitor grounding and discharge safety on cover removal",
+        "Thermal protection against empty cavity heating and fire containment",
+        "Glass turntable thermal durability and mechanical strength"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Microwave leakage survey with calibrated electromagnetic field probe",
+        "Door interlock cycling test (100,000 door open/close operations)",
+        "High-voltage transformer isolation test at 3000 V AC",
+        "Empty cavity abnormal operation test for 30 minutes",
+        "Enclosure flame resistance and containment test"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 1293",
+        "IS 1167"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 302 (Part 2/Sec 30)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 30 Room Heaters",
+      "product": "room heater electric heater",
+      "category": "Electrical Appliances",
+      "synonyms": [
+        "room heater",
+        "electric heater",
+        "convection heater",
+        "radiant heater",
+        "oil filled radiator",
+        "fan heater",
+        "quartz heater",
+        "halogen heater",
+        "blower heater"
+      ],
+      "description": "Covers safety requirements for electric room heaters, radiant heaters, convector heaters, fan heaters and oil-filled radiator heaters intended for household heating.",
+      "requirements": [
+        "Protection against touching glowing heating elements (finger probe safety guard)",
+        "Tip-over automatic shut-off safety switch when tilted past 15 degrees",
+        "Thermal cut-out operation under covered/draped towel abnormal condition",
+        "Fire hazard prevention and non-combustibility of outer plastic casing",
+        "Oil container hermetic seal integrity on oil-filled radiators (no burst/leak)",
+        "Insulation resistance at high operating temperatures"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Drape test with felt cloth covering heater for 4 hours to verify cut-out",
+        "Tip-over angle test on tilting table",
+        "High voltage withstand test at 1250 V AC",
+        "Guard mechanical strength test with 100 N force applicator",
+        "Surface temperature rise on controls and handle"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 369",
+        "IS 1293"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 2082",
+      "title": "Stationary Storage Type Electric Water Heaters – Specification",
+      "product": "storage water heater geyser",
+      "category": "Home Appliances",
+      "synonyms": [
+        "water heater",
+        "geyser",
+        "storage water heater",
+        "electric geyser",
+        "hot water geyser",
+        "instant geyser"
+      ],
+      "description": "Specifies requirements for stationary storage type electric water heaters intended for domestic use, operating at pressures up to 1 MPa (10 bar).",
+      "requirements": [
+        "Inner tank hydrostatic proof pressure test (2 times rated pressure, min 1.6 MPa)",
+        "Dual safety control: adjustable thermostat plus independent non-self-resetting thermal cut-out",
+        "Pressure relief safety valve (PRV) and vacuum relief valve operation",
+        "Standing loss / standing energy consumption compliance for BEE 5-star rating",
+        "Corrosion resistance: vitreous enamel coating or sacrificial magnesium anode",
+        "Earthing terminal and high-voltage dielectric insulation (1500 V AC)"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electric Water Heaters (Quality Control) Order, 2020 (DPIIT)",
+      "effective_date": "2021-06-01",
+      "testing_parameters": [
+        "Hydrostatic pressure burst test at 2.4 MPa",
+        "Standing energy loss test per 24 hours per IS 2082 clause 13",
+        "Thermal cut-out trip temperature verification (< 95°C)",
+        "Pressure relief valve discharge rate test",
+        "High voltage dielectric test at 1500 V AC"
+      ],
+      "related_standards": [
+        "IS 302 (Part 2/Sec 21)",
+        "IS 302 (Part 1)",
+        "IS 2082"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 368",
+      "title": "Electric Immersion Water Heaters – Specification",
+      "product": "immersion water heater",
+      "category": "Electrical Appliances",
+      "synonyms": [
+        "immersion heater",
+        "water heating rod",
+        "immersion rod",
+        "bucket water heater",
+        "portable water heater"
+      ],
+      "description": "Covers portable electric immersion heaters designed for heating water in domestic vessels and buckets.",
+      "requirements": [
+        "Terminal head water-tightness and moisture resistance (IPX7 below waterline)",
+        "Clear minimum and maximum immersion depth markings",
+        "Heating element sheath corrosion resistance (copper chrome plated / incoloy)",
+        "Thermal safety protector to prevent boiling dry or fire in plastic bucket",
+        "Insulation resistance (> 2 Megaohms) after 24-hour water immersion",
+        "Earth continuity from plug pin to metal outer sheath (< 0.1 ohm)"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Total water immersion test of terminal head and handle",
+        "Dry boiling endurance test on plastic bucket without bucket ignition",
+        "Dielectric strength test at 1250 V AC in water",
+        "Earth bonding impedance measurement",
+        "Leakage current test (< 0.75 mA)"
+      ],
+      "related_standards": [
+        "IS 302 (Part 2/Sec 201)",
+        "IS 302 (Part 1)",
+        "IS 1293"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 10322 (Part 5/Sec 8)",
+      "title": "Luminaires – Part 5 Particular Requirements – Section 8 Luminaires for Emergency Lighting",
+      "product": "rechargeable emergency lamp",
+      "category": "Lighting",
+      "synonyms": [
+        "rechargeable emergency lamp",
+        "emergency light",
+        "emergency lamp",
+        "led emergency lantern",
+        "portable emergency light",
+        "inverter bulb",
+        "rechargeable lamp"
+      ],
+      "description": "Covers self-contained emergency lighting luminaires, rechargeable lanterns, emergency exit lights and backup LED lights containing internal secondary batteries.",
+      "requirements": [
+        "Automatic switch-over to emergency battery power upon mains AC supply failure (< 0.5 sec)",
+        "Emergency operation duration (minimum 1 to 3 hours rated lumen output)",
+        "Battery overcharge, deep discharge and thermal runaway safety per IS 16046",
+        "Enclosure flame resistance and battery compartment venting",
+        "Luminous flux distribution during emergency mode",
+        "High voltage isolation between AC mains and low voltage battery circuit"
+      ],
+      "scheme": "Scheme I & Scheme II (CRS for LED / Battery)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Lighting Products (Quality Control) Order & MeitY CRS",
+      "effective_date": "2022-04-01",
+      "testing_parameters": [
+        "Mains failure transfer time test with digital oscilloscope",
+        "Duration test: measurement of lumen output after 3 hours",
+        "Battery protection circuit test against short circuit and reverse polarity",
+        "Dielectric test at 1500 V AC between AC terminals and touchable enclosure",
+        "Glow wire test at 750°C on lantern housing"
+      ],
+      "related_standards": [
+        "IS 16046",
+        "IS 16102",
+        "IS 15885"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 16046 (Part 2)",
+      "title": "Secondary Cells and Batteries Containing Alkaline or Other Non-Acid Electrolytes – Safety Requirements for Portable Sealed Secondary Cells – Part 2 Lithium Systems",
+      "product": "lithium ion battery power bank",
+      "category": "Electronics and IT",
+      "synonyms": [
+        "power bank",
+        "lithium battery",
+        "lithium ion battery",
+        "secondary battery",
+        "rechargeable battery pack",
+        "li-ion cell"
+      ],
+      "description": "Covers safety requirements and test procedures for portable sealed secondary lithium cells and batteries (including power banks and battery packs) used in consumer electronics.",
+      "requirements": [
+        "Continuous charging under constant voltage conditions without fire or explosion",
+        "External short-circuit test at 55°C ambient temperature",
+        "Free fall / drop test onto concrete floor from 1.0 m height",
+        "Thermal abuse test at 130°C in circulating air oven",
+        "Crush test and impact test simulating mechanical deformation",
+        "Overcharging protection: battery management system (BMS) shutdown"
+      ],
+      "scheme": "Scheme II (Compulsory Registration Scheme - CRS)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electronics and Information Technology Goods (Compulsory Registration) Order, MeitY",
+      "effective_date": "2015-12-01 (Revised Part 2: 2018)",
+      "testing_parameters": [
+        "External short-circuit test with external resistance < 80 mOhm at 55°C",
+        "Overcharge test at 2x rated maximum charging current",
+        "Thermal abuse test: chamber ramp to 130°C for 30 minutes",
+        "Drop test from 1.0 metre onto concrete surface (3 drops per cell)",
+        "Mechanical crush test with 13 kN hydraulic press"
+      ],
+      "related_standards": [
+        "IS/IEC 62133",
+        "IS/IEC 62368-1",
+        "IS 13252"
+      ],
+      "official_source": "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en"
+    },
+    {
+      "standard_number": "IS 12933",
+      "title": "Solar Flat Plate Collector – Specification",
+      "product": "solar water heater flat plate collector",
+      "category": "Solar and Renewable Energy",
+      "synonyms": [
+        "solar water heater",
+        "solar flat plate collector",
+        "solar water heating system",
+        "solar collector",
+        "solar thermal system",
+        "domestic solar geyser"
+      ],
+      "description": "Specifies requirements, performance criteria, thermal efficiency and materials for liquid heating flat plate solar collectors used in domestic and commercial solar water heaters.",
+      "requirements": [
+        "Absorber plate selective coating solar absorptance (> 0.92) and emittance (< 0.20)",
+        "Toughened glass cover solar transmittance (> 85%) and impact strength",
+        "Hydrostatic pressure test on absorber copper header and riser tubes (min 1.0 MPa)",
+        "Thermal performance and instantaneous efficiency curve determination",
+        "Stagnation and thermal shock resistance under dry no-flow full solar irradiance",
+        "Corrosion resistance and hermetic weather-tight sealing of aluminium casing"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Solar Thermal Systems and Collectors (Quality Control) Order (MNRE)",
+      "effective_date": "2020-04-01",
+      "testing_parameters": [
+        "Outdoor thermal performance efficiency test on dual-axis solar test bench",
+        "Pressure test at 10 bar (1.0 MPa) for 30 minutes with zero pressure drop",
+        "High-temperature dry stagnation exposure test under 1000 W/m² irradiance",
+        "External and internal thermal shock test with cold water flush",
+        "Rain penetration spray test on collector box"
+      ],
+      "related_standards": [
+        "IS 12976",
+        "IS 16540",
+        "IS 13129"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 13129",
+      "title": "Solar Cooker – Box Type – Specification",
+      "product": "solar food warmer cooker",
+      "category": "Solar and Renewable Energy",
+      "synonyms": [
+        "solar food warmer",
+        "solar cooker",
+        "box solar cooker",
+        "solar oven",
+        "solar warmer",
+        "thermal food warmer",
+        "smart solar food warmer"
+      ],
+      "description": "Specifies design, materials, thermal performance figures of merit (F1 and F2) and fabrication requirements for domestic box-type solar cookers and food warming units.",
+      "requirements": [
+        "First figure of merit F1 (stagnation temperature ratio) not less than 0.12",
+        "Second figure of merit F2 (sensible heat transfer cooking power) not less than 0.40",
+        "Double glazed low-iron tempered glass cover with silicone gasket seal",
+        "Reflector mirror solar specular reflectivity (> 80%)",
+        "Cooking pots anodized aluminium or stainless steel with food-safe non-toxic black coating",
+        "Casing insulation thermal conductivity (rockwool / glass wool) to prevent heat loss"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "VOLUNTARY",
+      "qco_order": "MNRE Recognized Technical Standard for Solar Thermal Cooking Systems",
+      "effective_date": "2021-01-01",
+      "testing_parameters": [
+        "Stagnation temperature test under clear noon sunlight (> 750 W/m²)",
+        "Water boiling sensible heating test to calculate F2 parameter",
+        "Mirror specular reflectance measurement via spectrophotometer",
+        "Cooking pot non-stick / black coating adhesion and scratch test"
+      ],
+      "related_standards": [
+        "IS 12933",
+        "IS 13429"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 302 (Part 2/Sec 85)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 85 Fabric Steamers",
+      "product": "portable garment steamer",
+      "category": "Electrical Appliances",
+      "synonyms": [
+        "garment steamer",
+        "portable garment steamer",
+        "clothes steamer",
+        "handheld steamer",
+        "fabric steamer",
+        "vertical steam iron"
+      ],
+      "description": "Covers safety requirements for electric fabric steamers, portable handheld garment steamers and commercial upright garment steamers intended for smoothing fabrics by steam.",
+      "requirements": [
+        "Steam boiler pressure relief and overpressure blowout safety",
+        "Protection against scalding hot water droplet spitting during operation",
+        "Thermal cut-out and dry-run safety when water reservoir empties",
+        "Handle touch temperature and thermal insulation barrier",
+        "High voltage dielectric withstand between heating element and steam nozzle",
+        "Cord anchorage and flexible cord bending endurance"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Continuous steam pressure and temperature monitoring test",
+        "Dry-run boil-off test for 1 hour without thermal damage",
+        "Electric strength test at 1250 V AC",
+        "Drop test of handheld steamer unit from 1 metre",
+        "Handle temperature rise test (< 40°C on plastic touch points)"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 302 (Part 2/Sec 3)",
+        "IS 1293"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 16102 (Part 1 & 2)",
+      "title": "Self-Ballasted LED Lamps for General Lighting Services – Part 1 Safety Requirements, Part 2 Performance Requirements",
+      "product": "self ballasted led lamp",
+      "category": "Lighting",
+      "synonyms": [
+        "led lamp",
+        "led bulb",
+        "led light",
+        "self ballasted led",
+        "b22 led bulb",
+        "e27 led bulb",
+        "rechargeable led bulb"
+      ],
+      "description": "Specifies safety and performance requirements for self-ballasted LED lamps with supply voltages up to 250 V AC 50 Hz, including luminous efficacy, color rendering, and lamp cap torque.",
+      "requirements": [
+        "Insulation resistance and electric strength across cap pins and metal heatsink",
+        "Lamp cap mechanical torque strength (e.g. 3 Nm for B22d and E27 caps)",
+        "Resistance to heat and fire on thermoplastic housing (glow wire 650°C)",
+        "Fault condition safety: driver circuit must not ignite under component short",
+        "Luminous efficacy (minimum lumens per watt per BEE / BIS benchmarks)",
+        "Harmonic current distortion (THD < 15%) and power factor (> 0.90)"
+      ],
+      "scheme": "Scheme II (Compulsory Registration Scheme - CRS) & Scheme I (ISI)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electronics and IT Goods (Compulsory Registration) Order & BEE Star Rating",
+      "effective_date": "2015-05-01",
+      "testing_parameters": [
+        "Lamp cap torsion torque test with torque gauge",
+        "High voltage dielectric test at 1500 V AC",
+        "Luminous flux, CCT and CRI measurement in integrating sphere with spectroradiometer",
+        "Electrical harmonics and total harmonic distortion (THD) power analyzer test",
+        "Thermal endurance switching cycle test (15,000 on/off cycles)"
+      ],
+      "related_standards": [
+        "IS 16103",
+        "IS 15885",
+        "IS 16107"
+      ],
+      "official_source": "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en"
+    },
+    {
+      "standard_number": "IS 15750",
+      "title": "Household Frost-Free Refrigerating Appliances – Specification",
+      "product": "refrigerator",
+      "category": "Home Appliances",
+      "synonyms": [
+        "refrigerator",
+        "fridge",
+        "frost free refrigerator",
+        "double door refrigerator",
+        "refrigerating appliance",
+        "direct cool refrigerator"
+      ],
+      "description": "Specifies construction, refrigeration capacity, energy consumption and safety requirements for household frost-free and direct-cool refrigerators.",
+      "requirements": [
+        "Electrical safety per IS 302 (Part 2/Sec 24) for hermetic compressor appliances",
+        "Flammable refrigerant (R600a / Isobutane) leak tightness and non-sparking electrical controls",
+        "Freezer compartment storage temperature performance (-18°C or below in 4-star compartment)",
+        "Daily and annual energy consumption test per BEE star labelling rules",
+        "Door gasket magnetic sealing effectiveness and pull force limits",
+        "Condenser heat dissipation and high ambient pulling-down test at 43°C"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme) & BEE Mandatory Star Rating",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "BEE Mandatory Energy Rating & Refrigerating Appliances Safety Standard",
+      "effective_date": "2020-01-01",
+      "testing_parameters": [
+        "Energy consumption test in controlled psychrometric climate chamber at 32°C",
+        "Pull-down cooling speed test from 43°C ambient",
+        "Refrigerant circuit helium leak detection test (< 0.5 g/year)",
+        "Dielectric test at 1250 V AC on hermetic motor compressor",
+        "Door seal airtightness and thermal condensation test"
+      ],
+      "related_standards": [
+        "IS 302 (Part 2/Sec 24)",
+        "IS 1751",
+        "IS 1293"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 302 (Part 2/Sec 7)",
+      "title": "Safety of Household and Similar Electrical Appliances – Part 2 Particular Requirements – Section 7 Washing Machines",
+      "product": "washing machine",
+      "category": "Home Appliances",
+      "synonyms": [
+        "washing machine",
+        "washer",
+        "automatic washing machine",
+        "front load washing machine",
+        "top load washing machine",
+        "semi automatic washing machine"
+      ],
+      "description": "Covers safety requirements for electric washing machines intended for household laundry with centrifugal spin extractors.",
+      "requirements": [
+        "Spin basket lid interlock braking mechanism (drum must stop within 10 seconds of opening)",
+        "Moisture and water splash ingress protection (IPX4 rating for outdoor/bathroom installation)",
+        "Drain pump and water valve electrical insulation under wet environments",
+        "Mechanical stability and vibration resistance during maximum spin speed (up to 1400 RPM)",
+        "Motor thermal protection and earth bonding continuity (< 0.1 ohm)",
+        "Internal water piping burst pressure safety against supply surges"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme) & BEE Star Rating",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Electrical Appliances (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-05-01",
+      "testing_parameters": [
+        "Spin tub brake time test after lid lifting",
+        "Water spray splash test per IPX4 specification",
+        "High voltage dielectric test at 1500 V AC",
+        "Unbalanced spin load test with off-center wet laundry weight",
+        "Continuous 100-cycle washing and rinsing endurance test"
+      ],
+      "related_standards": [
+        "IS 302 (Part 1)",
+        "IS 14155",
+        "IS 1293"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 1391 (Part 1 & 2)",
+      "title": "Room Air Conditioners – Part 1 Unitary (Window) Air Conditioners, Part 2 Split Air Conditioners",
+      "product": "air conditioner",
+      "category": "Home Appliances",
+      "synonyms": [
+        "air conditioner",
+        "ac",
+        "split ac",
+        "window ac",
+        "inverter ac",
+        "room air conditioner",
+        "split air conditioner"
+      ],
+      "description": "Specifies construction, cooling capacity, Indian Seasonal Energy Efficiency Ratio (ISEER), noise level and safety requirements for unitary and split air conditioners.",
+      "requirements": [
+        "Cooling capacity and sensible heat ratio per psychrometric calorimeter chamber testing",
+        "ISEER (energy efficiency) rating compliance per BEE star labelling regulations",
+        "Refrigerant leak safety (R32 / R410A / R290 flammability and pressure safety)",
+        "Electrical insulation, outdoor unit weatherproofing (IPX4) and earthing",
+        "Maximum operating condition test at 46°C outdoor ambient without compressor trip",
+        "Condensate disposal and overflow freeze-up protection"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme) & BEE Mandatory Star Rating",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Air Conditioners and its Related Parts (Quality Control) Order, 2023 (DPIIT)",
+      "effective_date": "2024-01-01",
+      "testing_parameters": [
+        "Balanced ambient calorimeter chamber cooling capacity test",
+        "ISEER energy factor determination per IS 1391 Part 2",
+        "Maximum operating condition test at 46°C / 50°C ambient",
+        "Outdoor unit water rain ingress test per IPX4",
+        "High voltage test at 1500 V AC on hermetic compressor"
+      ],
+      "related_standards": [
+        "IS 302 (Part 2/Sec 40)",
+        "IS/ISO 5151",
+        "IS 1293"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 10500",
+      "title": "Drinking Water – Specification",
+      "product": "drinking water",
+      "category": "Water",
+      "synonyms": [
+        "drinking water",
+        "potable water",
+        "tap water",
+        "municipal water",
+        "water quality",
+        "safe drinking water"
+      ],
+      "description": "Prescribes requirements, acceptable limits and permissible limits in the absence of an alternate source for physical, chemical, toxic and bacteriological parameters of drinking water.",
+      "requirements": [
+        "Organoleptic parameters: pH (6.5 to 8.5), Turbidity (< 1 NTU), Total Dissolved Solids (< 500 mg/l)",
+        "General contaminants: Hardness (< 200 mg/l), Chloride (< 250 mg/l), Sulphate (< 200 mg/l), Nitrate (< 45 mg/l)",
+        "Toxic heavy metals: Lead (< 0.01 mg/l), Arsenic (< 0.01 mg/l), Mercury (< 0.001 mg/l), Cadmium (< 0.003 mg/l)",
+        "Pesticide residues: total pesticides not exceeding 0.0005 mg/l",
+        "Bacteriological safety: E. coli and total coliform bacteria must be zero in any 100 ml sample",
+        "Virological and radiological limits per Atomic Energy Regulatory Board standards"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme for commercial purifiers/water)",
+      "mandatory_status": "VOLUNTARY",
+      "qco_order": "Indian Standard for Municipal and Public Water Supplies (Voluntary benchmark; Packaged Water is Mandatory under IS 14543)",
+      "effective_date": "2012-05-01 (Reaffirmed 2021)",
+      "testing_parameters": [
+        "Inductively Coupled Plasma Mass Spectrometry (ICP-MS) for heavy metals",
+        "Gas chromatography-mass spectrometry (GC-MS) for pesticide residues",
+        "Membrane filtration technique for E. coli count",
+        "Turbidity meter nephelometric measurement",
+        "UV-Vis spectrophotometer for nitrate, fluoride and iron"
+      ],
+      "related_standards": [
+        "IS 14543",
+        "IS 13428",
+        "IS 3025"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 14543",
+      "title": "Packaged Drinking Water (Other Than Packaged Natural Mineral Water) – Specification",
+      "product": "packaged drinking water",
+      "category": "Food and Agriculture",
+      "synonyms": [
+        "packaged drinking water",
+        "bottled water",
+        "packaged water",
+        "mineral water bottle",
+        "20 litre water jar",
+        "packaged water bottle"
+      ],
+      "description": "Specifies mandatory requirements, microbiological limits, purification treatments and packaging criteria for packaged drinking water sold in sealed plastic bottles, pouches and bulk containers.",
+      "requirements": [
+        "Processing requirements: filtration, demineralisation, reverse osmosis and mandatory disinfection (ozonation / UV)",
+        "Microbiological limits: complete absence of Coliforms, E. coli, Faecal streptococci, Pseudomonas aeruginosa",
+        "Total Dissolved Solids (TDS) maintained between 75 mg/l and 500 mg/l",
+        "Packaging containers food-grade PET / Polycarbonate conforming to IS 15410 with tamper-proof seal",
+        "Shelf life declaration and batch printing with mandatory ISI mark on every bottle cap and label",
+        "Periodic daily in-house laboratory testing of raw and treated water"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Food Safety and Standards Act (FSSAI) & BIS Mandatory Certification Order",
+      "effective_date": "2004-01-01 (Revised 2016)",
+      "testing_parameters": [
+        "Membrane filtration microbiological testing for Pseudomonas aeruginosa and Coliforms",
+        "TDS gravimetric determination at 180°C",
+        "Barium, Copper, Iron, Lead, and Arsenic testing by ICP-MS",
+        "Pesticide residue testing by GC-MS/MS and LC-MS/MS",
+        "Bottle drop impact test and migration test per IS 9845"
+      ],
+      "related_standards": [
+        "IS 10500",
+        "IS 13428",
+        "IS 15410"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 9873 (Part 1)",
+      "title": "Safety of Toys – Part 1 Safety Aspects Related to Mechanical and Physical Properties",
+      "product": "toys for children",
+      "category": "Consumer Goods",
+      "synonyms": [
+        "toys",
+        "toy",
+        "children toys",
+        "plastic toys",
+        "wooden toys",
+        "educational toy",
+        "stuffed toy",
+        "baby toy"
+      ],
+      "description": "Specifies acceptable criteria for the physical and mechanical properties of toys for children up to 14 years, including small parts hazard, sharp edges, cords, and stability.",
+      "requirements": [
+        "Small parts cylinder test: no component of toys for children under 36 months may fit in cylinder (choking hazard)",
+        "Accessible sharp edges and sharp points testing before and after abuse drop/torque tests",
+        "Cords and elastics length restrictions (< 220 mm) to prevent strangulation",
+        "Heavy metal chemical migration limits per IS 9873 (Part 3) (Lead < 90 mg/kg, Cadmium < 75 mg/kg)",
+        "Phthalate plasticizer content limit (max 0.1% for DEHP, DBP, BBP)",
+        "Non-flammability and burning rate limits per IS 9873 (Part 2)"
+      ],
+      "scheme": "Scheme I (ISI Mark Scheme)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Toys (Quality Control) Order, 2020 (DPIIT)",
+      "effective_date": "2021-01-01",
+      "testing_parameters": [
+        "Small parts cylinder test per IS 9873 Part 1 Clause 5.2",
+        "Sharp point tester and sharp edge tester following 5 drops from 850mm",
+        "Tensile pull test with 90 N force on seams and attachments",
+        "ICP-OES test for 8 heavy elements migration per IS 9873 Part 3",
+        "Gas chromatography testing for phthalate plasticizers"
+      ],
+      "related_standards": [
+        "IS 9873 (Part 2)",
+        "IS 9873 (Part 3)",
+        "IS 15644"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
+    },
+    {
+      "standard_number": "IS 1608",
+      "title": "Metallic Materials – Tensile Testing at Ambient Temperature",
+      "product": "metallic materials steel aluminium",
+      "category": "Metals",
+      "synonyms": [
+        "metallic materials",
+        "steel",
+        "aluminium",
+        "metal bar",
+        "tensile testing",
+        "structural steel",
+        "tmt bar",
+        "metal sheet"
+      ],
+      "description": "Specifies method for tensile testing of metallic materials at ambient temperature (10°C to 35°C) to determine yield strength, tensile strength, percentage elongation and reduction of area.",
+      "requirements": [
+        "Test specimen preparation dimensions per standard gauge length (5.65 * sqrt(So))",
+        "Strain rate control during elastic and plastic deformation stages",
+        "Determination of proof stress (non-proportional elongation Rp0.2)",
+        "Yield strength (upper and lower yield strength ReH, ReL)",
+        "Ultimate tensile strength (Rm) and percentage elongation after fracture",
+        "Calibrated testing machine accuracy class 1 or better per IS 1828"
+      ],
+      "scheme": "Scheme I (Referenced in Steel QCOs)",
+      "mandatory_status": "MANDATORY",
+      "qco_order": "Steel and Steel Products (Quality Control) Orders (Ministry of Steel)",
+      "effective_date": "2020-08-01",
+      "testing_parameters": [
+        "Tensile test on calibrated Universal Testing Machine (UTM)",
+        "Proof stress Rp0.2 extensometer measurement",
+        "Fracture elongation gauge measurement",
+        "Chemical composition optical emission spectrometry"
+      ],
+      "related_standards": [
+        "IS 1786",
+        "IS 2062",
+        "IS 1828"
+      ],
+      "official_source": "https://standards.bis.gov.in/"
     }
   ]
 }
