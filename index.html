@@ -104,6 +104,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
 
 
 
+
 <script data-sg-cache-cleanup="1">
 (() => {
   try {
@@ -113,7 +114,7 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
   } catch(_){}
 })();
 </script>
-<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-6">
+<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-7">
 </head>
 <body>
 <div class="app">
@@ -121,8 +122,8 @@ textarea.field{resize:vertical}.muted{color:var(--muted)}.tiny{font-size:11px}.r
   <div class="brand"><div class="mark">✦</div><div><b>BIS SmartGuide</b><small>Standards Intelligence Platform</small></div></div>
   <div class="side-label">Intelligence Workspace</div>
   <nav class="nav">
-    <button id="v8Nav" type="button" aria-label="Open Advanced Intelligence"><span>✦</span><span>Advanced Intelligence</span></button>
     <button class="active" onclick="page('dash',this,'Overview')">⌂ <span>Overview</span></button>
+    <button id="v8Nav" type="button" onclick="if(window.page){window.page('v8',this,'Advanced Features')}" aria-label="Open Advanced Features"><span>✦</span><span>Advanced Features</span></button>
     <button onclick="page('intel',this,'Product Intelligence')">◈ <span>Product Intelligence</span></button>
     <button onclick="page('finder',this,'Standard Finder')">⌕ <span>Standard Finder</span></button>
     <button onclick="page('compliance',this,'Compliance Center')">✓ <span>Compliance</span></button>
@@ -618,7 +619,9 @@ $('globalLang')?.addEventListener('change',e=>applyUILanguage(e.target.value));
 
 
 
-<script src="smartguide-v8.js?v=20260910-v8-6"></script>
-<script src="command-center-fix.js?v=20260910-v8-6"></script>
+
+
+<script src="smartguide-v8.js?v=20260910-v8-7"></script>
+<script src="command-center-fix.js?v=20260910-v8-7"></script>
 </body>
 </html>
