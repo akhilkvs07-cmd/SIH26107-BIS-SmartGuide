@@ -46,7 +46,6 @@ jobs:
           })();
           </script>'''
 
-          # Advanced Features belongs at the very bottom of the main navigation.
           nav_button='''<button id="v8Nav" type="button" onclick="if(window.page){window.page('v8',this,'Advanced Features')}" aria-label="Open Advanced Features"><span>✦</span><span>Advanced Features</span></button>'''
           text=re.sub(r'<button[^>]*id=["\']v8Nav["\'][\s\S]*?</button>\s*','',text,flags=re.I)
           nav_match=re.search(r'<nav class="nav">([\s\S]*?)</nav>',text,flags=re.I)
@@ -58,13 +57,15 @@ jobs:
           text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦&nbsp;<span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
           text=text.replace('Advanced Intelligence','Advanced Features')
 
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-8">'
-          js='<script src="smartguide-v8.js?v=20260910-v8-8"></script>'
-          fix='<script src="command-center-fix.js?v=20260910-v8-8"></script>'
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-9">'
+          js='<script src="smartguide-v8.js?v=20260910-v8-9"></script>'
+          fix='<script src="command-center-fix.js?v=20260910-v8-9"></script>'
+          ux='<script src="smartguide-ux-v9.js?v=20260910-v9-1"></script>'
           text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v8\.css(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
           text=re.sub(r'<script\s+src=["\']smartguide-v8\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
+          text=re.sub(r'<script\s+src=["\']smartguide-ux-v9\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
           text=text.replace('</head>',cleanup+'\n'+css+'\n</head>',1)
-          text=text.replace('</body>',js+'\n'+fix+'\n</body>',1)
+          text=text.replace('</body>',js+'\n'+fix+'\n'+ux+'\n</body>',1)
           if '<link rel="manifest"' not in text:
             text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
           p.write_text(text,encoding='utf-8')
@@ -73,4 +74,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Move Advanced Features to bottom navigation" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Improve SmartGuide user-friendly workflows" && git push; fi
