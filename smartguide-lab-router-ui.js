@@ -1,6 +1,8 @@
 /* SmartGuide Verified Laboratory Router UI
  * Connects the Find Laboratory page to the backend /v8/labs/match endpoint.
  * No synthetic laboratory cards, NABL numbers, contacts or capabilities are generated here.
+ * The core SmartGuide labs() renderer can refresh #labsOut after navigation, so this
+ * module watches that single container and re-attaches the router after a refresh.
  */
 (function () {
   'use strict';
@@ -104,4 +106,15 @@
   function boot(){ init(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   setTimeout(boot, 1000); setTimeout(boot, 3000);
+
+  // The existing core labs() function replaces #labsOut.innerHTML when the
+  // Laboratory page is opened. Observe only that container so the router returns
+  // after navigation without creating a global DOM mutation loop.
+  const observer = new MutationObserver(() => { if (document.getElementById('labsOut')) init(); });
+  const startObserver = () => {
+    const out = document.getElementById('labsOut');
+    if (out) observer.observe(out, { childList: true });
+    else setTimeout(startObserver, 1000);
+  };
+  startObserver();
 })();
