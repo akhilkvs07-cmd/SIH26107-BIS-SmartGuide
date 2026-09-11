@@ -77,7 +77,39 @@
   window.runProcurement=async()=>{loading();try{output(await api('/v5/procurement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:$('v8Proc').value,hs_code:$('v8HS').value,raw_material:$('v8Raw').value})}))}catch(e){fail(e)}};
   window.openIssue=()=>tool('Issue / counterfeit report draft',`<div class="sg-v8-form"><input id="v8IssueProduct" placeholder="Product (optional)"><textarea id="v8Issue" class="full" placeholder="Describe the suspected issue, marking problem or safety concern"></textarea><div><button class="btn primary" onclick="runIssue()">Create case draft</button></div></div><div id="v8Out" class="sg-v8-result"></div>`);
   window.runIssue=async()=>{loading();try{output(await api('/v5/issue-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product:$('v8IssueProduct').value,issue:$('v8Issue').value})}))}catch(e){fail(e)}};
-  window.runV8SelfTest=async()=>{const el=$('v8SelfTest');if(el)el.innerHTML='<div class="sg-v8-loading">Running backend self-test…</div>';try{const d=await api('/v5/self-test');if(el)el.innerHTML='<pre>'+esc(pretty(d))+'</pre>'}catch(e){if(el)el.innerHTML='<pre>'+esc(JSON.stringify({ok:false,error:e.message},null,2))+'</pre>'}};
+
+  // Keep developer JSON out of the user-facing console. The backend still returns
+  // the complete self-test payload; the UI now renders a concise health summary.
+  window.runV8SelfTest=async()=>{
+    const el=$('v8SelfTest');
+    if(el)el.innerHTML='<div class="sg-v8-loading">Running backend self-test…</div>';
+    try{
+      const d=await api('/v5/self-test');
+      const tests=Array.isArray(d.tests)?d.tests:[];
+      const passed=tests.filter(t=>t && t.ok).length;
+      const failed=tests.length-passed;
+      const status=d.ok!==false && failed===0;
+      if(el){
+        el.innerHTML=`
+          <div class="sg-v8-selftest ${status?'is-good':'is-bad'}">
+            <div class="sg-v8-selftest-head">
+              <div>
+                <span class="sg-v8-badge">${status?'SELF-TEST PASSED':'SELF-TEST NEEDS ATTENTION'}</span>
+                <h3>${status?'All backend checks are healthy':'Some backend checks need attention'}</h3>
+                <p>${passed} of ${tests.length} checks passed${failed?` • ${failed} failed`:''}.</p>
+              </div>
+              <div class="sg-v8-selftest-score">${passed}/${tests.length}</div>
+            </div>
+            <div class="sg-v8-selftest-list">
+              ${tests.map(t=>`<div class="sg-v8-selftest-row"><span class="sg-v8-test-dot ${t.ok?'ok':'bad'}">${t.ok?'✓':'!'}</span><span>${esc(t.name||'Backend check')}</span><b>${t.ok?'PASS':'CHECK'}</b></div>`).join('')}
+            </div>
+            <div class="sg-v8-selftest-meta">Backend health check completed${d.generated_at?` • ${esc(new Date(d.generated_at).toLocaleString())}`:''}</div>
+          </div>`;
+      }
+    }catch(e){
+      if(el)el.innerHTML=`<div class="sg-v8-selftest is-bad"><span class="sg-v8-badge">SELF-TEST UNAVAILABLE</span><h3>Could not reach the backend</h3><p>${esc(e.message||'Backend request failed')}</p></div>`;
+    }
+  };
   async function loadStatus(){try{const d=await api('/v5/feature-status');const a=d.features||[];if($('v8Active'))$('v8Active').textContent=a.filter(x=>String(x.status).startsWith('FUNCTIONAL')).length;if($('v8Status'))$('v8Status').innerHTML=a.map(x=>`<div class="sg-v8-card sg-v8-status-card"><span class="sg-v8-badge">${esc(x.status)}</span><h3>${esc(x.feature)}</h3></div>`).join('')}catch(e){if($('v8Status'))$('v8Status').innerHTML='<div class="sg-v8-card sg-v8-warn"><b>Backend unavailable</b><p>'+esc(e.message)+'</p></div>'}}
   window.loadV8Status=loadStatus;
   function init(){page();loadStatus();}
