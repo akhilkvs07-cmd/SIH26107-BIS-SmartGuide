@@ -17,7 +17,7 @@
       <div class="card" style="margin-bottom:16px">
         <span class="tag green">SOURCE-GROUNDED LAB ROUTER</span>
         <h2 style="margin:10px 0 6px">Find a suitable laboratory</h2>
-        <p class="muted" style="margin-top:0">Resolve the product to an Indian Standard, match current BIS LIMS scope where available, then rank suitable laboratories by distance.</p>
+        <p class="muted" style="margin-top:0">Resolve the product to an Indian Standard, search the current BIS LIMS recognized-lab scope, then rank relevant results for your selected city.</p>
         <div class="grid2" style="margin-top:14px">
           <div><label class="tiny muted">Product / IS Number</label><input id="sgLabProduct" class="field" placeholder="e.g. keyboard, pressure cooker, IS 2347" /></div>
           <div><label class="tiny muted">Search Origin</label><select id="sgLabOrigin" class="field">
@@ -29,7 +29,7 @@
           <div><label class="tiny muted">IS Number (optional)</label><input id="sgLabStandard" class="field" placeholder="e.g. IS 2347 (2023)" /></div>
         </div>
         <div class="toolbar" style="margin-top:12px"><button id="sgLabSearch" class="btn primary">Find Laboratories</button><button id="sgLabGps" class="btn ghost" type="button">● Use My GPS Location</button></div>
-        <div class="tiny muted" style="margin-top:10px">Changing the origin re-runs the ranking when a product or IS number is already entered. Scope matches come from BIS LIMS records; nearby directory records are never treated as capable solely because they are close.</div>
+        <div class="tiny muted" style="margin-top:10px">The router can query the full recognized-lab scope returned by BIS LIMS. The screen shows the best matches first rather than dumping hundreds of records at once.</div>
       </div>
       <div id="sgLabResults"></div>`;
     out.prepend(panel);
@@ -54,7 +54,7 @@
     const [lat, lon] = origin.value.split(',').map(Number);
     const city = origin.options[origin.selectedIndex]?.textContent?.trim() || '';
     if (!product && !standard) { results.innerHTML = '<div class="notice"><b>Enter a product or IS number.</b> Example: keyboard, pressure cooker or IS 2347.</div>'; return; }
-    results.innerHTML = '<div class="card loading">Resolving the Indian Standard and checking BIS LIMS scope…</div>';
+    results.innerHTML = '<div class="card loading">Resolving the Indian Standard and checking the live BIS LIMS scope…</div>';
     try {
       const params = new URLSearchParams({ product, standard, test: category, city, lat, lon, limit: '12' });
       const data = await api('/v8/labs/match?' + params.toString());
@@ -69,7 +69,7 @@
     const rows = data.results || data.labs || data.data?.laboratories || data.data?.results || data.data?.labs || [];
     const limsSearch = data.lims_scope_search || data.data?.official_resources?.bis_lims_is_search || 'https://lims.bis.gov.in/home/search_is_number/';
     if (!rows.length) {
-      results.innerHTML = `<div class="card"><div class="notice"><b>No laboratory record was returned for ${esc(city)}.</b><br>The official BIS directory currently contains recognized laboratories across India. Try another product/IS number or verify the current LIMS scope.</div><div style="margin-top:12px"><a href="${limsSearch}" target="_blank" rel="noopener">Open official BIS LIMS scope search ↗</a></div></div>`;
+      results.innerHTML = `<div class="card"><div class="notice"><b>No laboratory record was returned for ${esc(city)}.</b><br>The official BIS directory contains recognized laboratories across India. Try another product/IS number or verify the current LIMS scope.</div><div style="margin-top:12px"><a href="${limsSearch}" target="_blank" rel="noopener">Open official BIS LIMS scope search ↗</a></div></div>`;
       return;
     }
     const cards = rows.map((r, i) => {
@@ -88,12 +88,14 @@
       const isScopeMatch = r.scope_status === 'LIMS_SCOPE_MATCH';
       const status = isScopeMatch ? 'BIS LIMS SCOPE MATCH' : (r.status || r.recognition_status || r.verification_status || 'BIS LIMS directory record');
       const badge = isScopeMatch ? 'SUITABLE SCOPE MATCH' : (i === 0 ? 'NEAREST DIRECTORY MATCH' : 'OFFICIAL DIRECTORY');
-      const scopeStatus = isScopeMatch ? `Scope: ${esc(r.scope_standard || data.resolved_standard?.standard_number || 'matched IS')}` : 'Scope verification required';
-      return `<div class="result-card"><div class="result-top"><div><span class="tag ${isScopeMatch?'green':'amber'}">${badge}</span><h3 style="margin:9px 0 5px">${esc(name)}</h3><p class="muted tiny">${esc(address)}</p></div><div style="text-align:right">${distance != null ? `<div class="score">${esc(Number(distance).toFixed(2))} km</div><div class="tiny muted">Haversine distance</div>` : ''}</div></div><div class="tags" style="margin-top:10px"><span class="tag ${isScopeMatch?'green':'amber'}">${esc(status)}</span>${validity?`<span class="tag">Valid: ${esc(validity)}</span>`:''}<span class="tag">${scopeStatus}</span></div>${contact||phone||email?`<div class="tiny muted" style="margin-top:10px">${contact?`Contact: ${esc(contact)} · `:''}${phone?`Phone: ${esc(phone)} · `:''}${email?`Email: ${esc(email)}`:''}</div>`:''}<div class="toolbar" style="margin-top:12px"><a class="btn primary" href="${maps}" target="_blank" rel="noopener">Get Directions ↗</a><a class="btn ghost" href="${scope}" target="_blank" rel="noopener">Open BIS LIMS Scope ↗</a><a class="btn ghost" href="${source}" target="_blank" rel="noopener">Official Source ↗</a></div><div class="evidence ${isScopeMatch?'successbox':'notice'}"><div class="evidence-head"><b>${isScopeMatch?'BIS LIMS scope found':'Scope verification'}</b><small>${isScopeMatch?'Capability still depends on the exact test clauses and current validity.':'Distance does not prove testing capability.'}</small></div><div class="tiny muted" style="margin-top:5px">Verify the exact Indian Standard, test clauses, current validity, capacity and booking availability in BIS LIMS before sending samples.</div></div></div>`;
+      const scopeStatus = isScopeMatch ? `Scope: ${esc(r.scope_standard || r.standard_number || data.resolved_standard?.standard_number || 'matched IS')}` : 'Scope verification required';
+      return `<div class="result-card"><div class="result-top"><div><span class="tag ${isScopeMatch?'green':'amber'}">${badge}</span><h3 style="margin:9px 0 5px">${esc(name)}</h3><p class="muted tiny">${esc(address || r.product || '')}</p></div><div style="text-align:right">${distance != null ? `<div class="score">${esc(Number(distance).toFixed(2))} km</div><div class="tiny muted">Haversine distance</div>` : ''}</div></div><div class="tags" style="margin-top:10px"><span class="tag ${isScopeMatch?'green':'amber'}">${esc(status)}</span>${validity?`<span class="tag">Valid: ${esc(validity)}</span>`:''}<span class="tag">${scopeStatus}</span></div>${contact||phone||email?`<div class="tiny muted" style="margin-top:10px">${contact?`Contact: ${esc(contact)} · `:''}${phone?`Phone: ${esc(phone)} · `:''}${email?`Email: ${esc(email)}`:''}</div>`:''}<div class="toolbar" style="margin-top:12px"><a class="btn primary" href="${maps}" target="_blank" rel="noopener">Get Directions ↗</a><a class="btn ghost" href="${scope}" target="_blank" rel="noopener">Open BIS LIMS Scope ↗</a><a class="btn ghost" href="${source}" target="_blank" rel="noopener">Official Source ↗</a></div><div class="evidence ${isScopeMatch?'successbox':'notice'}"><div class="evidence-head"><b>${isScopeMatch?'BIS LIMS scope found':'Scope verification'}</b><small>${isScopeMatch?'Capability still depends on the exact test clauses and current validity.':'Distance does not prove testing capability.'}</small></div><div class="tiny muted" style="margin-top:5px">Verify the exact Indian Standard, test clauses, current validity, capacity and booking availability in BIS LIMS before sending samples.</div></div></div>`;
     }).join('');
     const resolved = data.resolved_standard?.standard_number || data.data?.query?.standard || '';
     const scopeCount = rows.filter(r => r.scope_status === 'LIMS_SCOPE_MATCH').length;
-    results.innerHTML = `<div class="section-head"><div><h2>Laboratory matches</h2><p>${rows.length} result${rows.length===1?'':'s'} returned for ${esc(city)}${resolved?` · ${esc(resolved)}`:''}. ${scopeCount ? `<b>${scopeCount} have a BIS LIMS scope match.</b>` : 'No scope-matched record was found in the configured scope layer; directory results remain available for manual LIMS verification.'}</p></div></div>${cards}`;
+    const totalScope = Number(data.lims_total_scope_matches || 0);
+    const coverage = totalScope ? `${totalScope} current BIS LIMS scope record${totalScope === 1 ? '' : 's'} found; showing the top ${rows.length}.` : `${rows.length} result${rows.length===1?'':'s'} returned.`;
+    results.innerHTML = `<div class="section-head"><div><h2>Laboratory matches</h2><p>${coverage} ${esc(city)}${resolved?` · ${esc(resolved)}`:''} ${scopeCount ? `<b>${scopeCount} shown with a BIS LIMS scope match.</b>` : 'Directory results remain available for manual LIMS verification.'}</p></div></div>${cards}`;
   }
 
   function gps() {
