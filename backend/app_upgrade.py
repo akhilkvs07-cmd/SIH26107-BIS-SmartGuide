@@ -125,41 +125,63 @@ def v8_compliance_passport():
 # Universal AI Agent layer — Gemini free tier
 # ---------------------------------------------------------------------------
 
+def _universal_agent_product(product: str):
+    """Single source of truth for product identity used by agent tools."""
+    return analyze_universal(product, find_matches)
+
+
 def _agent_compliance_lookup(product: str):
+    analysis = _universal_agent_product(product)
+    standards = analysis.get("ranked_standards", [])
+    if not standards:
+        return {
+            "product": analysis.get("resolved_product", product),
+            "standard": None,
+            "status": "PHYSICAL_PRODUCT_UNRESOLVED",
+            "product_intelligence": analysis,
+            "notice": "No supported product-specific standard was found in the current evidence. No unrelated standard is substituted.",
+        }
     result = _build_assessment(product, {}, {}, "")
     if result.get("standard"):
+        result["product_intelligence"] = analysis
         return result
-    return mandatory_assessment(product)
+    return {
+        "product": analysis.get("resolved_product", product),
+        "standard": standards[0],
+        "status": "STANDARD_FOUND_REQUIRES_COMPLIANCE_REVIEW",
+        "product_intelligence": analysis,
+        "notice": "The universal gateway found a supported candidate; confirm the exact scope and current QCO before treating it as applicable.",
+    }
 
 
 def _agent_certification_lookup(product: str):
-    resolved = resolve_product(product)
-    exact = anchor(product)
-    matches = [exact] if exact else find_matches(resolved, 1)
-    standard = matches[0] if matches else None
+    analysis = _universal_agent_product(product)
+    standards = analysis.get("ranked_standards", [])
+    standard = standards[0] if standards else None
     return {
-        "product": resolved,
+        "product": analysis.get("resolved_product", product),
         "standard": standard,
+        "status": "STANDARD_FOUND" if standard else "PHYSICAL_PRODUCT_UNRESOLVED",
         "steps": certification_steps(standard),
         "official_resources": OFFICIAL_RESOURCES[1:3],
-        "notice": "Requirements vary by product, standard, QCO and scheme. Verify current BIS instructions.",
+        "product_intelligence": analysis,
+        "notice": "Requirements vary by product, standard, QCO and scheme. Verify current BIS instructions. No unrelated standard is substituted.",
     }
 
 
 def _agent_lab_lookup(product: str):
-    resolved = resolve_product(product)
-    exact = anchor(product)
-    standard = exact.get("standard_number", "") if exact else ""
-    if not standard:
-        matches = find_matches(resolved, 1)
-        standard = matches[0].get("standard_number", "") if matches else ""
+    analysis = _universal_agent_product(product)
+    standards = analysis.get("ranked_standards", [])
+    standard = standards[0].get("standard_number", "") if standards else ""
     return {
-        "product": resolved,
+        "product": analysis.get("resolved_product", product),
         "standard": standard,
+        "status": "STANDARD_FOUND" if standard else "PHYSICAL_PRODUCT_UNRESOLVED",
         "message": "Use the authentic BIS LIMS laboratory directory and IS-specific scope search to confirm current testing scope and availability.",
         "official_url": OFFICIAL_LAB_DIRECTORY,
         "lims_url": OFFICIAL_LIMS_URL,
         "lims_search": f"{OFFICIAL_LIMS_SEARCH}?is_number__doc_no={quote_plus(standard)}" if standard else OFFICIAL_LIMS_SEARCH,
+        "product_intelligence": analysis,
         "trust_boundary": "SmartGuide does not invent laboratory capabilities or test reports. Distance alone does not prove testing scope.",
     }
 
