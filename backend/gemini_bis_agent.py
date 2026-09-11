@@ -37,7 +37,7 @@ FINAL_SCHEMA = {
 
 class GeminiBISAgent:
     name = "BIS SmartGuide Universal Agent"
-    version = "3.0-gemini-universal-orchestrator"
+    version = "3.1-gemini-universal-web-fallback"
 
     def __init__(self, find_matches: Callable[[str, int], list], rag_retrieve: Callable[[str, int], list],
                  compliance_lookup: Callable[[str], Dict[str, Any]], certification_lookup: Callable[[str], Dict[str, Any]],
@@ -55,6 +55,39 @@ class GeminiBISAgent:
     @staticmethod
     def _json(value: Any) -> str:
         return json.dumps(value, ensure_ascii=False, default=str)
+
+    @staticmethod
+    def _grounding_details(response: Any) -> tuple[bool, list[str]]:
+        """Extract web-grounding signals without depending on one SDK object shape."""
+        details: list[str] = []
+        grounded = False
+        candidates = getattr(response, "candidates", []) or []
+        metadata_objects = [getattr(response, "grounding_metadata", None)]
+        if candidates:
+            metadata_objects.append(getattr(candidates[0], "grounding_metadata", None))
+
+        for metadata in metadata_objects:
+            if not metadata:
+                continue
+            queries = getattr(metadata, "web_search_queries", None) or []
+            if queries:
+                grounded = True
+                details.extend(f"Web search: {q}" for q in queries if q)
+            chunks = getattr(metadata, "grounding_chunks", None) or []
+            for chunk in chunks:
+                web = getattr(chunk, "web", None)
+                if not web:
+                    continue
+                grounded = True
+                title = getattr(web, "title", None)
+                uri = getattr(web, "uri", None)
+                if title and uri:
+                    details.append(f"Web evidence: {title} — {uri}")
+                elif uri:
+                    details.append(f"Web evidence: {uri}")
+
+        # De-duplicate while preserving order.
+        return grounded, list(dict.fromkeys(details))
 
     def _tool_declarations(self):
         return [
@@ -168,14 +201,28 @@ MANDATORY PRODUCT WORKFLOW:
 2. Call analyze_universal_product for every product-related request.
 3. Use BIS knowledge and RAG tools for supporting evidence.
 4. Use compliance/certification/lab tools when the user's question needs them.
-5. If local evidence is insufficient, use Google Search to locate current authoritative/public
-   information. Prefer official BIS domains and clearly distinguish web evidence from the
-   SmartGuide local corpus. Never let a web result silently replace the locked product identity.
-6. Never substitute a related product. A mouse is not a mobile phone; a keyboard is not a laptop.
-7. An unresolved product is still a valid product request. Say that evidence is insufficient
-   rather than treating it as NON_PRODUCT or fabricating a standard.
+5. If local evidence is insufficient, DO NOT STOP. Use Google Search grounding to locate
+   current authoritative/public information. This is the universal fallback path.
+6. For BIS-specific questions, prioritize official BIS sources such as bis.gov.in,
+   services.bis.gov.in, lims.bis.gov.in and official BIS-hosted pages. Treat other web
+   sources only as secondary context and never as proof of a mandatory BIS requirement.
+7. Clearly distinguish LOCAL SMARTGUIDE evidence from WEB evidence in the evidence trail.
+8. Never let a web result silently replace the locked product identity.
+9. Never substitute a related product. A mouse is not a mobile phone; a keyboard is not a laptop.
+10. An unresolved product is still a valid product request. Say that authoritative evidence
+    could not be established if both local retrieval and official-web retrieval are insufficient.
 
-Use reasoning to synthesize the evidence, not to create unsupported facts.
+WEB FALLBACK POLICY:
+- Search the web when local evidence is empty, weak, conflicting, stale, or when the user
+  asks for current/latest/official information.
+- Prefer primary official BIS material and current pages.
+- Verify important claims against more than one authoritative BIS result when practical.
+- Never infer mandatory coverage merely because a standard exists.
+- Never infer certification/licence status merely because a product appears on a website.
+- If web evidence conflicts with local data, explain the conflict and favor current official
+  BIS evidence, while flagging the local knowledge layer for refresh.
+
+Use reasoning to synthesize evidence, not to create unsupported facts.
 Return JSON matching the supplied schema. The reply should be concise and practical.
 Preferred language: {language_name}. User role: {role_name}.
 """
@@ -187,6 +234,7 @@ Preferred language: {language_name}. User role: {role_name}.
         )
         evidence_calls = 0
         web_grounded = False
+        web_evidence: list[str] = []
         max_rounds = 6
 
         for _ in range(max_rounds):
@@ -195,14 +243,16 @@ Preferred language: {language_name}. User role: {role_name}.
                 contents=contents,
                 config=self._config(system, tool),
             )
+            grounded_now, grounding_details = self._grounding_details(response)
+            if grounded_now:
+                web_grounded = True
+                web_evidence.extend(grounding_details)
+                web_evidence = list(dict.fromkeys(web_evidence))
+
             candidate = response.candidates[0] if response.candidates else None
             if not candidate or not candidate.content:
                 raise RuntimeError("Gemini returned no candidate response")
             contents.append(candidate.content)
-
-            metadata = getattr(candidate, "grounding_metadata", None)
-            if metadata and (getattr(metadata, "web_search_queries", None) or getattr(metadata, "grounding_chunks", None)):
-                web_grounded = True
 
             calls = [p.function_call for p in candidate.content.parts if getattr(p, "function_call", None)]
             if not calls:
@@ -220,7 +270,12 @@ Preferred language: {language_name}. User role: {role_name}.
                 structured.setdefault("next_actions", [])
                 structured.setdefault("evidence_trail", [])
                 structured.setdefault("confidence", 0)
-                structured["source_grounded"] = bool(structured.get("source_grounded", True))
+                if web_evidence:
+                    existing = [str(x) for x in structured.get("evidence_trail", [])]
+                    structured["evidence_trail"] = existing + [x for x in web_evidence if x not in existing]
+                # Grounding is authoritative evidence of web retrieval even if the model's
+                # structured boolean was overly conservative.
+                structured["source_grounded"] = bool(structured.get("source_grounded", True)) or web_grounded
                 return {
                     **structured,
                     "agent": self.name,
@@ -231,6 +286,7 @@ Preferred language: {language_name}. User role: {role_name}.
                     "language": lang or None,
                     "source_grounded": bool(structured.get("source_grounded", True)),
                     "web_grounded": web_grounded,
+                    "web_evidence": web_evidence,
                     "notice": "AI-assisted BIS guidance. Verify current standards, amendments and QCOs against official BIS sources.",
                     "tool_calls": evidence_calls,
                 }
