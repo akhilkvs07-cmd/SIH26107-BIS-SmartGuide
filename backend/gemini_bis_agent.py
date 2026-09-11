@@ -141,6 +141,7 @@ class GeminiBISAgent:
         return types.GenerateContentConfig(
             system_instruction=system,
             tools=[tool],
+            tool_config=types.ToolConfig(include_server_side_tool_invocations=True),
             temperature=0.2,
             max_output_tokens=1800,
             response_mime_type="application/json",
@@ -167,10 +168,9 @@ MANDATORY PRODUCT WORKFLOW:
 2. Call analyze_universal_product for every product-related request.
 3. Use BIS knowledge and RAG tools for supporting evidence.
 4. Use compliance/certification/lab tools when the user's question needs them.
-5. If local evidence is insufficient, you may use Google Search only to locate current
-   authoritative/public information. Prefer official BIS domains and clearly distinguish
-   web evidence from the SmartGuide local corpus. Never let a web result silently replace
-   the locked product identity.
+5. If local evidence is insufficient, use Google Search to locate current authoritative/public
+   information. Prefer official BIS domains and clearly distinguish web evidence from the
+   SmartGuide local corpus. Never let a web result silently replace the locked product identity.
 6. Never substitute a related product. A mouse is not a mobile phone; a keyboard is not a laptop.
 7. An unresolved product is still a valid product request. Say that evidence is insufficient
    rather than treating it as NON_PRODUCT or fabricating a standard.
