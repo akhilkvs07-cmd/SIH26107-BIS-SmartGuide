@@ -31,7 +31,7 @@ jobs:
             r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v7[^"\']*["\']\s*>',
             r'<script\s+src=["\']smartguide-v7[^"\']*["\']\s*></script>',
             r'<script\s+src=["\']smartguide-universal\.js[^"\']*["\']\s*></script>',
-            r'<script\s+src=["\']smartguide-navigation-fix\.js[^"\']\s*></script>',
+            r'<script\s+src=["\']smartguide-navigation-fix\.js[^"\']*["\']\s*></script>',
             r'<script\s+src=["\']smartguide-v6(?:-click-fix)?\.js(?:\?[^"\']*)?["\']\s*></script>',
             r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v6\.css(?:\?[^"\']*)?["\']\s*>',
             r'<script\s+src=["\']command-center-fix\.js(?:\?[^"\']*)?["\']\s*></script>'
@@ -47,7 +47,7 @@ jobs:
           text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦ <span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
           text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦&nbsp;<span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
           text=text.replace('Advanced Intelligence','Advanced Features')
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260910-v8-9">'; js='<script src="smartguide-v8.js?v=20260911-v8-10"></script>'; fix='<script src="command-center-fix.js?v=20260910-v8-9"></script>'; ux='<script src="smartguide-ux-v9.js?v=20260910-v9-4"></script>'; agent='<script src="smartguide-agent-ui.js?v=20260911-3"></script>'; trust='<script src="smartguide-trust-dashboard.js?v=20260911-1"></script>'; lab='<script src="smartguide-lab-router-ui.js?v=20260911-4"></script>'; failsafe='<script src="smartguide-failsafe.js?v=20260911-4"></script>'
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260911-v9-1">'; js='<script src="smartguide-v8.js?v=20260911-v9-1"></script>'; fix='<script src="command-center-fix.js?v=20260910-v8-9"></script>'; ux='<script src="smartguide-ux-v9.js?v=20260910-v9-4"></script>'; agent='<script src="smartguide-agent-ui.js?v=20260911-3"></script>'; trust='<script src="smartguide-trust-dashboard.js?v=20260911-1"></script>'; lab='<script src="smartguide-lab-router-ui.js?v=20260911-4"></script>'; failsafe='<script src="smartguide-failsafe.js?v=20260911-4"></script>'
           for asset in ['smartguide-v8.css','smartguide-v8.js','smartguide-ux-v9.js','smartguide-agent-ui.js','smartguide-trust-dashboard.js','smartguide-lab-router-ui.js','smartguide-failsafe.js']:
             if asset.endswith('.css'): text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']'+re.escape(asset)+r'(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
             else: text=re.sub(r'<script\s+src=["\']'+re.escape(asset)+r'(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
@@ -60,4 +60,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Integrate verified SmartGuide laboratory router" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Integrate Advanced Features v9 UI" && git push; fi
