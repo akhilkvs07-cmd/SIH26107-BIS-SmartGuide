@@ -21,6 +21,7 @@ from platform_v8 import register as register_v8
 from gemini_bis_agent import GeminiBISAgent
 from labs_router import labs_match as verified_labs_match
 from product_guard import anchor, resolve_product
+from universal_product_v2 import analyze_universal
 
 register_compliance(app)
 
@@ -77,6 +78,24 @@ register_v7(app, find_matches)
 register_v8(app)
 
 app.view_functions["v8_product_intelligence"] = platform_v8.product_intelligence
+
+# Advanced Features product screening uses the same universal identity gateway
+# as the rest of SmartGuide. It accepts arbitrary physical products, but never
+# fabricates a standard when the local evidence is insufficient.
+def universal_v5_product_intelligence():
+    body = request.get_json(silent=True) or {}
+    description = str(body.get("description") or body.get("product") or body.get("query") or "").strip()
+    if not description:
+        return jsonify({"error": "Product description is required"}), 400
+    try:
+        return jsonify(analyze_universal(description, find_matches))
+    except ValueError as exc:
+        return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        return jsonify({"error": "Universal product analysis failed", "details": str(exc)[:240]}), 500
+
+app.view_functions["v5_product_intelligence"] = universal_v5_product_intelligence
+
 # Replace the older local-snapshot laboratory view with the verified BIS LIMS
 # directory + Haversine router. This keeps all other v8 routes untouched.
 app.view_functions["v8_labs_search"] = verified_labs_match
