@@ -32,7 +32,7 @@
           <div><label class="tiny muted">IS Number (optional)</label><input id="sgLabStandard" class="field" placeholder="e.g. IS 2347 (2023)" /></div>
         </div>
         <div class="toolbar" style="margin-top:12px"><button id="sgLabSearch" class="btn primary">Find Laboratories</button><button id="sgLabGps" class="btn ghost" type="button">● Use My GPS Location</button></div>
-        <div class="tiny muted" style="margin-top:10px">SmartGuide does not assert NABL accreditation or testing capability unless supported by the official source. Always verify the exact LIMS scope.</div>
+        <div class="tiny muted" style="margin-top:10px">SmartGuide ranks official BIS directory records. It does not infer testing capability from proximity; verify the exact LIMS scope before booking.</div>
       </div>
       <div id="sgLabResults"></div>`;
     out.prepend(panel);
@@ -47,11 +47,13 @@
     const product = document.getElementById('sgLabProduct').value.trim();
     const standard = document.getElementById('sgLabStandard').value.trim();
     const category = document.getElementById('sgLabCategory').value.trim();
-    const [lat, lon] = document.getElementById('sgLabOrigin').value.split(',').map(Number);
+    const origin = document.getElementById('sgLabOrigin');
+    const [lat, lon] = origin.value.split(',').map(Number);
+    const city = origin.options[origin.selectedIndex]?.textContent?.trim() || '';
     if (!product && !standard) { results.innerHTML = '<div class="notice"><b>Enter a product or IS number.</b> Example: keyboard, pressure cooker or IS 2347.</div>'; return; }
     results.innerHTML = '<div class="card loading">Finding official laboratory records and calculating proximity…</div>';
     try {
-      const params = new URLSearchParams({ product, standard, test: category, lat, lon, limit: '12' });
+      const params = new URLSearchParams({ product, standard, test: category, city, lat, lon, limit: '12' });
       const data = await api('/v8/labs/match?' + params.toString());
       render(data, lat, lon);
     } catch (e) {
@@ -61,26 +63,31 @@
 
   function render(data, lat, lon) {
     const results = document.getElementById('sgLabResults');
-    const rows = data.results || data.labs || data.data?.results || data.data?.labs || [];
+    const rows = data.results || data.labs || data.data?.laboratories || data.data?.results || data.data?.labs || [];
+    const limsSearch = data.lims_scope_search || data.data?.official_resources?.bis_lims_is_search || 'https://lims.bis.gov.in/home/search_is_number/';
     if (!rows.length) {
-      results.innerHTML = `<div class="card"><div class="notice"><b>No verified laboratory match was returned.</b><br>${esc(data.message || data.data?.message || 'Try the product name or exact IS number, then verify scope in BIS LIMS.')}</div><div style="margin-top:12px"><a href="https://lims.bis.gov.in/home/search_labs/" target="_blank" rel="noopener">Open official BIS LIMS laboratory search ↗</a></div></div>`;
+      results.innerHTML = `<div class="card"><div class="notice"><b>No laboratory record was returned.</b><br>${esc(data.message || data.data?.message || 'Try the product name or exact IS number, then verify scope in BIS LIMS.')}</div><div style="margin-top:12px"><a href="${limsSearch}" target="_blank" rel="noopener">Open official BIS LIMS scope search ↗</a></div></div>`;
       return;
     }
     const cards = rows.map((r, i) => {
       const name = r.lab_name || r.name || r.laboratory_name || 'BIS laboratory';
       const address = r.address || '';
       const distance = r.distance_km ?? r.distance ?? null;
-      const scope = r.scope_url || r.lims_scope_url || r.view_scope || '';
-      const source = r.source_url || r.official_url || 'https://lims.bis.gov.in/home/labs/';
-      const maps = r.latitude != null && r.longitude != null ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(lat+','+lon)}&destination=${encodeURIComponent(r.latitude+','+r.longitude)}` : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+' '+address)}`;
+      const rlat = r.latitude ?? r.lat;
+      const rlon = r.longitude ?? r.lon;
+      const scope = r.scope_url || r.lims_scope_url || r.view_scope || limsSearch;
+      const source = r.source_url || r.official_url || 'https://lims.bis.gov.in/home/bis_labs/';
+      const maps = r.maps_url || (rlat != null && rlon != null ? `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(lat+','+lon)}&destination=${encodeURIComponent(rlat+','+rlon)}` : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name+' '+address)}`);
       const contact = r.contact_person || r.contact || '';
       const phone = r.contact_number || r.phone || '';
       const email = r.email || '';
       const validity = r.validity_date || r.validity || '';
-      const status = r.status || r.recognition_status || 'BIS source record';
-      return `<div class="result-card"><div class="result-top"><div><span class="tag green">${i===0?'NEAREST MATCH':'OFFICIAL SOURCE'}</span><h3 style="margin:9px 0 5px">${esc(name)}</h3><p class="muted tiny">${esc(address)}</p></div><div style="text-align:right">${distance != null ? `<div class="score">${esc(Number(distance).toFixed(2))} km</div><div class="tiny muted">Haversine proximity</div>` : ''}</div></div><div class="tags" style="margin-top:10px"><span class="tag">${esc(status)}</span>${validity?`<span class="tag">Valid: ${esc(validity)}</span>`:''}</div>${contact||phone||email?`<div class="tiny muted" style="margin-top:10px">${contact?`Contact: ${esc(contact)} · `:''}${phone?`Phone: ${esc(phone)} · `:''}${email?`Email: ${esc(email)}`:''}</div>`:''}<div class="toolbar" style="margin-top:12px"><a class="btn primary" href="${maps}" target="_blank" rel="noopener">Get Directions ↗</a>${scope?`<a class="btn ghost" href="${scope}" target="_blank" rel="noopener">View LIMS Scope ↗</a>`:''}<a class="btn ghost" href="${source}" target="_blank" rel="noopener">Official Source ↗</a></div><div class="evidence"><div class="evidence-head"><b>Scope verification</b><small>Do not infer capability from distance alone.</small></div><div class="tiny muted" style="margin-top:5px">Confirm the exact Indian Standard, test facility and current validity in BIS LIMS before sending samples.</div></div></div>`;
+      const status = r.status || r.recognition_status || r.verification_status || 'BIS LIMS directory record';
+      const scopeStatus = r.scope_status || 'VERIFY_CURRENT_SCOPE_IN_BIS_LIMS';
+      return `<div class="result-card"><div class="result-top"><div><span class="tag green">${i===0?'NEAREST MATCH':'OFFICIAL SOURCE'}</span><h3 style="margin:9px 0 5px">${esc(name)}</h3><p class="muted tiny">${esc(address)}</p></div><div style="text-align:right">${distance != null ? `<div class="score">${esc(Number(distance).toFixed(2))} km</div><div class="tiny muted">Haversine proximity</div>` : ''}</div></div><div class="tags" style="margin-top:10px"><span class="tag">${esc(status)}</span>${validity?`<span class="tag">Valid: ${esc(validity)}</span>`:''}<span class="tag">${esc(scopeStatus)}</span></div>${contact||phone||email?`<div class="tiny muted" style="margin-top:10px">${contact?`Contact: ${esc(contact)} · `:''}${phone?`Phone: ${esc(phone)} · `:''}${email?`Email: ${esc(email)}`:''}</div>`:''}<div class="toolbar" style="margin-top:12px"><a class="btn primary" href="${maps}" target="_blank" rel="noopener">Get Directions ↗</a><a class="btn ghost" href="${scope}" target="_blank" rel="noopener">Open BIS LIMS ↗</a><a class="btn ghost" href="${source}" target="_blank" rel="noopener">Official Source ↗</a></div><div class="evidence"><div class="evidence-head"><b>Scope verification</b><small>Distance does not prove testing capability.</small></div><div class="tiny muted" style="margin-top:5px">Confirm the exact Indian Standard, test facility and current validity in BIS LIMS before sending samples.</div></div></div>`;
     }).join('');
-    results.innerHTML = `<div class="section-head"><div><h2>Laboratory matches</h2><p>${rows.length} official-source result${rows.length===1?'':'s'} returned. Ranked by proximity where coordinates are available.</p></div></div>${cards}`;
+    const resolved = data.resolved_standard?.standard_number || data.data?.query?.standard || '';
+    results.innerHTML = `<div class="section-head"><div><h2>Laboratory matches</h2><p>${rows.length} official-source result${rows.length===1?'':'s'} returned${resolved?` for ${esc(resolved)}`:''}. Ranked by proximity where coordinates are available.</p></div></div>${cards}`;
   }
 
   function gps() {
