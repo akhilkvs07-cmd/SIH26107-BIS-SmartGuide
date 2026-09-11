@@ -1,6 +1,7 @@
 name: Integrate SmartGuide UI upgrades
 
 # v10 integration: regenerate index with browser failsafe and agent result UI.
+# Force integration after the failsafe timeout upgrade.
 on:
   push:
     branches: [main]
