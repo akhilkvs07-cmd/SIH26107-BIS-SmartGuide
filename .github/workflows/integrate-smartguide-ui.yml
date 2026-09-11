@@ -1,7 +1,6 @@
 name: Integrate SmartGuide UI upgrades
 
-# v10 integration: regenerate index with browser failsafe and agent result UI.
-# Force integration after the failsafe timeout upgrade.
+# v11 integration: regenerate index with browser failsafe, agent result UI and trust dashboard.
 on:
   push:
     branches: [main]
@@ -21,7 +20,7 @@ jobs:
         with:
           ref: main
 
-      - name: Install clean Advanced Features UI
+      - name: Install clean SmartGuide UI integration
         shell: python
         run: |
           from pathlib import Path
@@ -68,14 +67,15 @@ jobs:
           fix='<script src="command-center-fix.js?v=20260910-v8-9"></script>'
           ux='<script src="smartguide-ux-v9.js?v=20260910-v9-4"></script>'
           agent='<script src="smartguide-agent-ui.js?v=20260911-3"></script>'
+          trust='<script src="smartguide-trust-dashboard.js?v=20260911-1"></script>'
           failsafe='<script src="smartguide-failsafe.js?v=20260911-4"></script>'
-          text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']smartguide-v8\.css(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
-          text=re.sub(r'<script\s+src=["\']smartguide-v8\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
-          text=re.sub(r'<script\s+src=["\']smartguide-ux-v9\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
-          text=re.sub(r'<script\s+src=["\']smartguide-agent-ui\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
-          text=re.sub(r'<script\s+src=["\']smartguide-failsafe\.js(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
+          for asset in ['smartguide-v8.css','smartguide-v8.js','smartguide-ux-v9.js','smartguide-agent-ui.js','smartguide-trust-dashboard.js','smartguide-failsafe.js']:
+            if asset.endswith('.css'):
+              text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']'+re.escape(asset)+r'(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
+            else:
+              text=re.sub(r'<script\s+src=["\']'+re.escape(asset)+r'(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
           text=text.replace('</head>',cleanup+'\n'+failsafe+'\n'+css+'\n</head>',1)
-          text=text.replace('</body>',js+'\n'+fix+'\n'+ux+'\n'+agent+'\n</body>',1)
+          text=text.replace('</body>',js+'\n'+fix+'\n'+ux+'\n'+agent+'\n'+trust+'\n</body>',1)
           if '<link rel="manifest"' not in text:
             text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
           p.write_text(text,encoding='utf-8')
@@ -84,4 +84,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Apply SmartGuide UI integration" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Integrate verified SmartGuide trust dashboard" && git push; fi
