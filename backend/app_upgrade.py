@@ -18,6 +18,7 @@ from v7_platform import register_v7
 import platform_v8
 from platform_v8 import register as register_v8
 from gemini_bis_agent import GeminiBISAgent
+from labs_router import labs_match as verified_labs_match
 
 register_compliance(app)
 
@@ -74,7 +75,9 @@ register_v7(app, find_matches)
 register_v8(app)
 
 app.view_functions["v8_product_intelligence"] = platform_v8.product_intelligence
-app.view_functions["v8_labs_search"] = platform_v8.labs_match
+# Replace the older local-snapshot laboratory view with the verified BIS LIMS
+# directory + Haversine router. This keeps all other v8 routes untouched.
+app.view_functions["v8_labs_search"] = verified_labs_match
 
 
 @app.get("/v8/compliance/passport")
