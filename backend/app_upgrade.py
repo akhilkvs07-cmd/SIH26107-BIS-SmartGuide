@@ -8,7 +8,7 @@ configured and falls back to the proven local BIS agent when it is unavailable.
 import json
 import uuid
 from flask import jsonify, request
-from app import app, find_matches, OFFICIAL_RESOURCES, certification_steps, mandatory_assessment, OFFICIAL_LAB_DIRECTORY, OFFICIAL_LIMS_URL, OFFICIAL_LIMS_SEARCH
+from app import app, find_matches, OFFICIAL_RESOURCES, certification_steps, mandatory_assessment, OFFICIAL_LAB_DIRECTORY, OFFICIAL_LIMS_URL, OFFICIAL_LIMS_SEARCH, rag, agent
 from compliance_upgrade import (
     _build_assessment, _db, _extract_values, _get_dependencies,
     _hash_evidence, _now, _read_document, register as register_compliance
