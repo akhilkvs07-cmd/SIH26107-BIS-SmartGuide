@@ -43,3 +43,30 @@ def test_lab_search_returns_official_verification_handoff():
         assert data.get("laboratories") is not None
         resources = data.get("official_resources", {})
         assert resources.get("bis_lims_search") or data.get("official_lims_search")
+
+
+def test_universal_product_rejects_unrelated_standard_substitution():
+    """An unknown product such as mouse must not inherit a mobile-phone result."""
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        response = client.post("/v5/product-intelligence", json={"description": "mouse"})
+        assert response.status_code == 200
+        data = response.get_json()
+        assert data.get("classification") != "NON_PRODUCT"
+        numbers = " ".join(str(x.get("standard_number", "")) for x in data.get("ranked_standards", []))
+        products = " ".join(str(x.get("product", "")) for x in data.get("ranked_standards", []))
+        assert "mobile" not in products.lower()
+        assert "16046" not in numbers
+        assert "13252" not in numbers
+
+
+def test_advanced_features_share_universal_product_context():
+    """Product-aware advanced workflows expose one common product context."""
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        response = client.post("/v5/procurement", json={"product": "mouse", "hs_code": "8471"})
+        assert response.status_code == 200
+        data = response.get_json()
+        context = data.get("universal_product_context") or {}
+        assert context.get("resolved_product") == "mouse"
+        assert data.get("universal_product_gateway", {}).get("enabled") is True
