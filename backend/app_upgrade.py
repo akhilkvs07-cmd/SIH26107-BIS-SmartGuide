@@ -7,6 +7,7 @@ configured and falls back to the proven local BIS agent when it is unavailable.
 
 import json
 import uuid
+from urllib.parse import quote_plus
 from flask import jsonify, request
 from app import app, find_matches, OFFICIAL_RESOURCES, certification_steps, mandatory_assessment, OFFICIAL_LAB_DIRECTORY, OFFICIAL_LIMS_URL, OFFICIAL_LIMS_SEARCH, rag, agent
 from compliance_upgrade import (
@@ -19,6 +20,7 @@ import platform_v8
 from platform_v8 import register as register_v8
 from gemini_bis_agent import GeminiBISAgent
 from labs_router import labs_match as verified_labs_match
+from product_guard import anchor, resolve_product
 
 register_compliance(app)
 
@@ -106,10 +108,12 @@ def _agent_compliance_lookup(product: str):
 
 
 def _agent_certification_lookup(product: str):
-    matches = find_matches(product, 1)
+    resolved = resolve_product(product)
+    exact = anchor(product)
+    matches = [exact] if exact else find_matches(resolved, 1)
     standard = matches[0] if matches else None
     return {
-        "product": product,
+        "product": resolved,
         "standard": standard,
         "steps": certification_steps(standard),
         "official_resources": OFFICIAL_RESOURCES[1:3],
@@ -118,13 +122,20 @@ def _agent_certification_lookup(product: str):
 
 
 def _agent_lab_lookup(product: str):
+    resolved = resolve_product(product)
+    exact = anchor(product)
+    standard = exact.get("standard_number", "") if exact else ""
+    if not standard:
+        matches = find_matches(resolved, 1)
+        standard = matches[0].get("standard_number", "") if matches else ""
     return {
-        "product": product,
-        "message": "Use the authentic BIS laboratory directory and LIMS to confirm current testing scope and availability.",
+        "product": resolved,
+        "standard": standard,
+        "message": "Use the authentic BIS LIMS laboratory directory and IS-specific scope search to confirm current testing scope and availability.",
         "official_url": OFFICIAL_LAB_DIRECTORY,
         "lims_url": OFFICIAL_LIMS_URL,
-        "lims_search": OFFICIAL_LIMS_SEARCH,
-        "trust_boundary": "SmartGuide does not invent laboratory capabilities or test reports.",
+        "lims_search": f"{OFFICIAL_LIMS_SEARCH}?is_number__doc_no={quote_plus(standard)}" if standard else OFFICIAL_LIMS_SEARCH,
+        "trust_boundary": "SmartGuide does not invent laboratory capabilities or test reports. Distance alone does not prove testing scope.",
     }
 
 
@@ -148,7 +159,6 @@ def universal_chat_route():
         try:
             return jsonify(gemini_bis_agent.run(msg, role=role, language=lang))
         except Exception as exc:
-            # Never take down chat because the external model is unavailable.
             fallback = agent.run(msg, role=role, language=lang)
             fallback["agent_runtime"] = "local-fallback"
             fallback["agent_fallback_reason"] = str(exc)[:240]
