@@ -1,73 +1,56 @@
-/* BIS SmartGuide Advanced Features — task-focused STL UX */
+/* BIS SmartGuide Advanced Features — task-first workflow UX v2 */
 (() => {
-  const apiBase = () => (typeof window.getSmartGuideApiHost === 'function')
-    ? window.getSmartGuideApiHost()
-    : 'https://sih26107-bis-smartguide-api.onrender.com';
+  const apiBase = () => (typeof window.getSmartGuideApiHost === 'function') ? window.getSmartGuideApiHost() : 'https://sih26107-bis-smartguide-api.onrender.com';
   const $ = id => document.getElementById(id);
   const esc = x => String(x ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const num = x => Number.isFinite(Number(x)) ? Number(x) : null;
-
-  async function call(path, options) {
-    const r = await fetch(apiBase() + path, options);
-    let d = {};
-    try { d = await r.json(); } catch (_) {}
-    if (!r.ok) throw new Error(d.error || d.message || `Request failed (${r.status})`);
-    return d;
+  const pretty = x => { try { return JSON.stringify(x, null, 2); } catch (_) { return String(x); } };
+  async function call(path, options={}) {
+    const r = await fetch(apiBase() + path, options); let d={}; try { d=await r.json(); } catch (_) {}
+    if(!r.ok) throw new Error(d.error || d.message || `Request failed (${r.status})`); return d;
   }
-
-  function resultCard(d, file, product) {
-    const dims = d.bounding_box || {};
-    const checks = Array.isArray(d.dimensional_checks) ? d.dimensional_checks : [];
-    const failed = checks.filter(x => x.pass === false);
-    const geometryOk = Number(d.triangle_count || 0) > 0 && !!d.bounding_box;
-    const status = failed.length ? 'Review dimensions' : geometryOk ? 'Engineering pre-check passed' : 'Geometry needs review';
-    const statusClass = failed.length ? 'warn' : geometryOk ? 'ok' : 'warn';
-    const dim = ['x','y','z'].filter(k => dims[k] !== undefined && dims[k] !== null)
-      .map(k => `<div class="sg-adv-metric"><small>${k.toUpperCase()} size</small><b>${esc(Number(dims[k]).toFixed(3))}</b></div>`).join('');
-    const checkHtml = checks.length ? checks.map(x => `<div class="sg-adv-check ${x.pass === false ? 'bad' : 'good'}"><span>${x.pass === false ? '!' : '✓'}</span><div><b>${esc(String(x.axis || '').toUpperCase())} dimension</b><small>${x.pass === false ? `Measured ${esc(x.measured)} exceeds limit ${esc(x.limit)}` : `Measured ${esc(x.measured)} is within limit ${esc(x.limit)}`}</small></div></div>`).join('') : '<div class="sg-adv-muted">No dimension limits were supplied, so only geometry was inspected.</div>';
-    const safeProduct = esc(product || 'your product');
-    const standardButton = `<button type="button" class="sg-adv-action primary" onclick="openProduct();">🔎 Find applicable BIS standard</button>`;
-    const labButton = `<button type="button" class="sg-adv-action" onclick="openLab();">🧪 Find a testing laboratory</button>`;
-    const complianceButton = `<button type="button" class="sg-adv-action" onclick="page && page('compliance',this,'Compliance Center');">✓ Open compliance</button>`;
-
-    return `<div class="sg-adv-stl-result">
-      <div class="sg-adv-result-head">
-        <div><span class="sg-v9-eyebrow dark">SCAN COMPLETE</span><h3>STL engineering screen</h3><p>${file ? esc(file.name) : 'Uploaded STL file'}</p></div>
-        <span class="sg-adv-status ${statusClass}">${statusClass === 'ok' ? '✓' : '⚠'} ${esc(status)}</span>
-      </div>
-      <div class="sg-adv-summary"><div><b>What SmartGuide checked</b><span>File readability, STL geometry and optional dimension limits.</span></div><div><b>What this does not prove</b><span>BIS conformity, certification, QCO compliance or laboratory acceptance.</span></div></div>
-      <div class="sg-adv-metrics"><div class="sg-adv-metric"><small>Format</small><b>${esc(d.format || 'STL')}</b></div><div class="sg-adv-metric"><small>Triangles</small><b>${esc(d.triangle_count || 0)}</b></div><div class="sg-adv-metric"><small>File size</small><b>${esc(Math.round((Number(d.bytes || 0) / 1024) * 10) / 10)} KB</b></div>${dim}</div>
-      ${checks.length ? `<div class="sg-adv-section"><h4>Dimension checks</h4>${checkHtml}</div>` : `<div class="sg-adv-section"><h4>Geometry result</h4><div class="sg-adv-check good"><span>✓</span><div><b>STL geometry extracted</b><small>${esc(d.triangle_count || 0)} triangles detected and a bounding box was calculated.</small></div></div></div>`}
-      <div class="sg-adv-next"><div><span class="sg-v9-eyebrow dark">NEXT STEP</span><h4>Turn this engineering check into a BIS workflow</h4><p>${product ? `For <b>${safeProduct}</b>, continue by identifying the applicable Indian Standard and then checking testing and compliance requirements.` : 'Add the product type so SmartGuide can connect the CAD check to the applicable Indian Standard.'}</p></div><div class="sg-adv-actions">${standardButton}${labButton}${complianceButton}</div></div>
-      <div class="sg-adv-notice"><b>Important:</b> Geometry measurements are engineering pre-checks only. Verify the applicable BIS standard, amendments, QCO and current laboratory scope through official BIS sources before acting.</div>
-      <details class="sg-v9-technical"><summary>View technical details</summary><pre>${esc(JSON.stringify(d, null, 2))}</pre></details>
-    </div>`;
-  }
-
-  window.openSTL = () => {
-    const el = $('v8Tool');
-    if (!el) return;
-    el.innerHTML = `<div class="sg-v9-tool sg-adv-stl-tool"><div class="sg-v9-tool-head"><div><span class="sg-v9-eyebrow">WORKFLOW</span><h2>3D CAD / STL Scanner</h2><p>Check whether an STL file can be read, inspect its geometry, and optionally compare dimensions against limits you provide.</p></div><button class="sg-v9-close" onclick="$('v8Tool').innerHTML=''">✕</button></div>
-      <div class="sg-adv-how"><div><span>1</span><b>Upload</b><small>Select an STL file.</small></div><div><span>2</span><b>Screen</b><small>SmartGuide reads the geometry.</small></div><div><span>3</span><b>Act</b><small>Continue to standards and testing.</small></div></div>
-      <div class="sg-v9-form sg-adv-stl-form"><label>Product / component <span>Optional</span><input id="v8STLProduct" placeholder="Example: pressure vessel bracket, appliance housing"></label><label>STL file<input id="v8STL" type="file" accept=".stl"></label><div class="sg-adv-dim-title"><b>Optional dimension limits</b><span>Leave blank if you only want a geometry check.</span></div><div class="sg-adv-dim-grid"><label>Max X <input id="v8X" type="number" step="any" placeholder="mm"></label><label>Max Y <input id="v8Y" type="number" step="any" placeholder="mm"></label><label>Max Z <input id="v8Z" type="number" step="any" placeholder="mm"></label></div><button class="sg-v9-run" onclick="runSTL()">🧊 Scan STL</button></div><div id="v8Out"></div></div>`;
-    el.scrollIntoView({behavior:'smooth', block:'start'});
+  const loading = () => { const o=$('v8Out'); if(o) o.innerHTML='<div class="sg-v9-loading"><span class="sg-v9-spinner"></span><div><b>SmartGuide is working…</b><small>Checking the available evidence and preparing a readable result.</small></div></div>'; };
+  const error = e => { const o=$('v8Out'); if(o) o.innerHTML=`<div class="sg-v9-error"><b>We could not complete this check.</b><p>${esc(e?.message||e)}</p><small>Make sure the backend is awake and try again.</small></div>`; };
+  const tool = (title,desc,body) => { const el=$('v8Tool'); if(!el)return; el.innerHTML=`<div class="sg-v9-tool sg-adv-workflow"><div class="sg-v9-tool-head"><div><span class="sg-v9-eyebrow">WORKFLOW</span><h2>${esc(title)}</h2><p>${esc(desc)}</p></div><button class="sg-v9-close" onclick="$('v8Tool').innerHTML=''">✕</button></div>${body}</div>`; el.scrollIntoView({behavior:'smooth',block:'start'}); };
+  const form = (steps, fields, button, hint='') => `<div class="sg-adv-how">${steps.map((x,i)=>`<div><span>${i+1}</span><b>${esc(x[0])}</b><small>${esc(x[1])}</small></div>`).join('')}</div><div class="sg-v9-form">${fields.join('')}<button class="sg-v9-run" onclick="${button[0]}">${button[1]}</button></div>${hint?`<div class="sg-adv-hint">${esc(hint)}</div>`:''}<div id="v8Out"></div>`;
+  const result = (d, title, next=[]) => {
+    const o=$('v8Out'); if(!o)return;
+    const confidence=d.confidence !== undefined ? Math.round((Number(d.confidence)<=1?Number(d.confidence)*100:Number(d.confidence))) : null;
+    const status=d.status || d.result || d.decision || 'Completed';
+    const skip=new Set(['sources','evidence','ranked_standards','candidate_standards','affected_candidates','measurements','dimensional_checks','tests','features','checks','laboratories','labs','raw']);
+    const rows=Object.entries(d).filter(([k,v])=>!skip.has(k)&&v!==undefined&&v!==null&&typeof v!=='object').slice(0,9);
+    let html=`<div class="sg-adv-result"><div class="sg-v9-result-top"><div><span class="sg-v9-eyebrow dark">RESULT</span><h3>${esc(title)}</h3><p class="sg-adv-status-line">${esc(String(status).replace(/_/g,' '))}</p></div>${confidence!==null?`<span class="sg-v9-confidence">${confidence}% confidence</span>`:''}</div><div class="sg-v9-result-grid">${rows.map(([k,v])=>`<div class="sg-v9-result-field"><small>${esc(k.replace(/_/g,' '))}</small><b>${esc(v)}</b></div>`).join('')}</div>`;
+    const collections=[['ranked_standards','Applicable standard candidates'],['candidate_standards','Candidate standards'],['affected_candidates','Affected standards'],['measurements','Extracted measurements'],['checks','Checks'],['tests','Checks'],['features','Checks'],['evidence','Evidence']];
+    for(const [key,heading] of collections){ if(!Array.isArray(d[key])||!d[key].length) continue; html+=`<div class="sg-adv-result-section"><h4>${esc(heading)}</h4>${d[key].slice(0,8).map((x,i)=>{ if(typeof x!=='object') return `<div class="sg-adv-row"><span>✓</span><div><b>${esc(x)}</b></div></div>`; const name=x.title||x.name||x.standard||x.parameter||x.feature||x.test||`Item ${i+1}`; const sub=x.description||x.status||x.reason||x.scope_status||((x.value!==undefined)?`${x.value} ${x.unit||''}`:''); return `<div class="sg-adv-row"><span>${x.ok===false||x.pass===false?'!':'✓'}</span><div><b>${esc(name)}</b><small>${esc(sub)}</small></div></div>`; }).join('')}</div>`; }
+    if(d.missing_or_unclear?.length) html+=`<div class="sg-adv-warning"><b>Needs attention</b><span>${esc(d.missing_or_unclear.join(', ').replace(/_/g,' '))}</span></div>`;
+    if(d.note||d.next_step||d.verification||d.submission||d.official_verification) html+=`<div class="sg-adv-notice"><b>Important</b><span>${esc(d.note||d.next_step||d.verification||d.submission||d.official_verification)}</span></div>`;
+    if(next.length) html+=`<div class="sg-adv-next"><div><span class="sg-v9-eyebrow dark">NEXT STEP</span><h4>Continue with SmartGuide</h4><p>Move from this screening result into the next BIS workflow.</p></div><div class="sg-adv-actions">${next.map(x=>`<button type="button" class="sg-adv-action ${x[2]?'primary':''}" onclick="${x[1]}">${x[0]}</button>`).join('')}</div></div>`;
+    html+=`<details class="sg-v9-technical"><summary>View technical details</summary><pre>${esc(pretty(d))}</pre></details></div>`;
+    o.innerHTML=html;
   };
+  const post=(path,body,title,next=[])=>{loading();call(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(d=>result(d,title,next)).catch(error);};
+  const val=id=>$(id)?.value?.trim()||'';
 
-  window.runSTL = async () => {
-    const out = $('v8Out');
-    if (!out) return;
-    const file = $('v8STL')?.files?.[0];
-    if (!file) { out.innerHTML = '<div class="sg-v9-error"><b>Select an STL file first.</b><p>Choose the CAD/STL file you want SmartGuide to inspect.</p></div>'; return; }
-    out.innerHTML = '<div class="sg-v9-loading"><span class="sg-v9-spinner"></span><div><b>Scanning your STL…</b><small>Reading geometry and checking the limits you supplied.</small></div></div>';
-    try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const product = $('v8STLProduct')?.value?.trim() || '';
-      [['x','v8X'],['y','v8Y'],['z','v8Z']].forEach(([axis,id]) => { const v=$(id)?.value; if(v) fd.append('max_'+axis,v); });
-      const d = await call('/v5/stl-scan', {method:'POST', body:fd});
-      out.innerHTML = resultCard(d, file, product);
-    } catch (e) {
-      out.innerHTML = `<div class="sg-v9-error"><b>We could not scan this STL.</b><p>${esc(e.message || e)}</p><small>Make sure the file is a valid ASCII or binary STL and try again.</small></div>`;
-    }
-  };
+  window.openProduct=()=>tool('Find applicable BIS standards','Start with the product. SmartGuide ranks candidate standards and tells you what needs verification.',form([['Describe','Tell SmartGuide what the product is.'],['Match','Find candidate Indian Standards.'],['Act','Continue to compliance or testing.']],[`<label>Product description<input id="v8Product" placeholder="Example: 1200W household electric kettle with automatic shutoff"></label>`],['runProduct()','🔎 Find applicable standards'],'Tip: Include product type, intended use, power/capacity and material when known.'));
+  window.runProduct=()=>post('/v5/product-intelligence',{description:val('v8Product')},'Product intelligence',[['✓ Open compliance',"page && page('compliance',this,'Compliance Center')",true],['🧪 Find a laboratory','openLab()']]);
+
+  window.openMark=()=>tool('ISI / CM-L check','Screen a product mark or licence reference before using it as evidence.',form([['Paste','Enter the visible mark/licence text.'],['Screen','Check mark and number formats.'],['Verify','Use the official BIS verification service.']],[`<label>Mark / licence text<textarea id="v8MarkText" placeholder="Paste the text visible on the product mark…"></textarea></label>`,`<label>Licence / CM-L number <span>Optional</span><input id="v8Licence" placeholder="Example: CM/L-XXXXXXXXXX"></label>`],['runMark()','✓ Check mark'],'A detected mark is not proof of authenticity or current validity.'));
+  window.runMark=()=>post('/v5/verify-mark',{text:val('v8MarkText'),licence:val('v8Licence')},'ISI / CM-L screening');
+
+  window.openTest=()=>tool('Test-report reader','Extract measurements from a report without inventing limits or pass/fail decisions.',form([['Paste','Add a report excerpt.'],['Extract','SmartGuide identifies measurements.'],['Compare','Use the exact applicable standard for limits.']],[`<label>Applicable IS number <span>Optional</span><input id="v8Std" placeholder="Example: IS/IEC 62368 : Part 1 (2023)"></label>`,`<label>Test report text<textarea id="v8Report" placeholder="Voltage: 230 V\nPower: 1200 W\nLeakage current: 0.4 mA"></textarea></label>`],['runTest()','📄 Read test report'],'SmartGuide intentionally does not invent a BIS limit when the exact standard requirement is unavailable.'));
+  window.runTest=()=>post('/v5/test-report',{standard:val('v8Std'),text:val('v8Report')},'Test-report intelligence',[['🔎 Find standard','openProduct()']]);
+
+  window.openLab=()=>tool('Laboratory finder','Find the right laboratory workflow from a product, IS number or test requirement.',form([['Identify','Enter product or IS number.'],['Match','Prioritize relevant scope information.'],['Verify','Confirm the current BIS LIMS scope.']],[`<label>Product<input id="v8LabProduct" placeholder="Example: keyboard"></label>`,`<label>IS number<input id="v8LabStd" placeholder="Example: IS/IEC 62368 : Part 1 (2023)"></label>`,`<label>Required test / parameter <span>Optional</span><input id="v8LabTest" placeholder="Example: electrical safety"></label>`],['runLab()','🧪 Find suitable laboratories'],'A laboratory being nearby does not by itself prove that it can perform the required test.'));
+  window.runLab=async()=>{loading();try{const q=new URLSearchParams({product:val('v8LabProduct'),standard:val('v8LabStd'),test:val('v8LabTest'),limit:'12'});const d=await call('/v5/lab-match?'+q);result(d,'Laboratory intelligence',[['🔎 Find standard','openProduct()']]);$('v8Out').insertAdjacentHTML('beforeend','<div class="sg-adv-action-box"><b>Official verification</b><span>Confirm the exact IS/test scope in BIS LIMS before sending a sample.</span><a target="_blank" rel="noopener" href="https://lims.bis.gov.in/home/search_is_number/">Open BIS LIMS →</a></div>');}catch(e){error(e)}};
+
+  window.openAmendment=()=>tool('QCO / amendment impact','Screen an amendment or QCO for likely impact areas. This is a review aid, not a legal determination.',form([['Identify','Enter product and standard.'],['Screen','Paste the relevant amendment/QCO text.'],['Review','Check effective dates and official notifications.']],[`<label>Standard / IS<input id="v8AmStd" placeholder="Example: IS 4246"></label>`,`<label>Product<input id="v8AmProduct" placeholder="Example: domestic gas stove"></label>`,`<label>Amendment / QCO text<textarea id="v8AmText" placeholder="Paste the relevant text or summary…"></textarea></label>`],['runAmendment()','📋 Screen impact'],'Always confirm the latest official notification and effective date.'));
+  window.runAmendment=()=>post('/v5/amendment-impact',{standard:val('v8AmStd'),product:val('v8AmProduct'),amendment:val('v8AmText')},'QCO / amendment impact');
+
+  window.openLabel=()=>tool('Label / packaging checker','Screen visible product text for important marking fields.',form([['Paste','Enter the visible label text.'],['Screen','Check common marking fields.'],['Review','Confirm requirements for the exact product standard/QCO.']],[`<label>Label / packaging text<textarea id="v8Label" placeholder="Paste label text here…"></textarea></label>`],['runLabel()','🏷️ Check label'],'Required markings vary by product. Missing fields here are a prompt for review, not a certification decision.'));
+  window.runLabel=()=>post('/v5/label-check',{text:val('v8Label')},'Label / packaging screening',[['🔎 Find standard','openProduct()']]);
+
+  window.openProcurement=()=>tool('Procurement check','Screen product, raw material and HS-code information before procurement.',form([['Product','Describe what you are buying.'],['Materials','Add the relevant raw material.'],['Classify','Enter the HS code if known.']],[`<label>Product<input id="v8ProcProduct" placeholder="Example: LED bulb 9W"></label>`,`<label>Raw material <span>Optional</span><input id="v8Raw" placeholder="Example: aluminium housing"></label>`,`<label>HS code <span>Optional</span><input id="v8HS" inputmode="numeric" placeholder="Example: 8539"></label>`],['runProcurement()','🛒 Screen procurement'],'HS-code format screening does not replace customs classification or current BIS/QCO verification.'));
+  window.runProcurement=()=>post('/v5/procurement',{product:val('v8ProcProduct'),raw_material:val('v8Raw'),hs_code:val('v8HS')},'Procurement intelligence',[['🔎 Find standard','openProduct()']]);
+
+  window.openIssue=()=>tool('Issue / complaint draft','Create a structured draft with the evidence you should collect before submitting an official complaint.',form([['Describe','Explain the product and problem.'],['Prepare','SmartGuide structures the case.'],['Submit','Use the official BIS complaint channel yourself.']],[`<label>Product <span>Optional</span><input id="v8IssueProduct" placeholder="Example: electric iron"></label>`,`<label>Issue description<textarea id="v8Issue" placeholder="Describe what happened, what mark/licence was seen, and why you believe there is a problem…"></textarea></label>`],['runIssue()','⚠️ Create complaint draft'],'SmartGuide creates a draft only; it does not submit a complaint on your behalf.'));
+  window.runIssue=()=>post('/v5/issue-report',{product:val('v8IssueProduct'),issue:val('v8Issue')},'Issue / counterfeit report');
 })();
