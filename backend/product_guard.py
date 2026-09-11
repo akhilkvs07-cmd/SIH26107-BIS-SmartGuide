@@ -1,7 +1,9 @@
-"""Deterministic product-identity guard for the Universal BIS Agent.
+"""Universal deterministic product-identity guard for BIS SmartGuide.
 
-Gemini may orchestrate tools, but it must never silently replace the user's
-product with a nearby product that happens to share a standard.
+The guard protects product identity without turning the product catalogue into a
+hardcoded allow-list. Explicit BIS schedule anchors are optional boosts; every
+other physical product is passed through to the SmartGuide corpus/RAG for
+investigation.
 """
 
 import re
@@ -21,9 +23,8 @@ PRODUCT_ALIASES = {
     "bluetooth keyboard": "wireless keyboard",
 }
 
-# Conservative authoritative mappings for products explicitly present in the
-# current BIS CRS schedule. These are identity anchors, not a replacement for
-# the local corpus or official BIS evidence.
+# These are authoritative anchors for products explicitly present in the
+# current BIS CRS schedule. They do NOT limit discovery of other products.
 BIS_PRODUCT_ANCHORS = {
     "keyboard": {
         "product": "Keyboard",
@@ -43,6 +44,17 @@ BIS_PRODUCT_ANCHORS = {
     },
 }
 
+# Conversational wrappers are removed so questions such as "what standard
+# applies to a pressure cooker" search for the product itself.
+_QUERY_WRAPPERS = [
+    r"^what\s+(?:bis\s+)?(?:requirements?|standards?)\s+(?:apply|applies)\s+to\s+",
+    r"^what\s+(?:bis\s+)?(?:requirements?|standards?)\s+(?:do\s+i\s+need\s+for)\s+",
+    r"^what\s+(?:bis\s+)?(?:standard|is)\s+(?:applies\s+to|for)\s+",
+    r"^tell\s+me\s+(?:about|the\s+bis\s+requirements\s+for)\s+",
+    r"^i\s+(?:want|plan)\s+to\s+(?:manufacture|make|import|sell)\s+",
+    r"^i\s+(?:manufacture|make|import|sell)\s+",
+]
+
 
 def normalize(text: Any) -> str:
     text = str(text or "").lower().replace("-", " ")
@@ -51,6 +63,18 @@ def normalize(text: Any) -> str:
 
 def resolve_product(query: str) -> str:
     q = normalize(query)
+    # Repeatedly remove common conversational wrappers, but never require the
+    # remaining product to be present in a hardcoded dictionary.
+    for _ in range(2):
+        changed = False
+        for pattern in _QUERY_WRAPPERS:
+            new_q = re.sub(pattern, "", q).strip()
+            if new_q != q:
+                q = new_q
+                changed = True
+        if not changed:
+            break
+    q = re.sub(r"\s+(?:please|thanks?)\s*$", "", q).strip()
     return PRODUCT_ALIASES.get(q, q)
 
 
@@ -69,27 +93,58 @@ def anchor(query: str) -> Dict[str, Any] | None:
     return result
 
 
+def _candidate_text(candidate: Dict[str, Any]) -> str:
+    values = [
+        candidate.get("product", ""),
+        candidate.get("title", ""),
+        candidate.get("category", ""),
+        candidate.get("description", ""),
+        " ".join(candidate.get("synonyms", []) or []),
+    ]
+    return normalize(" ".join(str(v) for v in values))
+
+
 def identity_matches(query: str, candidate: Dict[str, Any]) -> bool:
-    """Reject candidates that are clearly a different named product."""
+    """Keep relevant corpus candidates while rejecting obvious product swaps.
+
+    Unknown products are NOT rejected merely because they are not in this file.
+    The local BIS corpus remains the discovery source for those products.
+    """
     q = resolve_product(query)
-    product = normalize(candidate.get("product", ""))
+    if not q:
+        return False
+
+    candidate_product = normalize(candidate.get("product", ""))
+    if not candidate_product:
+        return True
+
+    # For explicit anchors, prevent a related product from replacing the exact
+    # requested product (e.g. laptop replacing keyboard).
     if q in BIS_PRODUCT_ANCHORS:
         expected = normalize(BIS_PRODUCT_ANCHORS[q]["product"])
-        return expected == product
-    if not product:
+        if expected == candidate_product:
+            return True
+        return q in _candidate_text(candidate)
+
+    q_tokens = {t for t in q.split() if len(t) > 2}
+    text = _candidate_text(candidate)
+    if q == candidate_product or q in candidate_product or candidate_product in q:
         return True
-    q_words = set(q.split())
-    p_words = set(product.split())
-    # For multi-word descriptions, require meaningful overlap; do not allow a
-    # merely shared category such as 'laptop' to answer a 'keyboard' question.
-    if q_words and p_words and q_words.intersection(p_words):
+
+    # Synonym/title/category matches are valid discovery evidence for products
+    # that have not been hardcoded in this guard.
+    if any(token in text.split() for token in q_tokens):
         return True
-    return q == product
+    if q_tokens and all(token in text for token in q_tokens):
+        return True
+    return False
 
 
 def guarded_results(query: str, results: List[Dict[str, Any]], limit: int = 8) -> List[Dict[str, Any]]:
     exact = anchor(query)
+    compatible = [r for r in results if identity_matches(query, r)]
     if exact:
-        compatible = [r for r in results if identity_matches(query, r)]
+        # Avoid duplicate anchor if the corpus already contains the same record.
+        compatible = [r for r in compatible if normalize(r.get("product", "")) != normalize(exact["product"])]
         return [exact] + compatible[: max(0, limit - 1)]
-    return [r for r in results if identity_matches(query, r)][:limit]
+    return compatible[:limit]
