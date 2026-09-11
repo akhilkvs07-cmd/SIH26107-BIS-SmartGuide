@@ -1,7 +1,8 @@
 """Production upgrade entrypoint for BIS SmartGuide.
 
-Keeps the existing Flask/V6 architecture and layers the V8 source-grounded
-intelligence APIs on top. Existing V4/V6/V7 routes remain available.
+Keeps the existing Flask architecture and layers the source-grounded
+intelligence APIs on top. The universal agent uses Gemini's free API tier when
+configured and falls back to the proven local BIS agent when it is unavailable.
 """
 
 import json
@@ -16,7 +17,7 @@ from advanced_features import register as register_v6
 from v7_platform import register_v7
 import platform_v8
 from platform_v8 import register as register_v8
-from openai_bis_agent import OpenAIBISAgent
+from gemini_bis_agent import GeminiBISAgent
 
 register_compliance(app)
 
@@ -72,8 +73,6 @@ register_v6(app, find_matches)
 register_v7(app, find_matches)
 register_v8(app)
 
-# The repository already exposes legacy /v8 URLs. Point overlapping routes at
-# the new evidence-safe handlers rather than creating a second architecture.
 app.view_functions["v8_product_intelligence"] = platform_v8.product_intelligence
 app.view_functions["v8_labs_search"] = platform_v8.labs_match
 
@@ -93,11 +92,8 @@ def v8_compliance_passport():
 
 
 # ---------------------------------------------------------------------------
-# Universal AI Agent layer
+# Universal AI Agent layer — Gemini free tier
 # ---------------------------------------------------------------------------
-# The OpenAI agent is deliberately layered over the existing evidence/RAG
-# system. It interprets arbitrary product questions and chooses trusted tools;
-# it does not replace the BIS knowledge base or invent regulatory facts.
 
 def _agent_compliance_lookup(product: str):
     result = _build_assessment(product, {}, {}, "")
@@ -129,7 +125,7 @@ def _agent_lab_lookup(product: str):
     }
 
 
-openai_bis_agent = OpenAIBISAgent(
+gemini_bis_agent = GeminiBISAgent(
     find_matches=find_matches,
     rag_retrieve=lambda query, limit=10: rag.retrieve(query, limit),
     compliance_lookup=_agent_compliance_lookup,
@@ -137,9 +133,7 @@ openai_bis_agent = OpenAIBISAgent(
     lab_lookup=_agent_lab_lookup,
 )
 
-# Existing /chat and /agent-chat routes remain registered, but their endpoint is
-# swapped to the universal agent when an OPENAI_API_KEY is configured. Without a
-# key, the proven BISExpertAgent remains the automatic fallback.
+
 def universal_chat_route():
     b = request.get_json(silent=True) or {}
     msg = str(b.get("message", "")).strip()
@@ -147,12 +141,11 @@ def universal_chat_route():
     role = b.get("role", "general")
     if not msg:
         return jsonify({"error": "Message is required"}), 400
-    if openai_bis_agent.enabled:
+    if gemini_bis_agent.enabled:
         try:
-            return jsonify(openai_bis_agent.run(msg, role=role, language=lang))
+            return jsonify(gemini_bis_agent.run(msg, role=role, language=lang))
         except Exception as exc:
             # Never take down chat because the external model is unavailable.
-            # Fall back to the local evidence-grounded agent.
             fallback = agent.run(msg, role=role, language=lang)
             fallback["agent_runtime"] = "local-fallback"
             fallback["agent_fallback_reason"] = str(exc)[:240]
@@ -160,5 +153,6 @@ def universal_chat_route():
     fallback = agent.run(msg, role=role, language=lang)
     fallback["agent_runtime"] = "local-fallback"
     return jsonify(fallback)
+
 
 app.view_functions["chat_route"] = universal_chat_route
