@@ -29,15 +29,26 @@ def _intent(text):
     if any(x in t for x in ("standard","is ","bis ","search","find")):return "standards_search"
     return "general_bis"
 
-def _v3_run(self,message):
-    kind=_social_kind(message); lang=self.detect_language(message)
+def _v3_run(self,message,role=None,language=None):
+    # Accept role/language from the upgraded /chat endpoint. Older callers can
+    # still call run(message) unchanged. Prefer an explicit supported language;
+    # otherwise preserve the existing automatic language detection.
+    requested_language=str(language or "").strip().lower()
+    if requested_language in getattr(self,"LANGUAGES",{}):
+        detected_language=requested_language
+    else:
+        detected_language=self.detect_language(message)
+    kind=_social_kind(message)
+    lang=detected_language
     if not hasattr(self,"conversation_memory"):self.conversation_memory=[]
-    self.conversation_memory.append({"user":str(message)[:1000]}); self.conversation_memory=self.conversation_memory[-8:]
+    self.conversation_memory.append({"user":str(message)[:1000],"role":role or "user","language":lang}); self.conversation_memory=self.conversation_memory[-8:]
     if kind:
         return {"reply":GREETING_REPLIES.get(lang,GREETING_REPLIES["en"])[kind],"intent":"conversation","tool":"Conversation Router","recommendations":[],"sources":[],"retrieved":[],"retrieved_count":0,"confidence":1.0,"support_level":"conversation","agent":self.name,"agent_version":self.version,"agentic":True,"language":lang,"language_name":self.LANGUAGES[lang],"memory_turns":len(self.conversation_memory),"disclaimer":self._t(lang,"disclaimer")}
     result=_ORIGINAL_RUN(self,message)
     if not isinstance(result,dict):result={"reply":str(result)}
     result["agent_version"]=self.version; result["agentic"]=True; result["intent"]=result.get("intent") or _intent(message); result["memory_turns"]=len(self.conversation_memory)
+    if requested_language in getattr(self,"LANGUAGES",{}):
+        result["language"]=lang; result["language_name"]=self.LANGUAGES[lang]
     confidence=result.get("confidence")
     if isinstance(confidence,(int,float)) and confidence<0.45:
         result["follow_up"]="Please provide the exact product name, model, or BIS standard number for a stronger match."; result["support_level"]="low-confidence"
