@@ -29,13 +29,20 @@
           <div><label class="tiny muted">IS Number (optional)</label><input id="sgLabStandard" class="field" placeholder="e.g. IS 2347 (2023)" /></div>
         </div>
         <div class="toolbar" style="margin-top:12px"><button id="sgLabSearch" class="btn primary">Find Laboratories</button><button id="sgLabGps" class="btn ghost" type="button">● Use My GPS Location</button></div>
-        <div class="tiny muted" style="margin-top:10px">Scope matches come from BIS LIMS records. Nearby directory records without a confirmed scope are shown separately and never treated as capable solely because they are close.</div>
+        <div class="tiny muted" style="margin-top:10px">Changing the origin re-runs the ranking when a product or IS number is already entered. Scope matches come from BIS LIMS records; nearby directory records are never treated as capable solely because they are close.</div>
       </div>
       <div id="sgLabResults"></div>`;
     out.prepend(panel);
     document.getElementById('sgLabSearch').onclick = search;
     document.getElementById('sgLabGps').onclick = gps;
     document.getElementById('sgLabProduct').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+    document.getElementById('sgLabStandard').addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+    document.getElementById('sgLabOrigin').addEventListener('change', () => {
+      if (document.getElementById('sgLabProduct').value.trim() || document.getElementById('sgLabStandard').value.trim()) search();
+    });
+    document.getElementById('sgLabCategory').addEventListener('change', () => {
+      if (document.getElementById('sgLabProduct').value.trim() || document.getElementById('sgLabStandard').value.trim()) search();
+    });
   }
 
   async function search() {
@@ -51,18 +58,18 @@
     try {
       const params = new URLSearchParams({ product, standard, test: category, city, lat, lon, limit: '12' });
       const data = await api('/v8/labs/match?' + params.toString());
-      render(data, lat, lon);
+      render(data, lat, lon, city);
     } catch (e) {
       results.innerHTML = `<div class="card dangerbox"><b>Laboratory search failed.</b><br>${esc(e.message)}</div>`;
     }
   }
 
-  function render(data, lat, lon) {
+  function render(data, lat, lon, city) {
     const results = document.getElementById('sgLabResults');
     const rows = data.results || data.labs || data.data?.laboratories || data.data?.results || data.data?.labs || [];
     const limsSearch = data.lims_scope_search || data.data?.official_resources?.bis_lims_is_search || 'https://lims.bis.gov.in/home/search_is_number/';
     if (!rows.length) {
-      results.innerHTML = `<div class="card"><div class="notice"><b>No laboratory record was returned.</b><br>${esc(data.message || data.data?.message || 'Try the product name or exact IS number, then verify scope in BIS LIMS.')}</div><div style="margin-top:12px"><a href="${limsSearch}" target="_blank" rel="noopener">Open official BIS LIMS scope search ↗</a></div></div>`;
+      results.innerHTML = `<div class="card"><div class="notice"><b>No laboratory record was returned for ${esc(city)}.</b><br>The official BIS directory currently contains recognized laboratories across India. Try another product/IS number or verify the current LIMS scope.</div><div style="margin-top:12px"><a href="${limsSearch}" target="_blank" rel="noopener">Open official BIS LIMS scope search ↗</a></div></div>`;
       return;
     }
     const cards = rows.map((r, i) => {
@@ -86,7 +93,7 @@
     }).join('');
     const resolved = data.resolved_standard?.standard_number || data.data?.query?.standard || '';
     const scopeCount = rows.filter(r => r.scope_status === 'LIMS_SCOPE_MATCH').length;
-    results.innerHTML = `<div class="section-head"><div><h2>Laboratory matches</h2><p>${rows.length} result${rows.length===1?'':'s'} returned${resolved?` for ${esc(resolved)}`:''}. ${scopeCount ? `<b>${scopeCount} have a BIS LIMS scope match.</b>` : 'No scope-matched record was found in the configured scope layer.'}</p></div></div>${cards}`;
+    results.innerHTML = `<div class="section-head"><div><h2>Laboratory matches</h2><p>${rows.length} result${rows.length===1?'':'s'} returned for ${esc(city)}${resolved?` · ${esc(resolved)}`:''}. ${scopeCount ? `<b>${scopeCount} have a BIS LIMS scope match.</b>` : 'No scope-matched record was found in the configured scope layer; directory results remain available for manual LIMS verification.'}</p></div></div>${cards}`;
   }
 
   function gps() {
@@ -97,6 +104,7 @@
       let opt = [...sel.options].find(o => o.value === value);
       if (!opt) { opt = document.createElement('option'); opt.value=value; opt.textContent='My GPS Location'; sel.appendChild(opt); }
       sel.value=value;
+      search();
     }, () => alert('Location permission was not granted. Choose a city instead.'));
   }
 
