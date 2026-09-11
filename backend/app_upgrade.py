@@ -22,6 +22,7 @@ from gemini_bis_agent import GeminiBISAgent
 from labs_router import labs_match as verified_labs_match
 from product_guard import anchor, resolve_product
 from universal_product_v2 import analyze_universal
+from universal_feature_bridge import install_universal_feature_bridge
 
 register_compliance(app)
 
@@ -99,6 +100,11 @@ app.view_functions["v5_product_intelligence"] = universal_v5_product_intelligenc
 # Replace the older local-snapshot laboratory view with the verified BIS LIMS
 # directory + Haversine router. This keeps all other v8 routes untouched.
 app.view_functions["v8_labs_search"] = verified_labs_match
+
+# Every Advanced Feature now shares the same universal product-intelligence
+# gateway. Feature-specific logic remains intact, but product identity,
+# category, evidence, and safe-standard matching come from one common layer.
+install_universal_feature_bridge(app, find_matches)
 
 
 @app.get("/v8/compliance/passport")
