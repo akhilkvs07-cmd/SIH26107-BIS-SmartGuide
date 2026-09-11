@@ -1,19 +1,25 @@
-/* SmartGuide browser failsafe v3: keep a slow/waking backend and malformed persona payloads from making the UI feel broken. */
+/* SmartGuide browser failsafe v4: protect health checks without aborting slow AI/chat requests. */
 (() => {
   'use strict';
 
   const originalFetch = window.fetch.bind(window);
   const API_HOSTS = ['onrender.com', '127.0.0.1:5000', 'localhost:5000'];
-  const TIMEOUT_MS = 9000;
+  const HEALTH_TIMEOUT_MS = 12000;
+  const API_TIMEOUT_MS = 30000;
 
   window.fetch = function(input, init = {}) {
     let url = '';
     try { url = typeof input === 'string' ? input : (input && input.url) || ''; } catch (_) {}
+
     const isApi = API_HOSTS.some(host => url.includes(host)) || /\/health(?:\?|$)/.test(url);
     if (!isApi || typeof AbortController === 'undefined') return originalFetch(input, init);
 
+    // Render's free service can take time to wake and initialize its RAG index.
+    // Keep health checks bounded, but give real API requests such as /chat enough time.
+    const isHealth = /\/health(?:\?|$)/.test(url);
+    const timeout = isHealth ? HEALTH_TIMEOUT_MS : API_TIMEOUT_MS;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(), timeout);
     const next = { ...init, signal: controller.signal };
     return originalFetch(input, next).finally(() => clearTimeout(timer));
   };
@@ -42,7 +48,6 @@
       if (badge) badge.textContent = 'Active Persona: ' + label;
     }
 
-    // v9 makes the hero light; keep the role banner readable in both themes.
     banner.style.background = 'rgba(255,255,255,.72)';
     banner.style.borderColor = '#d7e6f5';
     const focus = banner.querySelector('div[style*="margin-top:6px"]');
@@ -66,7 +71,7 @@
       if (agent && agent.textContent === '—') agent.textContent = 'Unavailable';
       if (pill && /System Online/i.test(pill.textContent || '')) pill.textContent = '● UI Ready';
       fixPersonaBanner();
-    }, TIMEOUT_MS + 500);
+    }, HEALTH_TIMEOUT_MS + 500);
   });
 
   if (document.readyState === 'loading') {
