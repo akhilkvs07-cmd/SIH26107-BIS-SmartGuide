@@ -1,0 +1,56 @@
+name: Restore Compare Standards label
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'smartguide-ux-v9.js'
+      - '.github/workflows/fix-compare-label.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Restore Compare Standards navigation label
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          changed = False
+          for filename in ['index.html', 'smartguide-ux-v9.js']:
+              p = Path(filename)
+              if not p.exists():
+                  continue
+              text = p.read_text(encoding='utf-8')
+              updated = text
+              updated = updated.replace("'standards': 'Browse Standards'", "'standards': 'Compare Standards'")
+              updated = re.sub(r'(?i)(>\\s*)Browse Standards(\\s*<)', r'\\1Compare Standards\\2', updated)
+              if updated != text:
+                  p.write_text(updated, encoding='utf-8')
+                  changed = True
+
+          if not changed:
+              print('Compare Standards label already correct')
+
+      - name: Commit correction
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html smartguide-ux-v9.js
+          if git diff --cached --quiet; then
+            echo "No label correction needed"
+          else
+            git commit -m "Restore Compare Standards navigation label"
+            git push
+          fi
