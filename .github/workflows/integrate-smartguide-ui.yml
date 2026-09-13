@@ -1,6 +1,6 @@
 name: Integrate SmartGuide UI upgrades
 
-# v18 integration: preserve Browse Standards and restore the separate Compare Standards navigation item.
+# v19 integration: preserve Browse Standards, Product Intelligence and Compare Standards labels.
 on:
   push:
     branches: [main]
@@ -44,15 +44,13 @@ jobs:
           nav_match=re.search(r'<nav class="nav">([\s\S]*?)</nav>',text,flags=re.I)
           if nav_match:
             nav_inner=nav_match.group(1).rstrip(); text=text[:nav_match.start(1)]+nav_inner+'\n    '+nav_button+'\n  '+text[nav_match.end(1):]
-          text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦ <span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
-          text=text.replace('<button onclick="page(\'assistant\',this,\'AI Assistant\')">✦&nbsp;<span>AI Assistant</span></button>', '<button onclick="page(\'assistant\',this,\'AI Assistant\')">◎ <span>AI Assistant</span></button>')
           text=text.replace('Advanced Intelligence','Advanced Features')
-          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260911-v9-5">'; js='<script src="smartguide-v8.js?v=20260911-v9-5"></script>'; advjs='<script src="smartguide-advanced-ux.js?v=20260911-4"></script>'; stl='<script src="smartguide-advanced-stl-ux.js?v=20260911-2"></script>'; fix='<script src="command-center-fix.js?v=20260910-v8-9"></script>'; ux='<script src="smartguide-ux-v9.js?v=20260910-v9-4"></script>'; agent='<script src="smartguide-agent-ui.js?v=20260911-3"></script>'; trust='<script src="smartguide-trust-dashboard.js?v=20260911-1"></script>'; lab='<script src="smartguide-lab-router-ui.js?v=20260911-4"></script>'; failsafe='<script src="smartguide-failsafe.js?v=20260911-4"></script>'; browse='<script src="smartguide-browse-standards-fix.js?v=20260913-2"></script>'
-          for asset in ['smartguide-v8.css','smartguide-v8.js','smartguide-advanced-ux.js','smartguide-advanced-stl-ux.js','smartguide-ux-v9.js','smartguide-agent-ui.js','smartguide-trust-dashboard.js','smartguide-lab-router-ui.js','smartguide-failsafe.js','smartguide-browse-standards-fix.js']:
+          css='<link rel="stylesheet" href="smartguide-v8.css?v=20260911-v9-6">'; js='<script src="smartguide-v8.js?v=20260911-v9-6"></script>'; advjs='<script src="smartguide-advanced-ux.js?v=20260911-4"></script>'; stl='<script src="smartguide-advanced-stl-ux.js?v=20260911-2"></script>'; fix='<script src="command-center-fix.js?v=20260910-v8-9"></script>'; ux='<script src="smartguide-ux-v9.js?v=20260910-v9-4"></script>'; agent='<script src="smartguide-agent-ui.js?v=20260911-3"></script>'; trust='<script src="smartguide-trust-dashboard.js?v=20260911-1"></script>'; lab='<script src="smartguide-lab-router-ui.js?v=20260911-4"></script>'; failsafe='<script src="smartguide-failsafe.js?v=20260911-4"></script>'; browse='<script src="smartguide-browse-standards-fix.js?v=20260913-3"></script>'; navfix='<script src="smartguide-navigation-product-fix.js?v=20260913-1"></script>'
+          for asset in ['smartguide-v8.css','smartguide-v8.js','smartguide-advanced-ux.js','smartguide-advanced-stl-ux.js','smartguide-ux-v9.js','smartguide-agent-ui.js','smartguide-trust-dashboard.js','smartguide-lab-router-ui.js','smartguide-failsafe.js','smartguide-browse-standards-fix.js','smartguide-navigation-product-fix.js']:
             if asset.endswith('.css'): text=re.sub(r'<link\s+rel=["\']stylesheet["\']\s+href=["\']'+re.escape(asset)+r'(?:\?[^"\']*)?["\']\s*>','',text,flags=re.I)
             else: text=re.sub(r'<script\s+src=["\']'+re.escape(asset)+r'(?:\?[^"\']*)?["\']\s*></script>','',text,flags=re.I)
           text=text.replace('</head>',cleanup+'\n'+failsafe+'\n'+css+'\n</head>',1)
-          text=text.replace('</body>',js+'\n'+advjs+'\n'+stl+'\n'+fix+'\n'+ux+'\n'+agent+'\n'+trust+'\n'+lab+'\n'+browse+'\n</body>',1)
+          text=text.replace('</body>',js+'\n'+advjs+'\n'+stl+'\n'+fix+'\n'+ux+'\n'+agent+'\n'+trust+'\n'+lab+'\n'+browse+'\n'+navfix+'\n</body>',1)
           if '<link rel="manifest"' not in text: text=text.replace('</head>','<link rel="manifest" href="manifest.webmanifest">\n</head>',1)
           p.write_text(text,encoding='utf-8')
 
@@ -60,4 +58,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Restore Compare Standards navigation label" && git push; fi
+          if git diff --quiet; then echo "No integration changes needed"; else git add index.html && git commit -m "Fix Product Intelligence navigation and context" && git push; fi
