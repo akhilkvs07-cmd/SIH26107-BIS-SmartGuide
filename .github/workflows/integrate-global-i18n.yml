@@ -1,0 +1,43 @@
+name: Integrate global multilingual UI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'smartguide-global-i18n.js'
+      - '.github/workflows/integrate-global-i18n.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inject-i18n:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Inject global translation script
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          tag = '<script src="smartguide-global-i18n.js?v=20260913-1"></script>'
+          text = re.sub(r'<script\\s+src=["\\\']smartguide-global-i18n\\.js(?:\\?[^"\\\']*)?["\\\']\\s*></script>', '', text, flags=re.I)
+          if '</body>' in text:
+              text = text.replace('</body>', tag + '\\n</body>', 1)
+          else:
+              text += '\\n' + tag + '\\n'
+          p.write_text(text, encoding='utf-8')
+
+      - name: Commit injected script
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then echo "Translation script already injected"; else git commit -m "Enable global multilingual UI translations" && git push; fi
