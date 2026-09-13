@@ -1,0 +1,57 @@
+name: Activate Gemini Feature Bridge
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'index.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Inject Gemini bridge into deployed UI
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          asset = '<script src="gemini-feature-bridge.js?v=20260913-1"></script>'
+
+          text = re.sub(
+              r'<script\\s+src=["\\\']gemini-feature-bridge\\.js(?:\\?[^"\\\']*)?["\\\']\\s*></script>',
+              '',
+              text,
+              flags=re.I,
+          )
+
+          if '</body>' in text.lower():
+              match = re.search(r'</body>', text, flags=re.I)
+              text = text[:match.start()] + asset + '\\n' + text[match.start():]
+          else:
+              text += '\\n' + asset + '\\n'
+
+          path.write_text(text, encoding='utf-8')
+
+      - name: Commit and push activation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "Gemini bridge already active"
+          else
+            git commit -m "Activate Gemini orchestration bridge across features"
+            git push origin main
+          fi
