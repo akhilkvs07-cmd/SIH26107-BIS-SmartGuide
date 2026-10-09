@@ -21,14 +21,14 @@
     }
     if (actions && !$('#sgEnterpriseTheme')) {
       const theme = document.createElement('button'); theme.id='sgEnterpriseTheme'; theme.type='button';
-      theme.className='sg-enterprise-action'; theme.setAttribute('aria-label','Toggle light and dark theme');
+      theme.className='sg-enterprise-action'; theme.setAttribute('aria-label','Switch between light mode and dark mode');
       const saved = localStorage.getItem('sg-enterprise-theme');
       if (saved === 'dark') document.body.classList.add('sg-enterprise-dark');
-      theme.innerHTML = document.body.classList.contains('sg-enterprise-dark') ? '☼ <span>Light</span>' : '◐ <span>Theme</span>';
+      theme.innerHTML = document.body.classList.contains('sg-enterprise-dark') ? '☀ <span>Light mode</span>' : '☾ <span>Dark mode</span>';
       theme.addEventListener('click', () => {
         const dark = document.body.classList.toggle('sg-enterprise-dark');
         localStorage.setItem('sg-enterprise-theme', dark ? 'dark' : 'light');
-        theme.innerHTML = dark ? '☼ <span>Light</span>' : '◐ <span>Theme</span>';
+        theme.innerHTML = dark ? '☀ <span>Light mode</span>' : '☾ <span>Dark mode</span>';
       });
       actions.insertBefore(theme, $('#onlinePill') || null);
     }
