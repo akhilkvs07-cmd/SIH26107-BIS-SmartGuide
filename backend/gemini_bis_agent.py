@@ -168,6 +168,12 @@ class GeminiBISAgent:
                 structured["product"] = exact_product
                 # Grounding is determined by retrieved evidence, not by the model's self-reported flag.
                 local_evidence = [str(item) for item in (preflight.get("evidence") or []) if item]
+                ranked_standards = preflight.get("ranked_standards") or []
+                if ranked_standards and not local_evidence:
+                    local_evidence = [
+                        "Local BIS corpus candidate: " + str(item.get("standard_number") or item.get("title") or item)
+                        for item in ranked_standards[:5]
+                    ]
                 model_evidence = [str(item) for item in (structured.get("evidence_trail") or []) if item]
                 structured["evidence_trail"] = list(dict.fromkeys(local_evidence + model_evidence + web_evidence))
                 structured["source_grounded"] = bool(local_evidence or web_evidence or web_grounded)
