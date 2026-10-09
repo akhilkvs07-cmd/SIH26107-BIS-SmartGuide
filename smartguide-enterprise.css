@@ -88,3 +88,46 @@ body.sg-enterprise-dark,body.sg-enterprise-dark .main{background:var(--sg-e-bg)!
  .report-grid{grid-template-columns:1fr!important}.upgrade-grid{grid-template-columns:1fr!important}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+
+/* 2026 enterprise refresh: stronger hierarchy, workspace framing and theme completeness */
+:root{--sg-e-bg:#f4f7fb;--sg-e-surface:#fff;--sg-e-text:#152238;--sg-e-muted:#687a91;--sg-e-line:#dce5ef;--sg-e-primary:#1769d2;--sg-e-radius:16px}
+body{font-size:13px!important}
+.sidebar{width:268px!important;padding:22px 15px 18px!important}
+.main{margin-left:268px!important}
+.brand{padding:6px 10px 30px!important}
+.brand b{font-size:17px!important}
+.nav button{font-size:12px!important;min-height:42px!important;padding:10px 12px!important;border-radius:11px!important}
+.side-label{margin-top:8px!important;font-size:10px!important}
+.topbar{height:72px!important;padding:0 30px!important}
+.top-actions{gap:9px!important}
+.content{max-width:1680px!important;padding:30px 34px 46px!important}
+.page.active{min-height:calc(100vh - 125px)}
+.hero{padding:42px 44px!important;border-radius:24px!important;min-height:300px!important;background:radial-gradient(ellipse at 92% 12%,#c9e4ff 0,transparent 34%),linear-gradient(125deg,#fff 0%,#f7faff 65%,#e9f3ff 100%)!important}
+.hero:after{width:460px!important;height:460px!important;right:-175px!important;bottom:-300px!important;border:1px solid #2876ce20!important;box-shadow:0 0 0 36px #2876ce04,0 0 0 72px #2876ce03}
+.hero h1{font-size:clamp(38px,3.5vw,58px)!important;max-width:900px!important;letter-spacing:-2.8px!important;line-height:1.03!important}
+.hero p{font-size:14px!important;max-width:780px!important}
+.section-head{margin-top:32px!important;margin-bottom:15px!important}
+.section-head h2{font-size:18px!important}
+.grid4,.grid3,.grid2{gap:16px!important}
+.card{padding:22px!important;border-radius:17px!important}
+.card.module{min-height:126px!important}
+.module h3{font-size:13px!important}
+.module p{font-size:11.5px!important}
+.stat{min-height:140px!important}
+.sg-enterprise-action{height:38px!important;padding:0 13px!important;border-radius:10px!important;font-size:11px!important;white-space:nowrap}
+#sgEnterpriseTheme{min-width:86px;justify-content:center;background:#f5f8fc!important;color:#253a55!important}
+#sgEnterpriseSearch{min-width:116px;justify-content:center}
+.sg-enterprise-action:focus-visible{outline:3px solid #78b7ff!important;outline-offset:2px}
+.sg-enterprise-dark{color-scheme:dark}
+.sg-enterprise-dark .hero .eyebrow{color:#91c8ff!important}
+.sg-enterprise-dark .hero-search input{background:#101a29!important;color:#e7edf7!important;border-color:#314258!important}
+.sg-enterprise-dark .hero-search input::placeholder,.sg-enterprise-dark input::placeholder,.sg-enterprise-dark textarea::placeholder{color:#8fa2bb!important}
+.sg-enterprise-dark .btn.ghost{background:#17263a!important;color:#b9d8ff!important;border-color:#314258!important}
+.sg-enterprise-dark .notice,.sg-enterprise-dark .info,.sg-enterprise-dark .successbox,.sg-enterprise-dark .dangerbox{background:#17263a!important;color:#dce8f7!important;border-color:#314258!important}
+.sg-enterprise-dark .sg-command{background:#141f30!important;border-color:#29384b!important;color:#e7edf7!important}
+.sg-enterprise-dark .sg-command-search{background:#101a29!important;color:#e7edf7!important;border-color:#29384b!important}
+.sg-enterprise-dark .sg-command-item{color:#dbe7f6!important}
+.sg-enterprise-dark .sg-command-item:hover,.sg-enterprise-dark .sg-command-item:focus{background:#20334b!important;color:#fff!important}
+@media(max-width:1120px){.sidebar{width:248px!important}.main{margin-left:248px!important}.content{padding:24px!important}}
+@media(max-width:800px){.sidebar{width:min(285px,86vw)!important}.main{margin-left:0!important}.content{padding:15px 13px 28px!important}.hero{padding:25px 20px!important}.hero h1{font-size:clamp(31px,8vw,42px)!important;letter-spacing:-1.5px!important}.top-actions .sg-enterprise-action span{display:none}.top-actions #sgEnterpriseTheme{min-width:40px;padding:0 9px!important}}
