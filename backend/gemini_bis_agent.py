@@ -128,7 +128,19 @@ class GeminiBISAgent:
         return {"error": f"Unknown tool: {name}"}
 
     def _config(self, system: str, tool: types.Tool):
-        return types.GenerateContentConfig(system_instruction=system, tools=[tool], max_output_tokens=1800, response_mime_type="application/json", response_schema=FINAL_SCHEMA)
+        options = {
+            "system_instruction": system,
+            "tools": [tool],
+            "max_output_tokens": 2400,
+            "response_mime_type": "application/json",
+            "response_schema": FINAL_SCHEMA,
+        }
+        # Gemini 3 models support an explicit thinking level. Keep the setting
+        # model-aware so switching to a Gemini 2.x model does not send an
+        # unsupported configuration field.
+        if self.model.lower().startswith("gemini-3"):
+            options["thinking_config"] = types.ThinkingConfig(thinking_level="HIGH")
+        return types.GenerateContentConfig(**options)
 
     @staticmethod
     def _safe_unresolved(preflight: Dict[str, Any], language: str) -> Dict[str, Any]:
@@ -148,8 +160,11 @@ class GeminiBISAgent:
         preflight_json = json.dumps(preflight, ensure_ascii=False, default=str)
         local_rag = self._rag_retrieve(msg, 8)
         rag_json = json.dumps(local_rag, ensure_ascii=False, default=str)
-        requires_current_web = bool(re.search(r"\b(latest|current|up.to.date|amendment|gazette|qco|mandatory notification|effective date)\b", msg, re.I))
-        needs_search = not bool(preflight.get("ranked_standards")) or requires_current_web
+        requires_current_web = bool(re.search(r"\b(latest|current|up.to.date|amendment|gazette|qco|mandatory notification|effective date|today|recent|source|website|web|research|compare|evidence)\b", msg, re.I))
+        # Web grounding is enabled for every substantive question, not only
+        # queries containing "latest" or queries with no local standard match.
+        # Local preflight and RAG evidence are still supplied in the prompt.
+        needs_search = True
         system = f"""You are BIS SmartGuide Universal Agent for India. Gemini is the reasoning layer, never the BIS source of truth.\n\nHARD PRODUCT SAFETY RULE: The locked product is exactly: {exact_product}. Never substitute a different product. If preflight has no ranked_standards, do not present a local corpus standard as applicable.\n\nPreflight:\n{preflight_json}\n\nLocal RAG evidence:\n{rag_json}\n\nUse local evidence first. When Google Search is available, prioritize official BIS sources and distinguish local evidence from web evidence. Never invent IS numbers, QCOs, schemes, licences, tests, labs, fees, deadlines or certification outcomes. For current-status questions, if grounded web evidence is unavailable, clearly say the current status could not be verified. Preferred language: {language_name}. User role: {role_name}."""
         contents: list[Any] = [msg]
         # The GenerateContent API cannot reliably combine Google Search and custom
