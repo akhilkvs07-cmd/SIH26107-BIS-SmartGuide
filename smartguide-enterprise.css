@@ -131,3 +131,34 @@ body{font-size:13px!important}
 .sg-enterprise-dark .sg-command-item:hover,.sg-enterprise-dark .sg-command-item:focus{background:#20334b!important;color:#fff!important}
 @media(max-width:1120px){.sidebar{width:248px!important}.main{margin-left:248px!important}.content{padding:24px!important}}
 @media(max-width:800px){.sidebar{width:min(285px,86vw)!important}.main{margin-left:0!important}.content{padding:15px 13px 28px!important}.hero{padding:25px 20px!important}.hero h1{font-size:clamp(31px,8vw,42px)!important;letter-spacing:-1.5px!important}.top-actions .sg-enterprise-action span{display:none}.top-actions #sgEnterpriseTheme{min-width:40px;padding:0 9px!important}}
+
+
+/* Complete semantic dark theme: every existing module inherits the same tokens */
+body.sg-enterprise-dark{
+ --sg-e-bg:#0b1220;--sg-e-surface:#111c2d;--sg-e-text:#e5edf8;--sg-e-muted:#9aabc1;--sg-e-line:#26364c;
+ --sg-e-primary:#63a6ff;--sg-e-primary-strong:#82b8ff;--sg-e-shadow:0 8px 28px rgba(0,0,0,.18);--sg-e-shadow-hover:0 16px 38px rgba(0,0,0,.3);
+ background:#0b1220!important;color:#e5edf8!important;color-scheme:dark
+}
+.sg-enterprise-dark .main,.sg-enterprise-dark .content{background:#0b1220!important;color:#e5edf8!important}
+.sg-enterprise-dark .topbar{background:#101a2aed!important;border-color:#26364c!important;box-shadow:none!important}
+.sg-enterprise-dark .crumb,.sg-enterprise-dark .section-head h2,.sg-enterprise-dark .card h2,.sg-enterprise-dark .card h3{color:#e5edf8!important}
+.sg-enterprise-dark .section-head p,.sg-enterprise-dark .module p,.sg-enterprise-dark .hero p{color:#a8b8cd!important}
+.sg-enterprise-dark .hero{background:radial-gradient(circle at 88% 18%,#2563a64a,transparent 30%),linear-gradient(135deg,#111e31 0%,#152b47 58%,#173c68 100%)!important;border-color:#2b4260!important;color:#f4f8ff!important}
+.sg-enterprise-dark .hero h1{color:#f4f8ff!important}
+.sg-enterprise-dark .card,.sg-enterprise-dark .activity-item,.sg-enterprise-dark .result-card{background:#111c2d!important;border-color:#26364c!important;color:#dce7f5!important;box-shadow:var(--sg-e-shadow)!important}
+.sg-enterprise-dark .field,.sg-enterprise-dark select.field,.sg-enterprise-dark input.field,.sg-enterprise-dark textarea.field,.sg-enterprise-dark .hero-search input{background:#0c1625!important;border-color:#344760!important;color:#e5edf8!important}
+.sg-enterprise-dark .pill,.sg-enterprise-dark .sg-enterprise-action,.sg-enterprise-dark .ghost,.sg-enterprise-dark .chip,.sg-enterprise-dark .voice-btn{background:#17263a!important;border-color:#344760!important;color:#d5e4f7!important}
+.sg-enterprise-dark .pill.live{background:#12372f!important;border-color:#205a4a!important;color:#85e0bd!important}
+.sg-enterprise-dark .module-icon,.sg-enterprise-dark .stat .icon,.sg-enterprise-dark .upgrade-icon,.sg-enterprise-dark .stepno,.sg-enterprise-dark .tag{background:#1a304b!important;border-color:#2d4968!important;color:#9cc9ff!important}
+.sg-enterprise-dark .notice,.sg-enterprise-dark .info,.sg-enterprise-dark .successbox,.sg-enterprise-dark .dangerbox,.sg-enterprise-dark .evidence{background:#142339!important;border-color:#2c4663!important;color:#dce8f7!important}
+.sg-enterprise-dark .messages{background:#0e1929!important;border-color:#293a50!important}
+.sg-enterprise-dark .msg.bot{background:#172438!important;border-color:#2b3e56!important;color:#e5edf8!important}
+.sg-enterprise-dark .msg-head,.sg-enterprise-dark .footer,.sg-enterprise-dark .activity-meta{color:#93a6bf!important}
+.sg-enterprise-dark .system{background:#ffffff08!important;border-color:#ffffff18!important}
+.sg-enterprise-dark a{color:#8fc2ff}
+.sg-enterprise-dark .sg-command{background:#111c2d!important;border-color:#344760!important;color:#e5edf8!important}
+.sg-enterprise-dark .sg-command-search{background:#0b1524!important;border-color:#344760!important;color:#e5edf8!important}
+.sg-enterprise-dark .sg-command-item{color:#dce7f5!important}
+.sg-enterprise-dark .sg-command-item:hover,.sg-enterprise-dark .sg-command-item:focus{background:#203550!important;color:#fff!important}
+.sg-enterprise-dark .score-ring:after{background:#111c2d!important}
+@media(prefers-reduced-motion:reduce){.page.active{animation:none!important}*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
