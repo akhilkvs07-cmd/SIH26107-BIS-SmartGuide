@@ -110,6 +110,7 @@ def lab_match(body, find_matches):
     out=base_result("Laboratory intelligence", "SCOPE_LOOKUP_REQUIRED")
     out.update({"query":{"product":product,"standard":standard,"test":test},"candidate_standards":candidates,
                 "official_lab_search":BIS_LIMS_IS,"official_lab_directory":BIS_LABS,
+                "official_resources":{"bis_lims_search":BIS_LIMS_IS,"bis_lab_directory":BIS_LABS},
                 "matching_rule":"Confirm the exact IS number and test field in current BIS LIMS scope before selecting a laboratory."})
     return out
 
