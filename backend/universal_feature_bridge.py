@@ -64,10 +64,10 @@ def _attach(result: Dict[str, Any], product: str, find_matches) -> Dict[str, Any
 def install_universal_feature_bridge(app, find_matches) -> None:
     """Replace v5 feature views with product-aware wrappers after route setup."""
 
-    def wrap_json(view, product_field="product"):
+    def wrap_json(view, product_field="product", needs_find_matches=False):
         def wrapped():
             body = request.get_json(silent=True) or {}
-            result = view(body)
+            result = view(body, find_matches) if needs_find_matches else view(body)
             return jsonify(_attach(result, body.get(product_field, ""), find_matches))
         return wrapped
 
@@ -111,7 +111,7 @@ def install_universal_feature_bridge(app, find_matches) -> None:
     app.view_functions["v5_label_check"] = wrap_json(label_check)
     app.view_functions["v5_test_report"] = wrap_json(test_report)
     app.view_functions["v5_lab_match"] = wrapped_lab
-    app.view_functions["v5_amendment_impact"] = wrap_json(amendment_impact)
+    app.view_functions["v5_amendment_impact"] = wrap_json(amendment_impact, needs_find_matches=True)
     app.view_functions["v5_stl_scan"] = wrapped_stl
-    app.view_functions["v5_procurement"] = wrap_json(procurement)
+    app.view_functions["v5_procurement"] = wrap_json(procurement, needs_find_matches=True)
     app.view_functions["v5_issue_report"] = wrap_json(issue_report)
