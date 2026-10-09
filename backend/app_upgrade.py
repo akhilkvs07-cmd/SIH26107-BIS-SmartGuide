@@ -248,7 +248,7 @@ def universal_chat_route():
 app.view_functions["chat_route"] = universal_chat_route
 
 
-@app.get("/api/v8/agent/status")
+@app.get("/v8/agent/status")
 def gemini_agent_status():
     enabled = bool(gemini_bis_agent.enabled and gemini_bis_agent.client is not None)
     return jsonify({
@@ -262,6 +262,6 @@ def gemini_agent_status():
     })
 
 
-@app.post("/api/v8/agent/chat")
+@app.post("/v8/agent/chat")
 def v8_gemini_chat():
     return universal_chat_route()
