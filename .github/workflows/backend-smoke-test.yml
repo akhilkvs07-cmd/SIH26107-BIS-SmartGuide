@@ -30,6 +30,19 @@ jobs:
 
           c = app.test_client()
           assert c.get('/health').status_code == 200
+
+          # Gemini status and chat must remain available with or without an API key.
+          gemini_status = c.get('/api/v8/agent/status')
+          assert gemini_status.status_code == 200
+          assert gemini_status.get_json().get('fallback_available') is True
+          assert gemini_status.get_json().get('provider') == 'Google Gemini API'
+          gemini_chat = c.post('/api/v8/agent/chat', json={'message':'hi'})
+          assert gemini_chat.status_code == 200, gemini_chat.get_json()
+          gemini_payload = gemini_chat.get_json()
+          assert gemini_payload.get('reply')
+          assert gemini_payload.get('agent_runtime') in ('gemini-developer-api', 'local-fallback')
+          assert gemini_payload.get('gemini_status') in ('connected', 'fallback', 'disabled')
+
           assert c.get('/v5/feature-status').status_code == 200
           assert c.get('/v5/self-test').get_json()['ok'] is True
           assert c.post('/v5/product-intelligence', json={'description':'1200W electric kettle'}).status_code == 200
