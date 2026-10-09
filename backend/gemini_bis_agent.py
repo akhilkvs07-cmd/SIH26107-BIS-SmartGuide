@@ -128,7 +128,19 @@ class GeminiBISAgent:
         return {"error": f"Unknown tool: {name}"}
 
     def _config(self, system: str, tool: types.Tool):
-        return types.GenerateContentConfig(system_instruction=system, tools=[tool], max_output_tokens=1800, response_mime_type="application/json", response_schema=FINAL_SCHEMA)
+        options = {
+            "system_instruction": system,
+            "tools": [tool],
+            "max_output_tokens": 2400,
+            "response_mime_type": "application/json",
+            "response_schema": FINAL_SCHEMA,
+        }
+        # Gemini 3 models support an explicit thinking level. Keep the setting
+        # model-aware so switching to a Gemini 2.x model does not send an
+        # unsupported configuration field.
+        if self.model.lower().startswith("gemini-3"):
+            options["thinking_config"] = types.ThinkingConfig(thinking_level="HIGH")
+        return types.GenerateContentConfig(**options)
 
     @staticmethod
     def _safe_unresolved(preflight: Dict[str, Any], language: str) -> Dict[str, Any]:
@@ -148,9 +160,12 @@ class GeminiBISAgent:
         preflight_json = json.dumps(preflight, ensure_ascii=False, default=str)
         local_rag = self._rag_retrieve(msg, 8)
         rag_json = json.dumps(local_rag, ensure_ascii=False, default=str)
-        requires_current_web = bool(re.search(r"\b(latest|current|up.to.date|amendment|gazette|qco|mandatory notification|effective date)\b", msg, re.I))
-        needs_search = not bool(preflight.get("ranked_standards")) or requires_current_web
-        system = f"""You are BIS SmartGuide Universal Agent for India. Gemini is the reasoning layer, never the BIS source of truth.\n\nHARD PRODUCT SAFETY RULE: The locked product is exactly: {exact_product}. Never substitute a different product. If preflight has no ranked_standards, do not present a local corpus standard as applicable.\n\nPreflight:\n{preflight_json}\n\nLocal RAG evidence:\n{rag_json}\n\nUse local evidence first. When Google Search is available, prioritize official BIS sources and distinguish local evidence from web evidence. Never invent IS numbers, QCOs, schemes, licences, tests, labs, fees, deadlines or certification outcomes. For current-status questions, if grounded web evidence is unavailable, clearly say the current status could not be verified. Preferred language: {language_name}. User role: {role_name}."""
+        requires_current_web = bool(re.search(r"\b(latest|current|up.to.date|amendment|gazette|qco|mandatory notification|effective date|today|recent|source|website|web|research|compare|evidence)\b", msg, re.I))
+        # Web grounding is enabled for every substantive question, not only
+        # queries containing "latest" or queries with no local standard match.
+        # Local preflight and RAG evidence are still supplied in the prompt.
+        needs_search = True
+        system = f"""You are BIS SmartGuide Universal AI, powered by Gemini, for users in India. Answer questions about ANY physical product—common, niche, industrial, imported, newly released, or absent from the local catalogue. Do not limit product coverage to a hardcoded list. Also answer general questions when the user asks them instead of forcing every request into a BIS workflow. Be thorough and thoughtful: identify ambiguity, consider alternatives, compare evidence, and give a direct answer with a concise rationale. Do not reveal private chain-of-thought.\n\nFor product and BIS questions, preserve the exact user product identity: {exact_product}. Never silently substitute a related product. If preflight has no ranked_standards, do not present a local corpus standard as applicable.\n\nLocal preflight (may be incomplete or stale):\n{preflight_json}\n\nLocal retrieval evidence (may be incomplete or stale):\n{rag_json}\n\nUse Google Search grounding for every substantive question, including when local matches exist. For BIS/compliance questions, prioritize official BIS, Government of India, Gazette and relevant regulator sources; use secondary sources only for context. For general/product research, use authoritative primary sources where possible and reputable secondary sources for comparison. Include clickable source URLs/titles from retrieved web evidence whenever available, and distinguish official evidence, other web sources, local catalogue data, user-provided data, and inference. Never claim a source confirms something unless it was actually retrieved. Never invent IS numbers, QCOs, schemes, licences, tests, labs, fees, deadlines, product specs or certification outcomes. A web result is not proof of compliance. If sources are missing, stale or contradictory, state what remains uncertain and suggest the next verification step. Preferred language: {language_name}. User role: {role_name}."""
         contents: list[Any] = [msg]
         # The GenerateContent API cannot reliably combine Google Search and custom
         # function tools on the Developer API. Select one tool family per request.
@@ -169,7 +184,8 @@ class GeminiBISAgent:
                 if not raw: raise RuntimeError("Gemini returned an empty response")
                 try: structured = json.loads(raw)
                 except json.JSONDecodeError as exc: raise RuntimeError(f"Gemini structured output was invalid: {exc}") from exc
-                if not preflight.get("ranked_standards") and not web_grounded: return self._safe_unresolved(preflight, lang)
+                is_bis_compliance_question = bool(re.search(r"\b(bis|indian standard|standard number|\bis\s*\d|qco|compulsory certification|isi mark|cm/?l|crs registration|hallmark|huid|certification|compliance|test report|laboratory scope)\b", msg, re.I))
+                if is_bis_compliance_question and not preflight.get("ranked_standards") and not web_grounded: return self._safe_unresolved(preflight, lang)
                 if requires_current_web and not web_grounded:
                     return {
                         "reply": f"SmartGuide found local candidate information for {exact_product}, but could not verify the current QCO, amendment, Gazette notice, or effective date from grounded official web evidence. Please confirm the latest notification directly with BIS or the relevant Government Gazette before acting.",

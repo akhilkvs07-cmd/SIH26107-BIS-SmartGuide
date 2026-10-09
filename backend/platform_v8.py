@@ -491,9 +491,40 @@ def create_alert():
 @bp.post("/persona")
 def persona():
     body = request.get_json(silent=True) or {}
-    rid = str(body.get("role") or "general").strip().lower()
-    if rid not in ROLES: rid = "general"
-    return response("OK", {"role": rid, **ROLES[rid]}, 1.0, [], "SmartGuide persona configuration")
+    requested_role = str(body.get("role") or "general").strip().lower()
+    role_aliases = {
+        "manufacturer": "manufacturer_msme",
+        "msme": "manufacturer_msme",
+        "manufacturer/msme": "manufacturer_msme",
+        "compliance": "compliance_pro",
+        "compliance_professional": "compliance_pro",
+        "buyer": "procurement",
+        "procurement_buyer": "procurement",
+        "testing_laboratory": "laboratory",
+        "lab": "laboratory",
+        "general_user": "general",
+    }
+    rid = role_aliases.get(requested_role, requested_role)
+    if rid not in ROLES:
+        rid = "general"
+    workflows = {
+        "consumer": ["Check ISI/CM-L or CRS marking format", "Review product safety guidance", "Find official complaint and verification resources"],
+        "manufacturer_msme": ["Map product to candidate Indian Standards", "Review QCO and certification pathway", "Prepare factory testing and document checklist", "Find laboratory scope in official BIS LIMS"],
+        "startup": ["Build a product-to-standard launch roadmap", "Identify testing and certification steps", "Review market-entry evidence gaps"],
+        "importer": ["Screen product scope and QCO applicability", "Review foreign-manufacturer certification route", "Prepare import documentation checklist"],
+        "procurement": ["Screen supplier and licence evidence", "Review batch-specific test reports", "Record procurement risks and follow-up actions"],
+        "compliance_pro": ["Review source/evidence trail", "Track amendment and QCO evidence gaps", "Prepare audit and compliance passport summary"],
+        "laboratory": ["Extract test-report measurements", "Map test parameters to supplied standard clauses", "Confirm current recognition and scope in BIS LIMS"],
+        "general": ["Discover candidate Indian Standards", "Run product intelligence", "Open official BIS resources"],
+    }
+    data = {
+        "role": rid,
+        "requested_role": requested_role,
+        **ROLES[rid],
+        "suggested_workflows": workflows[rid],
+        "verification_boundary": "Suggestions are workflow guidance, not proof of certification, licence validity, QCO applicability or laboratory scope. Confirm current requirements with official BIS sources.",
+    }
+    return response("OK", data, 1.0, [], "SmartGuide persona configuration")
 
 
 @bp.get("/evidence")

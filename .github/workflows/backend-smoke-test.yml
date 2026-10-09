@@ -95,6 +95,30 @@ jobs:
           agent = c.post('/api/v8/agent/orchestrate', json={'role':'manufacturer_msme','message':'I manufacture gas stoves. Find a lab and check the standard.'})
           assert agent.status_code == 200 and 'labs/match' in agent.get_json()['data']['route']
 
+          # Persona aliases must normalize consistently and return useful role workflows.
+          for requested, canonical in [
+              ('manufacturer', 'manufacturer_msme'),
+              ('manufacturer/MSME', 'manufacturer_msme'),
+              ('msme', 'manufacturer_msme'),
+              ('compliance', 'compliance_pro'),
+              ('compliance_professional', 'compliance_pro'),
+              ('buyer', 'procurement'),
+              ('testing_laboratory', 'laboratory'),
+              ('lab', 'laboratory'),
+              ('consumer', 'consumer'),
+              ('startup', 'startup'),
+              ('importer', 'importer'),
+              ('procurement', 'procurement'),
+              ('laboratory', 'laboratory'),
+              ('general', 'general'),
+          ]:
+              persona_response = c.post('/api/v8/persona', json={'role': requested})
+              assert persona_response.status_code == 200, (requested, persona_response.get_json())
+              persona_data = persona_response.get_json()['data']
+              assert persona_data['role'] == canonical, (requested, persona_data)
+              assert persona_data['suggested_workflows'], (requested, persona_data)
+              assert persona_data['verification_boundary']
+
           # Minimal valid binary STL: one triangle.
           header=b'SIH SmartGuide STL'.ljust(80,b' ')
           tri=struct.pack('<12fH',0,0,1, 0,0,0, 1,0,0, 0,1,0, 0)
