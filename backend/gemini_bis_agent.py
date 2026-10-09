@@ -128,7 +128,7 @@ class GeminiBISAgent:
         return {"error": f"Unknown tool: {name}"}
 
     def _config(self, system: str, tool: types.Tool):
-        return types.GenerateContentConfig(system_instruction=system, tools=[tool], tool_config=types.ToolConfig(include_server_side_tool_invocations=True), max_output_tokens=1800, response_mime_type="application/json", response_schema=FINAL_SCHEMA)
+        return types.GenerateContentConfig(system_instruction=system, tools=[tool], max_output_tokens=1800, response_mime_type="application/json", response_schema=FINAL_SCHEMA)
 
     @staticmethod
     def _safe_unresolved(preflight: Dict[str, Any], language: str) -> Dict[str, Any]:
@@ -146,9 +146,15 @@ class GeminiBISAgent:
         preflight = analyze_universal(msg, self._find_matches)
         exact_product = preflight.get("resolved_product", msg)
         preflight_json = json.dumps(preflight, ensure_ascii=False, default=str)
-        system = f"""You are BIS SmartGuide Universal Agent for India. Gemini is the reasoning layer, never the BIS source of truth.\n\nHARD PRODUCT SAFETY RULE: The locked product is exactly: {exact_product}. Never substitute a different product. If preflight has no ranked_standards, do not present a local corpus standard as applicable.\n\nPreflight:\n{preflight_json}\n\nUse local evidence first. If insufficient, use Google Search grounding and prioritize official BIS sources. Distinguish local evidence from web evidence. Never invent IS numbers, QCOs, schemes, licences, tests, labs, fees, deadlines or certification outcomes. Preferred language: {language_name}. User role: {role_name}."""
+        local_rag = self._rag_retrieve(msg, 8)
+        rag_json = json.dumps(local_rag, ensure_ascii=False, default=str)
+        requires_current_web = bool(re.search(r"\\b(latest|current|up.to.date|amendment|gazette|qco|mandatory notification|effective date)\\b", msg, re.I))
+        needs_search = not bool(preflight.get("ranked_standards")) or requires_current_web
+        system = f"""You are BIS SmartGuide Universal Agent for India. Gemini is the reasoning layer, never the BIS source of truth.\\n\\nHARD PRODUCT SAFETY RULE: The locked product is exactly: {exact_product}. Never substitute a different product. If preflight has no ranked_standards, do not present a local corpus standard as applicable.\\n\\nPreflight:\\n{preflight_json}\\n\\nLocal RAG evidence:\\n{rag_json}\\n\\nUse local evidence first. When Google Search is available, prioritize official BIS sources and distinguish local evidence from web evidence. Never invent IS numbers, QCOs, schemes, licences, tests, labs, fees, deadlines or certification outcomes. For current-status questions, if grounded web evidence is unavailable, clearly say the current status could not be verified. Preferred language: {language_name}. User role: {role_name}."""
         contents: list[Any] = [msg]
-        tool = types.Tool(google_search=types.GoogleSearch(), function_declarations=self._tool_declarations())
+        # The GenerateContent API cannot reliably combine Google Search and custom
+        # function tools on the Developer API. Select one tool family per request.
+        tool = types.Tool(google_search=types.GoogleSearch()) if needs_search else types.Tool(function_declarations=self._tool_declarations())
         evidence_calls, web_grounded, web_evidence = 1, False, []
         for _ in range(6):
             response = self.client.models.generate_content(model=self.model, contents=contents, config=self._config(system, tool))
@@ -164,6 +170,27 @@ class GeminiBISAgent:
                 try: structured = json.loads(raw)
                 except json.JSONDecodeError as exc: raise RuntimeError(f"Gemini structured output was invalid: {exc}") from exc
                 if not preflight.get("ranked_standards") and not web_grounded: return self._safe_unresolved(preflight, lang)
+                if requires_current_web and not web_grounded:
+                    return {
+                        "reply": f"SmartGuide found local candidate information for {exact_product}, but could not verify the current QCO, amendment, Gazette notice, or effective date from grounded official web evidence. Please confirm the latest notification directly with BIS or the relevant Government Gazette before acting.",
+                        "product": exact_product,
+                        "category": preflight.get("likely_category", "Unknown"),
+                        "standards_status": "Current official status unverified",
+                        "next_actions": list(dict.fromkeys((preflight.get("next_actions") or []) + ["Verify the latest official BIS/Gazette notification and effective date."])),
+                        "evidence_trail": [str(item) for item in (preflight.get("evidence") or [])] + [str(item) for item in (local_rag or [])[:4]],
+                        "confidence": min(float(preflight.get("confidence", 0.4) or 0.4), 0.45),
+                        "source_grounded": bool(preflight.get("ranked_standards") or preflight.get("evidence")),
+                        "agent": self.name,
+                        "agent_version": self.version,
+                        "agent_runtime": "gemini-developer-api",
+                        "model": self.model,
+                        "role": role_name,
+                        "language": lang or None,
+                        "web_grounded": False,
+                        "web_evidence": [],
+                        "notice": "AI-assisted BIS guidance. Verify current requirements against official BIS sources.",
+                        "tool_calls": evidence_calls,
+                    }
                 structured.setdefault("reply", raw); structured.setdefault("product", exact_product); structured.setdefault("category", preflight.get("likely_category", "Unknown")); structured.setdefault("standards_status", "Needs verification"); structured.setdefault("next_actions", preflight.get("next_actions", [])); structured.setdefault("evidence_trail", []); structured.setdefault("confidence", 0)
                 structured["product"] = exact_product
                 # Grounding is determined by retrieved evidence, not by the model's self-reported flag.
