@@ -3,6 +3,10 @@ name: BIS SmartGuide backend smoke test
 on:
   push:
     branches: [main]
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-smoke-test.yml'
   workflow_dispatch:
 
 jobs:
@@ -30,12 +34,26 @@ jobs:
 
           c = app.test_client()
           assert c.get('/health').status_code == 200
+
+          # Gemini status and chat must remain available with or without an API key.
+          gemini_status = c.get('/api/v8/agent/status')
+          assert gemini_status.status_code == 200, (gemini_status.status_code, gemini_status.get_data(as_text=True), [rule.rule for rule in app.url_map.iter_rules() if 'agent' in rule.rule])
+          assert gemini_status.get_json().get('fallback_available') is True
+          assert gemini_status.get_json().get('provider') == 'Google Gemini API'
+          gemini_chat = c.post('/api/v8/agent/chat', json={'message':'hi'})
+          assert gemini_chat.status_code == 200, gemini_chat.get_json()
+          gemini_payload = gemini_chat.get_json()
+          assert gemini_payload.get('reply')
+          assert gemini_payload.get('agent_runtime') in ('gemini-developer-api', 'local-fallback')
+          assert gemini_payload.get('gemini_status') in ('connected', 'fallback', 'disabled')
+
           assert c.get('/v5/feature-status').status_code == 200
           assert c.get('/v5/self-test').get_json()['ok'] is True
           assert c.post('/v5/product-intelligence', json={'description':'1200W electric kettle'}).status_code == 200
           assert c.post('/v5/verify-mark', json={'text':'ISI IS 302 CM/L-1234567'}).status_code == 200
           assert c.post('/v5/test-report', json={'standard':'IS 302','text':'Voltage: 230 V Power: 1200 W'}).status_code == 200
-          assert c.post('/v5/label-check', json={'text':'Electric Kettle Manufacturer ABC Model EK-1200 IS 302 1200 W 230 V ISI'}).status_code == 200
+          label_response = c.post('/v5/label-check', json={'text':'Electric Kettle Manufacturer ABC Model EK-1200 IS 302 1200 W 230 V ISI'})
+          assert label_response.status_code == 200, (label_response.status_code, label_response.get_data(as_text=True))
           assert c.get('/v5/lab-match?standard=IS%20302').status_code == 200
           assert c.post('/v5/amendment-impact', json={'standard':'IS 302','amendment':'testing and marking requirements'}).status_code == 200
           assert c.post('/v5/procurement', json={'product':'electric kettle','hs_code':'851679','raw_material':'stainless steel'}).status_code == 200
