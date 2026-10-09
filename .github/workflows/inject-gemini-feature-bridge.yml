@@ -1,57 +1,46 @@
-name: Activate Gemini Feature Bridge
+name: Validate Gemini feature bridge
 
 on:
   push:
     branches: [main]
-    paths-ignore:
+    paths:
       - 'index.html'
+      - 'gemini-feature-bridge.js'
+      - '.github/workflows/inject-gemini-feature-bridge.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'gemini-feature-bridge.js'
+      - '.github/workflows/inject-gemini-feature-bridge.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  inject:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: main
 
-      - name: Inject Gemini bridge into deployed UI
+      - name: Check bridge JavaScript syntax
+        run: node --check gemini-feature-bridge.js
+
+      - name: Verify bridge is loaded exactly once
         shell: python
         run: |
           from pathlib import Path
           import re
 
-          path = Path('index.html')
-          text = path.read_text(encoding='utf-8')
-          asset = '<script src="gemini-feature-bridge.js?v=20260913-1"></script>'
-
-          text = re.sub(
-              r'<script\\s+src=["\\\']gemini-feature-bridge\\.js(?:\\?[^"\\\']*)?["\\\']\\s*></script>',
-              '',
-              text,
+          html = Path("index.html").read_text(encoding="utf-8")
+          refs = re.findall(
+              r'<script\\b[^>]*src=["\\\']gemini-feature-bridge\\.js(?:\\?[^"\\\']*)?["\\\'][^>]*></script>',
+              html,
               flags=re.I,
           )
-
-          if '</body>' in text.lower():
-              match = re.search(r'</body>', text, flags=re.I)
-              text = text[:match.start()] + asset + '\\n' + text[match.start():]
-          else:
-              text += '\\n' + asset + '\\n'
-
-          path.write_text(text, encoding='utf-8')
-
-      - name: Commit and push activation
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
-          if git diff --cached --quiet; then
-            echo "Gemini bridge already active"
-          else
-            git commit -m "Activate Gemini orchestration bridge across features"
-            git push origin main
-          fi
+          assert len(refs) == 1, f"Expected exactly one Gemini bridge script tag; found {len(refs)}"
+          assert html.lower().index("smartguide-failsafe.js") < html.lower().index("gemini-feature-bridge.js"), (
+              "Load the bridge after the fetch failsafe so its wrapper composes with the failsafe."
+          )
+          print("Gemini bridge is present exactly once and loads after the fetch failsafe.")
