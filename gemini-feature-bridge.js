@@ -16,10 +16,27 @@
       return /\/v5\//i.test(raw) && !excluded.test(raw);
     }
   };
-  const statusPromise = nativeFetch(API + '/api/v8/agent/status', { headers: { 'Accept': 'application/json' } })
-    .then((response) => response.ok ? response.json() : null)
-    .then((status) => Boolean(status && status.enabled === true))
-    .catch(() => false);
+  let statusCache = null;
+  let statusCheckedAt = 0;
+  let statusRequest = null;
+  async function isGeminiEnabled() {
+    if (statusCache !== null && Date.now() - statusCheckedAt < 30000) return statusCache;
+    if (statusRequest) return statusRequest;
+    statusRequest = nativeFetch(API + '/api/v8/agent/status', { headers: { 'Accept': 'application/json' } })
+      .then((response) => response.ok ? response.json() : null)
+      .then((status) => {
+        statusCache = Boolean(status && status.enabled === true);
+        statusCheckedAt = Date.now();
+        return statusCache;
+      })
+      .catch(() => {
+        statusCache = null;
+        statusCheckedAt = 0;
+        return false;
+      })
+      .finally(() => { statusRequest = null; });
+    return statusRequest;
+  }
 
   async function getFeatureContext(input, init) {
     const rawUrl = typeof input === 'string' ? input : (input && input.url) || '';
@@ -136,7 +153,7 @@
     if (!isFeatureRequest(input) || init.__geminiOrchestrated) return nativeFetch(input, init);
     let assistant = null;
     try {
-      if (await statusPromise) {
+      if (await isGeminiEnabled()) {
         const message = await getFeatureContext(input, init);
         const aiResponse = await nativeFetch(API + '/api/v8/agent/chat', {
           method: 'POST',
