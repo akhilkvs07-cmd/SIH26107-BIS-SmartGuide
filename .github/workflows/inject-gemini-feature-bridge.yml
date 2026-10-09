@@ -31,15 +31,10 @@ jobs:
         shell: python
         run: |
           from pathlib import Path
-          import re
 
           html = Path("index.html").read_text(encoding="utf-8")
-          refs = re.findall(
-              r'<script\\b[^>]*src=["\\\']gemini-feature-bridge\\.js(?:\\?[^"\\\']*)?["\\\'][^>]*></script>',
-              html,
-              flags=re.I,
-          )
-          assert len(refs) == 1, f"Expected exactly one Gemini bridge script tag; found {len(refs)}"
+          refs = html.count('src="gemini-feature-bridge.js') + html.count("src='gemini-feature-bridge.js")
+          assert refs == 1, f"Expected exactly one Gemini bridge script tag; found {refs}"
           assert html.lower().index("smartguide-failsafe.js") < html.lower().index("gemini-feature-bridge.js"), (
               "Load the bridge after the fetch failsafe so its wrapper composes with the failsafe."
           )
