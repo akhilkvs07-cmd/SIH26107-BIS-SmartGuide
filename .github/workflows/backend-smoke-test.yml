@@ -3,6 +3,10 @@ name: BIS SmartGuide backend smoke test
 on:
   push:
     branches: [main]
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-smoke-test.yml'
   workflow_dispatch:
 
 jobs:
