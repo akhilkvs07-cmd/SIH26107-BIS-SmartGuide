@@ -71,7 +71,7 @@ class GeminiBISAgent:
             "source_grounded": False,
             "agent": "BIS SmartGuide Universal Agent",
             "agent_version": "3.3-gemini-universal-guarded",
-            "agent_runtime": "gemini-developer-api-free-tier",
+            "agent_runtime": "gemini-developer-api",
             "model": os.getenv("GEMINI_AGENT_MODEL", "gemini-3.8-flash"),
             "language": language or None,
             "web_grounded": False,
@@ -128,12 +128,12 @@ class GeminiBISAgent:
         return {"error": f"Unknown tool: {name}"}
 
     def _config(self, system: str, tool: types.Tool):
-        return types.GenerateContentConfig(system_instruction=system, tools=[tool], tool_config=types.ToolConfig(include_server_side_tool_invocations=True), temperature=0.2, max_output_tokens=1800, response_mime_type="application/json", response_schema=FINAL_SCHEMA)
+        return types.GenerateContentConfig(system_instruction=system, tools=[tool], tool_config=types.ToolConfig(include_server_side_tool_invocations=True), max_output_tokens=1800, response_mime_type="application/json", response_schema=FINAL_SCHEMA)
 
     @staticmethod
     def _safe_unresolved(preflight: Dict[str, Any], language: str) -> Dict[str, Any]:
         product = preflight.get("resolved_product") or preflight.get("input") or "the requested product"
-        return {"reply": f"I could not establish a product-specific BIS standard for {product} from the available SmartGuide evidence. I will not substitute an unrelated standard. Check the official BIS Know Your Standard portal and confirm the current scope/QCO for this product.", "product": product, "category": preflight.get("likely_category", "General manufactured product"), "standards_status": "Evidence insufficient — official verification required", "next_actions": preflight.get("next_actions", []), "evidence_trail": preflight.get("evidence", []) + ["SmartGuide universal product gateway: no safe product-specific standard match"], "confidence": float(preflight.get("confidence", 0.15) or 0.15), "source_grounded": bool(preflight.get("evidence")), "agent": self.name, "agent_version": self.version, "agent_runtime": "gemini-developer-api-free-tier", "model": os.getenv("GEMINI_AGENT_MODEL", "gemini-3.8-flash"), "language": language or None, "web_grounded": False, "web_evidence": [], "notice": "AI-assisted BIS guidance. Verify current standards, amendments and QCOs against official BIS sources.", "tool_calls": 1}
+        return {"reply": f"I could not establish a product-specific BIS standard for {product} from the available SmartGuide evidence. I will not substitute an unrelated standard. Check the official BIS Know Your Standard portal and confirm the current scope/QCO for this product.", "product": product, "category": preflight.get("likely_category", "General manufactured product"), "standards_status": "Evidence insufficient — official verification required", "next_actions": preflight.get("next_actions", []), "evidence_trail": preflight.get("evidence", []) + ["SmartGuide universal product gateway: no safe product-specific standard match"], "confidence": float(preflight.get("confidence", 0.15) or 0.15), "source_grounded": bool(preflight.get("evidence")), "agent": self.name, "agent_version": self.version, "agent_runtime": "gemini-developer-api", "model": os.getenv("GEMINI_AGENT_MODEL", "gemini-3.8-flash"), "language": language or None, "web_grounded": False, "web_evidence": [], "notice": "AI-assisted BIS guidance. Verify current standards, amendments and QCOs against official BIS sources.", "tool_calls": 1}
 
     def run(self, message: str, role: str = "general", language: Optional[str] = None) -> Dict[str, Any]:
         if not self.enabled or self.client is None: raise RuntimeError("GEMINI_API_KEY is not configured")
@@ -166,9 +166,12 @@ class GeminiBISAgent:
                 if not preflight.get("ranked_standards") and not web_grounded: return self._safe_unresolved(preflight, lang)
                 structured.setdefault("reply", raw); structured.setdefault("product", exact_product); structured.setdefault("category", preflight.get("likely_category", "Unknown")); structured.setdefault("standards_status", "Needs verification"); structured.setdefault("next_actions", preflight.get("next_actions", [])); structured.setdefault("evidence_trail", []); structured.setdefault("confidence", 0)
                 structured["product"] = exact_product
-                if web_evidence: structured["evidence_trail"] = list(structured.get("evidence_trail", [])) + [x for x in web_evidence if x not in structured.get("evidence_trail", [])]
-                structured["source_grounded"] = bool(structured.get("source_grounded", True)) or web_grounded
-                return {**structured, "agent": self.name, "agent_version": self.version, "agent_runtime": "gemini-developer-api-free-tier", "model": self.model, "role": role_name, "language": lang or None, "web_grounded": web_grounded, "web_evidence": web_evidence, "notice": "AI-assisted BIS guidance. Verify current standards, amendments and QCOs against official BIS sources.", "tool_calls": evidence_calls}
+                # Grounding is determined by retrieved evidence, not by the model's self-reported flag.
+                local_evidence = [str(item) for item in (preflight.get("evidence") or []) if item]
+                model_evidence = [str(item) for item in (structured.get("evidence_trail") or []) if item]
+                structured["evidence_trail"] = list(dict.fromkeys(local_evidence + model_evidence + web_evidence))
+                structured["source_grounded"] = bool(local_evidence or web_evidence or web_grounded)
+                return {**structured, "agent": self.name, "agent_version": self.version, "agent_runtime": "gemini-developer-api", "model": self.model, "role": role_name, "language": lang or None, "web_grounded": web_grounded, "web_evidence": web_evidence, "notice": "AI-assisted BIS guidance. Verify current standards, amendments and QCOs against official BIS sources.", "tool_calls": evidence_calls}
             for call in calls:
                 evidence_calls += 1
                 result = self._call_tool(call.name, dict(call.args or {}))
