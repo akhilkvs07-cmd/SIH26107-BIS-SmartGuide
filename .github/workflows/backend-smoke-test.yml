@@ -37,7 +37,7 @@ jobs:
 
           # Gemini status and chat must remain available with or without an API key.
           gemini_status = c.get('/api/v8/agent/status')
-          assert gemini_status.status_code == 200
+          assert gemini_status.status_code == 200, (gemini_status.status_code, gemini_status.get_data(as_text=True), [rule.rule for rule in app.url_map.iter_rules() if 'agent' in rule.rule])
           assert gemini_status.get_json().get('fallback_available') is True
           assert gemini_status.get_json().get('provider') == 'Google Gemini API'
           gemini_chat = c.post('/api/v8/agent/chat', json={'message':'hi'})
