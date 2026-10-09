@@ -184,7 +184,7 @@ class GeminiBISAgent:
                 if not raw: raise RuntimeError("Gemini returned an empty response")
                 try: structured = json.loads(raw)
                 except json.JSONDecodeError as exc: raise RuntimeError(f"Gemini structured output was invalid: {exc}") from exc
-                is_bis_compliance_question = bool(re.search(r"\\b(bis|indian standard|standard number|\\bis\\s*\\d|qco|compulsory certification|isi mark|cm/?l|crs registration|hallmark|huid|certification|compliance|test report|laboratory scope)\\b", msg, re.I))
+                is_bis_compliance_question = bool(re.search(r"\b(bis|indian standard|standard number|\bis\s*\d|qco|compulsory certification|isi mark|cm/?l|crs registration|hallmark|huid|certification|compliance|test report|laboratory scope)\b", msg, re.I))
                 if is_bis_compliance_question and not preflight.get("ranked_standards") and not web_grounded: return self._safe_unresolved(preflight, lang)
                 if requires_current_web and not web_grounded:
                     return {
