@@ -195,6 +195,18 @@ gemini_bis_agent = GeminiBISAgent(
 )
 
 
+def _gemini_failure_code(exc):
+    """Return a safe, non-secret error category for API/UI diagnostics."""
+    message = str(exc or "").lower()
+    if any(token in message for token in ("429", "quota", "rate limit", "resource_exhausted")):
+        return "quota_or_rate_limit"
+    if any(token in message for token in ("401", "403", "api key", "permission denied", "unauthenticated")):
+        return "authentication_or_permission"
+    if any(token in message for token in ("timeout", "timed out", "deadline")):
+        return "timeout"
+    return "provider_or_response_error"
+
+
 def universal_chat_route():
     b = request.get_json(silent=True) or {}
     msg = str(b.get("message", "")).strip()
@@ -202,17 +214,54 @@ def universal_chat_route():
     role = b.get("role", "general")
     if not msg:
         return jsonify({"error": "Message is required"}), 400
-    if gemini_bis_agent.enabled:
+
+    gemini_enabled = bool(gemini_bis_agent.enabled and gemini_bis_agent.client is not None)
+    if gemini_enabled:
         try:
-            return jsonify(gemini_bis_agent.run(msg, role=role, language=lang))
+            result = gemini_bis_agent.run(msg, role=role, language=lang)
+            result["gemini_status"] = "connected"
+            result["gemini_enabled"] = True
+            return jsonify(result)
         except Exception as exc:
-            fallback = agent.run(msg, role=role, language=lang)
-            fallback["agent_runtime"] = "local-fallback"
-            fallback["agent_fallback_reason"] = str(exc)[:240]
-            return jsonify(fallback)
-    fallback = agent.run(msg, role=role, language=lang)
+            failure_code = _gemini_failure_code(exc)
+    else:
+        failure_code = "not_configured"
+
+    try:
+        fallback = agent.run(msg, role=role, language=lang)
+    except Exception:
+        return jsonify({
+            "error": "Both Gemini and the local BIS agent are unavailable.",
+            "gemini_status": "failed" if gemini_enabled else "disabled",
+            "gemini_enabled": gemini_enabled,
+            "fallback_status": "failed",
+        }), 503
+
     fallback["agent_runtime"] = "local-fallback"
+    fallback["gemini_status"] = "fallback" if gemini_enabled else "disabled"
+    fallback["gemini_enabled"] = gemini_enabled
+    fallback["agent_fallback_reason"] = failure_code
+    fallback["fallback_status"] = "available"
     return jsonify(fallback)
 
 
 app.view_functions["chat_route"] = universal_chat_route
+
+
+@app.get("/api/v8/agent/status")
+def gemini_agent_status():
+    enabled = bool(gemini_bis_agent.enabled and gemini_bis_agent.client is not None)
+    return jsonify({
+        "status": "configured" if enabled else "disabled",
+        "provider": "Google Gemini API",
+        "enabled": enabled,
+        "model": gemini_bis_agent.model,
+        "fallback": "local BIS agent",
+        "fallback_available": True,
+        "notice": "Gemini assists with reasoning; verify current standards, amendments and QCOs against official BIS sources."
+    })
+
+
+@app.post("/api/v8/agent/chat")
+def v8_gemini_chat():
+    return universal_chat_route()
